@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+@font-face{font-family:'Actay';src:url('fonts/Actay-Regular.otf') format('opentype');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'Actay';src:url('fonts/Actay-RegularItalic.otf') format('opentype');font-weight:100 900;font-style:italic;font-display:swap}
+@font-face{font-family:'Actay Condensed';src:url('fonts/ActayCondensed-Thin.otf') format('opentype');font-weight:100 500;font-style:normal;font-display:swap}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:#e2ddd2;font-family:'Actay',system-ui,sans-serif;color:#1b1813;-webkit-font-smoothing:antialiased}
+a{color:#1b1813;text-decoration:none}a:hover{color:#8d8a7f}
+input,textarea,button{font-family:'Actay',sans-serif}
+.field{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative}
+.app{position:relative;width:100%;max-width:430px;height:100vh;overflow:hidden;background:#efeae0}
+@media(min-width:520px){.field{padding:26px}.app{height:864px;max-height:94vh;border-radius:32px;box-shadow:0 44px 110px -34px rgba(40,32,20,.5),0 0 0 1px rgba(0,0,0,.05)}}
+.corner{display:none}
+@media(min-width:1000px){.corner{display:block;position:fixed;z-index:6;font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:#8d8a7f}.corner.tl{top:28px;left:32px}.corner.tr{top:28px;right:32px}.corner.bl{bottom:26px;left:32px}.corner.br{bottom:26px;right:32px}}
+#grain{position:fixed;inset:0;pointer-events:none;z-index:80;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:170px}
+.sc::-webkit-scrollbar{width:0;height:0}
+.sc{scrollbar-width:none}
+.leaflet-container{background:#e7e2d7 !important;font-family:'Actay',sans-serif;outline:none}
+.userdot{width:14px;height:14px;border-radius:50%;background:#2b6fff;border:2.5px solid #fff;box-shadow:0 0 0 3px rgba(43,111,255,.22),0 1px 5px rgba(0,0,0,.4)}
+</style>
+</helmet>
+<div class="field">
+  <div class="corner tl">creative gathering 2</div>
+  <div class="corner tr">ljubljana · tivoli</div>
+  <div class="corner bl">prostor, ne dogodek</div>
+  <div class="corner br">04 — 12. jul</div>
+  <div id="grain" style="left: 22px; top: -516px; position: absolute"></div>
+
+  <div class="app" data-screen-label="aplikacija">
+
+    <sc-if value="{{ splash }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="splash" style="position:absolute;inset:0;z-index:200;background:#e9e5da;display:flex;align-items:center;justify-content:center;opacity:{{ splashOpacity }};transition:opacity .8s ease;pointer-events:none;">
+        <div style="position:relative;width:300px;height:300px;display:flex;align-items:center;justify-content:center;">
+          <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 50%, rgba(27,24,19,0) 50%, rgba(27,24,19,.17) 60%, rgba(27,24,19,0) 71%);filter:blur(6px);"></div>
+          <div style="position:absolute;inset:26px;background:radial-gradient(circle at 50% 46%, rgba(251,247,239,.9) 0%, rgba(251,247,239,0) 55%);filter:blur(14px);opacity:.7;"></div>
+          <div style="position:relative;text-align:center;">
+            <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:36px;letter-spacing:.05em;color:#1b1813;">ohsohu</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:#a09c8f;margin-top:9px;">kar nam je skupnega</div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="position: absolute; inset: 0; z-index: 1; overflow: hidden">
+      <div id="tivoli-map" style="position:absolute;inset:0;"></div>
+      <div style="position:absolute;top:0;left:0;right:0;height:130px;background:linear-gradient(180deg,rgba(239,234,224,.92),rgba(239,234,224,0));pointer-events:none;z-index:450;"></div>
+    </div>
+
+    <div style="position: absolute; top: 16px; left: 0; right: 0; z-index: 30; display: flex; align-items: center; justify-content: space-between; padding: 0 18px">
+      <div onClick="{{ openDrawer }}" style="width:36px;height:36px;border-radius:50%;background:rgba(250,247,240,.8);backdrop-filter:blur(10px);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;border:1px solid rgba(27,24,19,.07);cursor:pointer;"><div style="width:15px;height:1.5px;background:#1b1813;"></div><div style="width:15px;height:1.5px;background:#1b1813;"></div><div style="width:15px;height:1.5px;background:#1b1813;"></div></div>
+      <div onClick="{{ openPhil }}" style="cursor:pointer;text-align:center;line-height:1;"><div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:21px;letter-spacing:.05em;">ohsohu</div></div>
+      <div onClick="{{ openGuide }}" style="width:36px;height:36px;border-radius:50%;background:rgba(250,247,240,.8);backdrop-filter:blur(10px);border:1px solid rgba(27,24,19,.07);display:flex;align-items:center;justify-content:center;font-family:'Actay Condensed',sans-serif;font-size:16px;cursor:pointer;">?</div>
+    </div>
+
+    <sc-if value="{{ showTabAct }}" hint-placeholder-val="{{ true }}"><div onClick="{{ openAdd }}" style="position: absolute; right: 20px; bottom: 20px; width: 56px; height: 56px; border-radius: 50%; background: #1b1813; color: #efeae0; display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 28px rgba(27,24,19,.3); z-index: 35; cursor: pointer"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#efeae0" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></div></sc-if>
+
+    <div ref="{{ sheetRef }}" style="position: absolute; left: 0; right: 0; top: 12%; bottom: 0; z-index: 20; background: #f5f1e9; border-radius: 28px 28px 0 0; box-shadow: 0 -14px 46px rgba(40,32,20,.16); display: flex; flex-direction: column; transform: {{ sheetTransform }}; transition: {{ sheetTransition }}">
+      <div onClick="{{ recenter }}" title="moja lokacija" style="position:absolute;top:-58px;right:20px;width:46px;height:46px;border-radius:50%;background:rgba(250,247,240,.95);backdrop-filter:blur(10px);border:1px solid rgba(27,24,19,.09);box-shadow:0 8px 20px rgba(27,24,19,.22);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ locateOpacity }};pointer-events:{{ locatePE }};transition:opacity .35s ease;">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1b1813" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.6"></circle><path d="M12 2.4v3.5M12 18.1v3.5M2.4 12h3.5M18.1 12h3.5"></path></svg>
+      </div>
+      <div ref="{{ grabRef }}" style="flex: none; padding: 12px 24px 6px; cursor: grab; touch-action: none">
+        <div style="width:40px;height:4px;border-radius:2px;background:rgba(27,24,19,.16);margin:0 auto 14px;"></div>
+        <div style="display: flex; align-items: flex-start; justify-content: space-between">
+          <div style="flex:1;min-width:0;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:#a09c8f;">{{ activeDateLong }}</div>
+            <div style="font-family: 'Actay Condensed',sans-serif; font-weight: 500; font-size: 34px; line-height: .96; margin-top: 9px">{{ activeName }}</div>
+            <div style="display:flex;align-items:center;gap:16px;margin-top:12px;font-size:12.5px;color:#4a463d;">
+              <span style="display:inline-flex;align-items:center;gap:6px;flex:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1b1813" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 1.8"></path></svg>{{ activeTime }}</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;min-width:0;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1b1813" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"></path><circle cx="12" cy="9" r="2.4"></circle></svg><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ activePlace }}</span></span>
+            </div>
+          </div>
+          <div style="flex:none;margin-left:14px;display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+            <div ref="{{ stopGrabRef }}" style="display:flex;gap:8px;">
+              <div onClick="{{ openMaps }}" title="pokaži na zemljevidu" style="width:36px;height:36px;border-radius:50%;background:rgba(250,247,240,.95);border:1px solid rgba(27,24,19,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 5px 14px rgba(27,24,19,.14);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1b1813" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"></path><circle cx="12" cy="9" r="2.4"></circle></svg>
+              </div>
+              <div onClick="{{ addToCalendar }}" title="dodaj v koledar" style="width:36px;height:36px;border-radius:50%;background:#1b1813;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 5px 14px rgba(27,24,19,.25);">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#efeae0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"></rect><path d="M3.5 9h17M8 2.5v4M16 2.5v4"></path></svg>
+              </div>
+            </div>
+            <div style="width:108px;height:82px;transform:rotate(2.5deg);background:#fbf7ef;padding:5px 5px 14px;box-shadow:0 6px 18px rgba(40,32,20,.2);border-radius:2px;"><div style="width:100%;height:100%;background-image:url('assets/photos/p11.jpg');background-size:cover;background-position:center;filter:saturate(.94);"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <div style="font-style:italic;font-size:13.5px;color:#6b6558;">"če prideš, lepo. če ne, tudi okej."</div>
+          <sc-if value="{{ descExpanded }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:12.5px;color:#4a463d;line-height:1.55;margin-top:10px;">{{ eventDesc }}</div>
+          </sc-if>
+          <div ref="{{ stopGrabRef }}" onClick="{{ toggleDesc }}" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#1b1813;border-bottom:1px solid #bfa06a;padding-bottom:2px;cursor:pointer;">{{ descBtnLabel }}</div>
+        </div>
+        <div ref="{{ stopGrabRef }}" style="display:flex;gap:5px;border-top:1px solid rgba(27,24,19,.1);margin-top:14px;padding-top:11px;">
+          <div onClick="{{ tabAct }}" style="flex:none;font-size:11.5px;padding:7px 13px;border-radius:16px;cursor:pointer;background:{{ tActBg }};color:{{ tActInk }};">aktivnosti · {{ count }}</div>
+          <div onClick="{{ tabPosts }}" style="flex:none;font-size:11.5px;padding:7px 13px;border-radius:16px;cursor:pointer;background:{{ tPostsBg }};color:{{ tPostsInk }};">objave · {{ postCount }}</div>
+          <div onClick="{{ tabFirst }}" style="flex:none;font-size:11.5px;padding:7px 13px;border-radius:16px;cursor:pointer;background:{{ tFirstBg }};color:{{ tFirstInk }};">prvič tu?</div>
+        </div>
+      </div>
+      <div class="sc" style="flex: 1; overflow-y: auto; padding: 8px 22px 100px">
+        <sc-if value="{{ showTabAct }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0 2px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:#a09c8f;">kaj se dogaja</div>
+          <div style="display:flex;gap:3px;background:rgba(27,24,19,.06);border-radius:15px;padding:3px;">
+            <div onClick="{{ onSortRecent }}" style="font-size:10px;padding:4px 10px;border-radius:12px;cursor:pointer;background:{{ recentBg }};color:{{ recentInk }};">najnovejše</div>
+            <div onClick="{{ onSortLiked }}" style="font-size:10px;padding:4px 10px;border-radius:12px;cursor:pointer;background:{{ likedBg }};color:{{ likedInk }};">popularno</div>
+          </div>
+        </div>
+        <sc-for list="{{ activities }}" as="item" hint-placeholder-count="6">
+          <div onClick="{{ item.focus }}" style="display:flex;gap:14px;padding:16px 0;border-top:1px solid rgba(27,24,19,.09);cursor:pointer;">
+            <div style="width:78px;height:78px;flex:none;border-radius:10px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,#e0dccf 0 7px,#d6d2c4 7px 14px);">{{ item.photoEl }}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                <div style="display:flex;align-items:center;gap:6px;min-width:0;"><span style="width:6px;height:6px;border-radius:50%;background:{{ item.pillarColor }};flex:none;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:#a09c8f;white-space:nowrap;">{{ item.pillar }}</span></div>
+                <div style="display:flex;align-items:center;gap:9px;flex:none;max-width:56%;"><div style="display:inline-flex;align-items:center;gap:4px;min-width:0;font-size:10px;color:#a09c8f;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#a09c8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"></path><circle cx="12" cy="9" r="2.4"></circle></svg><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ item.where }}</span></div><div onClick="{{ item.editIt }}" title="uredi" style="cursor:pointer;flex:none;display:flex;padding:2px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#b5b1a4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg></div></div>
+              </div>
+              <div style="font-size:16px;margin-top:5px;line-height:1.08;">{{ item.title }}</div>
+              <div style="font-size:11.5px;color:#8d8a7f;margin-top:4px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ item.desc }}</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
+                <sc-if value="{{ item.isIg }}" hint-placeholder-val="{{ true }}"><a href="{{ item.igUrl }}" target="_blank" rel="noopener" onClick="{{ stopClick }}" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#6b6558;border-bottom:1px solid rgba(27,24,19,.22);padding-bottom:1px;">{{ item.byLabel }}</a></sc-if><sc-if value="{{ item.notIg }}" hint-placeholder-val="{{ false }}"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8d8a7f;">{{ item.byLabel }}</span></sc-if>
+                <div onClick="{{ item.toggle }}" style="display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(27,24,19,.13);border-radius:16px;padding:4px 12px;cursor:pointer;font-size:12px;color:{{ item.likeColor }};"><span style="font-size:13px;">{{ item.heart }}</span> {{ item.count }}</div>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+        </sc-if>
+
+        <sc-if value="{{ showTabPosts }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:10px 0 4px;">
+            <textarea ref="{{ postTextRef }}" rows="2" maxlength="220" placeholder="deli utrinek, misel, veselje…" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:10px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;resize:none;line-height:1.45;"></textarea>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+              <label style="display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(27,24,19,.14);border-radius:15px;padding:5px 11px;font-size:11px;color:#6b6558;cursor:pointer;">
+                <input type="file" accept="image/*" ref="{{ postPhotoInputRef }}" style="display:none;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6558" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                <sc-if value="{{ pPhoto }}" hint-placeholder-val="{{ false }}">{{ pPhotoEl }}<span>pripeta ✓</span></sc-if>
+                <sc-if value="{{ noPPhoto }}" hint-placeholder-val="{{ true }}"><span>dodaj sliko</span></sc-if>
+              </label>
+              <button onClick="{{ addPost }}" style="background:#1b1813;color:#efeae0;border:none;border-radius:15px;padding:7px 16px;font-family:'Actay',sans-serif;font-size:12px;cursor:pointer;">objavi</button>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0 2px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:#a09c8f;">objave</div>
+            <div style="display:flex;gap:3px;background:rgba(27,24,19,.06);border-radius:15px;padding:3px;">
+              <div onClick="{{ sortPostsNew }}" style="font-size:10px;padding:4px 10px;border-radius:12px;cursor:pointer;background:{{ pnBg }};color:{{ pnInk }};">najnovejše</div>
+              <div onClick="{{ sortPostsTop }}" style="font-size:10px;padding:4px 10px;border-radius:12px;cursor:pointer;background:{{ ptBg }};color:{{ ptInk }};">popularno</div>
+            </div>
+          </div>
+          <sc-for list="{{ posts }}" as="p" hint-placeholder-count="3">
+            <div style="padding:14px 0;border-top:1px solid rgba(27,24,19,.09);">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">
+                <span style="font-size:12.5px;">{{ p.by }}</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#a09c8f;flex:none;">{{ p.when }}</span>
+              </div>
+              <div style="font-size:13.5px;color:#4a463d;line-height:1.5;margin-top:6px;">{{ p.text }}</div>
+              {{ p.photoEl }}
+              <div style="display:flex;align-items:center;gap:9px;margin-top:10px;">
+                <div onClick="{{ p.toggleLike }}" style="display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(27,24,19,.13);border-radius:15px;padding:4px 11px;cursor:pointer;font-size:11.5px;color:{{ p.likeInk }};"><span style="font-size:12.5px;">{{ p.heart }}</span> {{ p.likes }}</div>
+                <div onClick="{{ p.openComments }}" style="display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(27,24,19,.13);border-radius:15px;padding:4px 11px;cursor:pointer;font-size:11.5px;color:#8d8a7f;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8d8a7f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.4 8.6 8.6 0 0 1-3.6-.8L3 21l1.9-5.4a8.4 8.4 0 1 1 16.1-4.1z"></path></svg> {{ p.cCount }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </sc-if>
+
+        <sc-if value="{{ showTabFirst }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:12px 0 4px;">
+            <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:22px;line-height:1.2;">prvič je lahko težko.<br>in to je čisto v redu.</div>
+            <div style="font-size:12.5px;color:#6b6558;line-height:1.6;margin-top:10px;">priti sam med nove ljudi zna biti stresno — tista negotovost po poti, trenutek pred prihodom, ko ne veš, kam bi se usedel in kako začeti. ta občutek poznamo vsi in nič ni narobe s tabo, če ga čutiš.</div>
+            <div style="font-size:12.5px;color:#4a463d;line-height:1.6;margin-top:10px;">zato ti ni treba priti sam/a. spodaj so ljudje, ki te počakajo pred parkom in vstopite skupaj — ob nekom, ki prostor že pozna, dokler ti ne postane domač. oglasi se jim, dovolj je že »hej :)«</div>
+            <div style="background:#efece5;border-radius:12px;padding:13px 14px;margin-top:16px;">
+              <div style="font-size:12.5px;color:#4a463d;line-height:1.55;">druženja že poznaš? spomni se, kako je bilo tebi prvič. s tem, da nekoga pospremiš, mu lahko spremeniš celotno izkušnjo — in morda dobiš novega prijatelja.</div>
+              <div onClick="{{ openBuddyGuide }}" style="display:inline-block;margin-top:10px;background:#1b1813;color:#efeae0;border-radius:11px;padding:9px 16px;font-size:12px;cursor:pointer;">pospremim koga :)</div>
+            </div>
+            <sc-if value="{{ buddyFormOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:12px;background:#efece5;border-radius:12px;padding:14px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;"><div style="font-size:13px;">{{ buddyFormTitle }}</div><div onClick="{{ cancelBuddy }}" style="cursor:pointer;font-size:14px;color:#8d8a7f;padding:0 4px;">×</div></div>
+                <input ref="{{ buddyNameRef }}" placeholder="Ime ali @tvojprofil" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:9px 12px;font-size:13px;color:#1b1813;outline:none;margin-top:10px;">
+                <input ref="{{ buddyNoteRef }}" placeholder="{{ buddyNotePlaceholder }}" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:9px 12px;font-size:13px;color:#1b1813;outline:none;margin-top:8px;">
+                <button onClick="{{ submitBuddy }}" style="width:100%;background:#1b1813;color:#efeae0;border:none;border-radius:9px;padding:10px;font-family:'Actay',sans-serif;font-size:12.5px;cursor:pointer;margin-top:10px;">javi se ✷</button>
+              </div>
+            </sc-if>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:#a09c8f;margin-top:18px;">z veseljem te pospremijo</div>
+            <sc-for list="{{ guides }}" as="b" hint-placeholder-count="2">
+              <div style="padding:12px 0;border-bottom:1px solid rgba(27,24,19,.08);">
+                <sc-if value="{{ b.isIg }}" hint-placeholder-val="{{ true }}"><a href="{{ b.igUrl }}" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#6b6558;border-bottom:1px solid rgba(27,24,19,.22);">{{ b.name }}</a></sc-if>
+                <sc-if value="{{ b.notIg }}" hint-placeholder-val="{{ false }}"><span style="font-size:12.5px;">{{ b.name }}</span></sc-if>
+                <div style="font-size:12px;color:#8d8a7f;line-height:1.45;margin-top:4px;">{{ b.note }}</div>
+              </div>
+            </sc-for>
+
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <sc-if value="{{ drawer }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;z-index:40;background:rgba(20,17,12,.4);"></div>
+      <div data-screen-label="meni" class="sc" style="position:absolute;top:0;bottom:0;left:0;width:82%;max-width:340px;z-index:41;background:#f1efe8;box-shadow:18px 0 60px rgba(20,17,12,.34);display:flex;flex-direction:column;padding:24px 22px 20px;overflow-y:auto;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+          <div><div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:26px;line-height:.95;letter-spacing:.02em;">ohsohu</div><div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;color:#a09c8f;margin-top:6px;">kar nam je skupnega</div></div>
+          <div onClick="{{ closeDrawer }}" style="width:30px;height:30px;border-radius:50%;background:rgba(27,24,19,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4a463d" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>
+        </div>
+        <div style="height:1px;background:rgba(27,24,19,.1);margin:20px 0 14px;"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:#a09c8f;margin-bottom:10px;">druženja</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <sc-for list="{{ upcomingEvents }}" as="ev" hint-placeholder-count="1">
+            <div onClick="{{ ev.open }}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f8f5ee;border:1px solid rgba(27,24,19,.06);border-radius:11px;cursor:pointer;"><span style="width:8px;height:8px;border-radius:50%;background:#cbc6b9;flex:none;"></span><div style="flex:1;"><div style="font-size:13.5px;color:#5a564d;">{{ ev.name }}</div><div style="font-size:10px;color:#a09c8f;margin-top:1px;">{{ ev.sub }}</div></div><span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;color:#a09c8f;">prihaja</span></div>
+          </sc-for>
+          <div onClick="{{ closeDrawer }}" style="display:flex;align-items:center;gap:10px;padding:12px 13px;background:#1b1813;border-radius:12px;cursor:pointer;box-shadow:0 8px 22px rgba(27,24,19,.28);"><span style="width:9px;height:9px;border-radius:50%;background:#d98a4e;flex:none;"></span><div style="flex:1;"><div style="font-size:14.5px;color:#f3efe6;">{{ activeName }}</div><div style="font-size:10px;color:#a8a293;margin-top:2px;">{{ activeSub }}</div></div><span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;color:#b7cf9a;">aktivno</span></div>
+          <sc-for list="{{ pastEvents }}" as="ev" hint-placeholder-count="2">
+            <div onClick="{{ ev.open }}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#e1ddd2;border-radius:11px;cursor:pointer;"><span style="width:7px;height:7px;border-radius:50%;background:#a29d90;flex:none;"></span><div style="flex:1;font-size:13px;color:#6b675d;">{{ ev.name }}</div><span style="font-size:10px;color:#8d8a7f;">{{ ev.when }}</span></div>
+          </sc-for>
+          <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}"><div onClick="{{ openEventAdd }}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin-top:2px;border:1px dashed rgba(27,24,19,.2);border-radius:11px;cursor:pointer;"><span style="font-size:15px;font-weight:200;line-height:1;">+</span><div style="flex:1;font-size:13px;">novo druženje</div></div></sc-if><sc-if value="{{ notAdmin }}" hint-placeholder-val="{{ true }}"><a href="https://instagram.com/nikkranjec" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:11px 12px;margin-top:2px;border:1px dashed rgba(27,24,19,.2);border-radius:11px;cursor:pointer;color:#4a463d;"><span style="font-size:14px;line-height:1;">✷</span><div style="flex:1;font-size:12.5px;line-height:1.45;">želiš ustvariti svoje druženje? <span style="border-bottom:1px solid rgba(27,24,19,.28);padding-bottom:1px;">piši mi</span></div></a></sc-if>
+        </div>
+        <div style="height:1px;background:rgba(27,24,19,.1);margin:18px 0 12px;"></div>
+        <div style="display:flex;flex-direction:column;font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:20px;">
+          <div onClick="{{ openPhil }}" style="padding:9px 0;cursor:pointer;">biti človek</div>
+          <div onClick="{{ openGuide }}" style="padding:9px 0;cursor:pointer;">prvič tu?</div>
+          <div onClick="{{ openGallery }}" style="padding:9px 0;cursor:pointer;">galerija</div>
+          <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}"><div onClick="{{ openAdmin }}" style="padding:9px 0;cursor:pointer;display:flex;align-items:center;justify-content:space-between;">nadzor <span style="font-size:10px;color:#8d8a7f;">arhiv · zgodovina · uporabniki</span></div></sc-if>
+        </div>
+        <div style="margin-top:auto;border-top:1px solid rgba(27,24,19,.1);padding-top:12px;">
+          <sc-if value="{{ loggedIn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><span onClick="{{ openProfile }}" style="font-size:12.5px;cursor:pointer;border-bottom:1px solid rgba(27,24,19,.18);padding-bottom:1px;">{{ userName }}</span><span onClick="{{ doLogout }}" style="font-size:11px;color:#8d8a7f;cursor:pointer;border-bottom:1px solid rgba(27,24,19,.2);padding-bottom:1px;">odjava</span></div></sc-if>
+          <sc-if value="{{ notLoggedIn }}" hint-placeholder-val="{{ true }}"><div onClick="{{ openAuth }}" style="font-size:12.5px;cursor:pointer;margin-bottom:10px;">prijava →</div></sc-if>
+          <div style="font-size:11px;color:#a09c8f;">mi vsi smo ta skupnost.</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ addOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeAdd }}" style="position:absolute;inset:0;z-index:44;background:rgba(20,17,12,.4);"></div>
+      <div data-screen-label="dodaj" style="position:absolute;left:0;right:0;bottom:0;top:6%;z-index:45;background:#f5f1e9;border-radius:28px 28px 0 0;box-shadow:0 -16px 50px rgba(20,17,12,.24);display:flex;flex-direction:column;overflow:hidden;">
+        <div style="flex:none;padding:16px 24px 8px;"><div style="width:40px;height:4px;border-radius:2px;background:rgba(27,24,19,.16);margin:0 auto 14px;"></div><div style="display:flex;align-items:center;justify-content:space-between;"><div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:24px;">{{ addTitle }}</div><div onClick="{{ closeAdd }}" style="width:30px;height:30px;border-radius:50%;background:rgba(27,24,19,.06);display:flex;align-items:center;justify-content:center;font-size:16px;color:#4a463d;cursor:pointer;">×</div></div><div style="font-size:12px;color:#8d8a7f;margin-top:4px;">kaj prineseš? drugi se ti bodo pridružili.</div></div>
+        <div class="sc" style="flex:1;overflow-y:auto;padding:8px 24px 26px;">
+          <label style="display:block;position:relative;border:1.5px dashed rgba(27,24,19,.22);border-radius:14px;height:132px;overflow:hidden;background:#efece5;margin-bottom:16px;cursor:pointer;">
+            <input type="file" accept="image/*" ref="{{ photoInputRef }}" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+            {{ newPhotoEl }}
+            <sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:0 22px;text-align:center;"><div style="width:36px;height:36px;border-radius:50%;border:1.5px solid #1b1813;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1b1813" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></div><div style="font-size:13px;color:#1b1813;">kaj boš prinesel?</div><div style="font-size:11px;color:#8d8a7f;line-height:1.4;">slika pove več kot tisoč besed :)</div></div></sc-if>
+          </label>
+          <div style="margin-bottom:16px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:8px;">izberi kategorijo</div><div style="display:flex;flex-wrap:wrap;gap:7px;"><sc-for list="{{ cats }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.pick }}" style="display:inline-flex;align-items:center;gap:7px;border:1.5px solid {{ c.border }};background:{{ c.bg }};border-radius:18px;padding:7px 12px;cursor:pointer;font-size:11.5px;color:{{ c.ink }};"><span style="width:9px;height:9px;border-radius:50%;background:{{ c.color }};flex:none;"></span>{{ c.name }}</div></sc-for></div></div>
+          <div style="margin-bottom:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:6px;">kaj boš delal·a</div><input ref="{{ nameRef }}" placeholder="npr. kitara &amp; skupno petje" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:10px;padding:11px 13px;font-size:14px;color:#1b1813;outline:none;"></div>
+          <div style="margin-bottom:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:6px;">opis aktivnosti</div><textarea ref="{{ descRef }}" rows="3" maxlength="150" placeholder="{{ descPlaceholder }}" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:10px;padding:11px 13px;font-size:14px;color:#1b1813;outline:none;resize:none;line-height:1.45;"></textarea><div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#c0bcb0;text-align:right;margin-top:4px;">do 150 znakov</div></div>
+          <div style="margin-bottom:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:6px;">kje te najdejo</div><div style="display:flex;gap:9px;"><div onClick="{{ openPicker }}" style="width:56px;min-height:46px;border-radius:9px;overflow:hidden;flex:none;position:relative;cursor:pointer;border:1px solid rgba(27,24,19,.16);"><div id="add-thumb-map" style="position:absolute;inset:0;z-index:0;"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;width:8px;height:8px;border-radius:50%;background:#1b1813;border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4);pointer-events:none;"></div><sc-if value="{{ hasPicked }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:0;z-index:2;background:rgba(27,24,19,.55);display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;">✓</div></sc-if></div><input ref="{{ whereRef }}" placeholder="npr. pod velikim drevesom" style="flex:1;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:10px;padding:11px 13px;font-size:14px;color:#1b1813;outline:none;"></div><div onClick="{{ openPicker }}" style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.04em;color:#a09c8f;margin-top:7px;cursor:pointer;">izberi lokacijo, pokaži ostalim kje te najdejo →</div></div>
+          <div style="margin-bottom:20px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:4px;">kdo pripravlja</div><div style="font-size:11px;color:#8d8a7f;margin-bottom:8px;line-height:1.4;">tvoje ime, da vejo kdo si — ali z @ dodaj svoj instagram</div><input ref="{{ igRef }}" placeholder="Ime ali @tvojprofil" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:10px;padding:11px 13px;font-size:14px;color:#1b1813;outline:none;"></div>
+          <button onClick="{{ submitAdd }}" style="width:100%;background:#1b1813;color:#efeae0;border:none;border-radius:12px;padding:15px;font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:16px;letter-spacing:.04em;cursor:pointer;">{{ addBtnLabel }}</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ upFormOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeUpForm }}" style="position:absolute;inset:0;z-index:63;background:rgba(20,17,12,.45);"></div>
+      <div data-screen-label="prijavi aktivnost" style="position:absolute;left:16px;right:16px;top:50%;transform:translateY(-50%);max-height:86%;z-index:64;background:#f5f1e9;border-radius:20px;box-shadow:0 30px 80px rgba(20,17,12,.4);display:flex;flex-direction:column;overflow:hidden;">
+        <div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:16px 20px 8px;">
+          <div><div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:21px;">prijavi aktivnost</div><div style="font-size:11px;color:#8d8a7f;margin-top:3px;">za {{ detail.name }}</div></div>
+          <div onClick="{{ closeUpForm }}" style="width:28px;height:28px;border-radius:50%;background:rgba(27,24,19,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4a463d" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>
+        </div>
+        <div class="sc" style="flex:1;overflow-y:auto;padding:6px 20px 18px;">
+          <label style="display:block;position:relative;border:1.5px dashed rgba(27,24,19,.22);border-radius:12px;height:88px;overflow:hidden;background:#efece5;margin-bottom:11px;cursor:pointer;">
+            <input type="file" accept="image/*" ref="{{ upPhotoInputRef }}" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+            {{ upPhotoEl }}
+            <sc-if value="{{ noUpPhoto }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:7px;color:#8d8a7f;font-size:12px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8d8a7f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> dodaj sliko (neobvezno)</div></sc-if>
+          </label>
+          <div style="margin-bottom:10px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:5px;">kaj boš delal·a</div><input ref="{{ upTitleRef }}" placeholder="npr. kitara &amp; skupno petje" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;"></div>
+          <div style="margin-bottom:10px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:6px;">kategorija</div><div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ cats }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.pick }}" style="display:inline-flex;align-items:center;gap:6px;border:1.5px solid {{ c.border }};background:{{ c.bg }};border-radius:16px;padding:5px 10px;cursor:pointer;font-size:11px;color:{{ c.ink }};"><span style="width:8px;height:8px;border-radius:50%;background:{{ c.color }};flex:none;"></span>{{ c.name }}</div></sc-for></div></div>
+          <div style="margin-bottom:10px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:5px;">opis aktivnosti</div><textarea ref="{{ upDescRef }}" rows="2" maxlength="150" placeholder="{{ descPlaceholder }}" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;resize:none;line-height:1.45;"></textarea></div>
+          <div style="margin-bottom:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:5px;">kdo pripravlja</div><input ref="{{ upByRef }}" placeholder="Ime ali @tvojprofil" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;"></div>
+          <button onClick="{{ upSubmit }}" style="width:100%;background:#1b1813;color:#efeae0;border:none;border-radius:11px;padding:12px;font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:15px;letter-spacing:.04em;cursor:pointer;">prijavi ✷</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ editOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeEdit }}" style="position:absolute;inset:0;z-index:47;background:rgba(20,17,12,.45);"></div>
+      <div data-screen-label="uredi aktivnost" style="position:absolute;left:16px;right:16px;top:50%;transform:translateY(-50%);max-height:86%;z-index:48;background:#f5f1e9;border-radius:20px;box-shadow:0 30px 80px rgba(20,17,12,.4);display:flex;flex-direction:column;overflow:hidden;">
+        <div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:16px 20px 8px;">
+          <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:21px;">uredi aktivnost</div>
+          <div onClick="{{ closeEdit }}" style="width:28px;height:28px;border-radius:50%;background:rgba(27,24,19,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4a463d" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>
+        </div>
+        <div class="sc" style="flex:1;overflow-y:auto;padding:4px 20px 18px;">
+          <label style="display:block;position:relative;border:1.5px dashed rgba(27,24,19,.22);border-radius:12px;height:96px;overflow:hidden;background:#efece5;margin-bottom:12px;cursor:pointer;">
+            <input type="file" accept="image/*" ref="{{ photoInputRef }}" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+            {{ newPhotoSwapEl }}
+            <sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:7px;color:#8d8a7f;font-size:12px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8d8a7f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> dodaj fotografijo</div></sc-if>
+          </label>
+          <div style="margin-bottom:11px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:5px;">kaj boš delal·a</div><input ref="{{ nameRef }}" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;"></div>
+          <div style="margin-bottom:11px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:6px;">kategorija</div><div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ cats }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.pick }}" style="display:inline-flex;align-items:center;gap:6px;border:1.5px solid {{ c.border }};background:{{ c.bg }};border-radius:16px;padding:5px 10px;cursor:pointer;font-size:11px;color:{{ c.ink }};"><span style="width:8px;height:8px;border-radius:50%;background:{{ c.color }};flex:none;"></span>{{ c.name }}</div></sc-for></div></div>
+          <div style="margin-bottom:11px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:5px;">opis aktivnosti</div><textarea ref="{{ descRef }}" rows="2" maxlength="150" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;resize:none;line-height:1.45;"></textarea></div>
+          <div style="margin-bottom:11px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:5px;">kje te najdejo</div><div style="display:flex;gap:9px;"><div onClick="{{ openPicker }}" style="width:52px;min-height:42px;border-radius:9px;overflow:hidden;flex:none;position:relative;cursor:pointer;border:1px solid rgba(27,24,19,.16);"><div id="add-thumb-map" style="position:absolute;inset:0;z-index:0;"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;width:8px;height:8px;border-radius:50%;background:#1b1813;border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4);pointer-events:none;"></div></div><input ref="{{ whereRef }}" style="flex:1;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;"></div></div>
+          <div style="margin-bottom:16px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:5px;">kdo pripravlja</div><input ref="{{ igRef }}" placeholder="Ime ali @tvojprofil" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;"></div>
+          <div style="display:flex;gap:9px;align-items:stretch;">
+            <div onClick="{{ deleteFromEdit }}" style="flex:none;display:flex;align-items:center;gap:6px;border:1px solid rgba(176,110,134,.4);border-radius:11px;padding:0 14px;font-size:12px;color:#b06e86;cursor:pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#b06e86" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"></path></svg> izbriši</div>
+            <button onClick="{{ submitAdd }}" style="flex:1;background:#1b1813;color:#efeae0;border:none;border-radius:11px;padding:13px;font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:15px;letter-spacing:.04em;cursor:pointer;">shrani spremembe</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ philOpen }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="filozofija" class="sc" style="position:absolute;inset:0;z-index:50;background:#efeae0;overflow-y:auto;">
+        <div style="position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:18px 22px;background:linear-gradient(180deg,#efeae0,rgba(239,234,224,0));z-index:2;"><div onClick="{{ closePhil }}" style="font-family:'Actay Condensed',sans-serif;font-size:16px;cursor:pointer;">← nazaj</div><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:#a09c8f;">filozofija</div></div>
+        <div style="padding:14px 26px 60px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:#a09c8f;">druženje v tivoliju</div>
+          <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:38px;line-height:1.05;margin-top:16px;">da se spomnimo, kaj pomeni biti človek.</div>
+          <div style="font-size:14.5px;color:#4a463d;line-height:1.55;margin-top:20px;">ni dogodek. je prostor. ni program — je kultura, ki obstaja tudi, ko nas ni tam. začelo se je s piknikom za neznance v tivoliju. prišli so. ostali ure. nihče ni ničesar prodajal, vsak je odšel z nečim.</div>
+          <div style="margin:26px 0;transform:rotate(-1.5deg);background:#fbf7ef;padding:8px 8px 16px;box-shadow:0 16px 40px rgba(40,32,20,.2);border-radius:3px;"><div style="width:100%;height:220px;background-image:url('assets/photos/p11.jpg');background-size:cover;background-position:center;filter:saturate(.95);border-radius:2px;"></div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#8d8a7f;margin-top:10px;">tivoli · poletje · prvo druženje</div></div>
+          <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:22px;line-height:1.3;color:#1b1813;">ni rsvp-ja. ni seznama gostov. pridi tak, kot si. dovoljeno je samo biti — ni treba nič dokazovati.</div>
+          <div style="font-size:13.5px;color:#6b6558;line-height:1.6;margin-top:18px;">prostor ne pripada organizatorju. pripada vsem, ki ga soustvarjamo. zato je pomembno, da vsak nekaj prinese — odejo, instrument, čaj, prijatelja, idejo. skozi ta majhna dejanja prostor zares postane naš.</div>
+          <div style="height:1px;background:rgba(27,24,19,.12);margin:28px 0;"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:#a09c8f;margin-bottom:16px;">iz česa je spletena</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:10px;height:10px;border-radius:50%;background:#bd6f45;flex:none;"></span><span style="font-family:'Actay Condensed',sans-serif;font-size:19px;">ustvarjanje</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:10px;height:10px;border-radius:50%;background:#6f83a6;flex:none;"></span><span style="font-family:'Actay Condensed',sans-serif;font-size:19px;">glasba</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:10px;height:10px;border-radius:50%;background:#b06e86;flex:none;"></span><span style="font-family:'Actay Condensed',sans-serif;font-size:19px;">povezovanje</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:10px;height:10px;border-radius:50%;background:#869a5f;flex:none;"></span><span style="font-family:'Actay Condensed',sans-serif;font-size:19px;">gibanje</span></div>
+            <div style="display:flex;align-items:center;gap:12px;"><span style="width:10px;height:10px;border-radius:50%;background:#c6994e;flex:none;"></span><span style="font-family:'Actay Condensed',sans-serif;font-size:19px;">prigrizki in pijača</span></div>
+          </div>
+          <div style="height:1px;background:rgba(27,24,19,.12);margin:28px 0;"></div>
+          <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:26px;line-height:1.2;">ko se dotakneš človeške duše, bodi le še ena človeška duša.</div>
+          <div style="font-size:12px;color:#a09c8f;margin-top:22px;line-height:1.5;">prideš ko prideš, greš ko greš. nič ni omejeno ali planirano. be mindful and present. 🫶</div>
+          <div onClick="{{ closePhil }}" style="display:inline-block;margin-top:26px;font-family:'Actay Condensed',sans-serif;font-size:17px;border-bottom:1px solid #bfa06a;padding-bottom:3px;cursor:pointer;">← nazaj na zemljevid</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ guideOpen }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="manifest" class="sc" style="position:absolute;inset:0;z-index:50;background:#efeae0;overflow-y:auto;">
+        <div style="position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:18px 22px;background:linear-gradient(180deg,#efeae0,rgba(239,234,224,0));z-index:2;">
+          <div onClick="{{ closeGuide }}" style="font-family:'Actay Condensed',sans-serif;font-size:16px;cursor:pointer;">← nazaj</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:#a09c8f;">manifest</div>
+        </div>
+        <div style="padding:24px 28px 64px;">
+          <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:30px;line-height:1.12;">prostor, ne dogodek.</div>
+          <div style="font-size:14.5px;color:#4a463d;line-height:1.7;margin-top:22px;">pridi, kadar želiš. ostani, kolikor želiš. prinesi nekaj svojega in odidi z nečim, česar nisi imel.</div>
+
+          <div style="margin:32px 0;transform:rotate(-1.5deg);background:#fbf7ef;padding:8px 8px 15px;box-shadow:0 16px 40px rgba(40,32,20,.18);border-radius:3px;"><div style="width:100%;height:200px;background-image:url('assets/photos/p09.jpg');background-size:cover;background-position:center;filter:saturate(.95);border-radius:2px;"></div></div>
+
+          <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:22px;line-height:1.35;">biti človek. nič več, nič manj.</div>
+
+          <div style="height:1px;background:rgba(27,24,19,.12);margin:32px 0;"></div>
+
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:#a09c8f;margin-bottom:12px;">za znamke</div>
+          <div style="font-size:14.5px;color:#4a463d;line-height:1.7;">tudi znamke lahko pridejo — kot ljudje. brez oglasa, brez collabov. prinesite nekaj za deliti, ostanite in ustvarjajte z nami.</div>
+          <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:21px;line-height:1.32;margin-top:22px;">postavimo zgled, kako nesebični smo lahko.</div>
+
+          <div style="margin-top:40px;padding:18px 20px;border:1px dashed rgba(27,24,19,.2);border-radius:12px;text-align:center;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#c0bcb0;">prostor za tvoje besede</div><div style="font-size:12.5px;color:#a09c8f;margin-top:8px;font-style:italic;">— nik napiše svoj del —</div></div>
+          <div onClick="{{ closeGuide }}" style="display:inline-block;margin-top:26px;font-family:'Actay Condensed',sans-serif;font-size:17px;border-bottom:1px solid #bfa06a;padding-bottom:3px;cursor:pointer;">← nazaj na zemljevid</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ detailOpen }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="druženje detajl" class="sc" style="position:absolute;inset:0;z-index:53;background:#efeae0;overflow-y:auto;">
+        <div style="position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:18px 22px;background:linear-gradient(180deg,#efeae0,rgba(239,234,224,0));z-index:2;">
+          <div onClick="{{ closeDetail }}" style="font-family:'Actay Condensed',sans-serif;font-size:16px;cursor:pointer;">← nazaj</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:#a09c8f;">{{ detailTag }}</div>
+        </div>
+        <div style="padding:6px 24px 60px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:#a09c8f;">{{ detail.sub }}</div>
+          <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:32px;line-height:1.02;margin-top:8px;">{{ detail.name }}</div>
+          <div style="display:flex;align-items:center;gap:16px;margin-top:12px;font-size:12.5px;color:#4a463d;">
+            <span style="display:inline-flex;align-items:center;gap:6px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1b1813" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"></path><circle cx="12" cy="9" r="2.4"></circle></svg>{{ detail.place }}</span>
+          </div>
+          <div style="font-size:13.5px;color:#6b6558;line-height:1.6;margin-top:14px;">{{ detail.desc }}</div>
+          <sc-if value="{{ detailEditable }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;margin-top:14px;">
+              <div onClick="{{ editEvent }}" style="display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(27,24,19,.2);border-radius:15px;padding:6px 13px;font-size:11.5px;cursor:pointer;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#4a463d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg> uredi</div>
+              <div onClick="{{ delEvent }}" style="display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(176,110,134,.4);border-radius:15px;padding:6px 13px;font-size:11.5px;color:#b06e86;cursor:pointer;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#b06e86" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"></path></svg> izbriši</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ detailPast }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;gap:4px;background:rgba(27,24,19,.06);border-radius:14px;padding:4px;margin-top:22px;">
+            <div onClick="{{ tabGallery }}" style="flex:1;text-align:center;font-size:12px;padding:8px;border-radius:11px;cursor:pointer;background:{{ galTabBg }};color:{{ galTabInk }};">galerija</div>
+            <div onClick="{{ tabActs }}" style="flex:1;text-align:center;font-size:12px;padding:8px;border-radius:11px;cursor:pointer;background:{{ actTabBg }};color:{{ actTabInk }};">aktivnosti</div>
+          </div>
+          </sc-if>
+          <sc-if value="{{ detailUpcoming }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:24px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:#a09c8f;">prijavljene aktivnosti</div>
+            <sc-if value="{{ upFormClosed }}" hint-placeholder-val="{{ true }}"><div onClick="{{ openUpForm }}" style="border:1px dashed rgba(27,24,19,.25);border-radius:14px;padding:5px 12px;font-size:11px;cursor:pointer;">+ prijavi svojo</div></sc-if>
+          </div>
+
+          <sc-for list="{{ upList }}" as="a" hint-placeholder-count="0">
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid rgba(27,24,19,.09);">
+              {{ a.photoEl }}
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:6px;"><span style="width:6px;height:6px;border-radius:50%;background:{{ a.color }};flex:none;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:#a09c8f;">{{ a.pillar }}</span></div>
+                <div style="font-size:14.5px;margin-top:3px;line-height:1.1;">{{ a.title }}</div>
+                <div style="font-size:11.5px;color:#8d8a7f;margin-top:3px;line-height:1.4;">{{ a.desc }}</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#a09c8f;margin-top:5px;">{{ a.by }}</div>
+              </div>
+            </div>
+          </sc-for>
+          </sc-if>
+
+          <sc-if value="{{ showDetailGallery }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:16px;">
+              <sc-for list="{{ detail.gallery }}" as="g" hint-placeholder-count="6">
+                <div style="min-width:0;">
+                  {{ g.imgEl }}
+                  <sc-if value="{{ g.cap }}" hint-placeholder-val="{{ false }}"><div style="font-size:9.5px;color:#8d8a7f;line-height:1.35;margin-top:4px;">{{ g.cap }}</div></sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ showDetailActs }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:12px;">
+              <sc-for list="{{ detail.acts }}" as="a" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid rgba(27,24,19,.09);">
+                  <div style="width:52px;height:52px;flex:none;border-radius:9px;overflow:hidden;background-image:url('{{ a.photo }}');background-size:cover;background-position:center;filter:saturate(.95);"></div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="display:flex;align-items:center;gap:6px;"><span style="width:6px;height:6px;border-radius:50%;background:{{ a.color }};flex:none;"></span><span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:#a09c8f;">{{ a.pillar }}</span></div>
+                    <div style="font-size:14.5px;margin-top:3px;line-height:1.1;">{{ a.title }}</div>
+                  </div>
+                  <div style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:#6b6558;flex:none;"><span style="font-size:13px;">♥</span> {{ a.likes }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ eventAddOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeEventAdd }}" style="position:absolute;inset:0;z-index:54;background:rgba(20,17,12,.4);"></div>
+      <div data-screen-label="novo druženje" style="position:absolute;left:0;right:0;bottom:0;top:6%;z-index:55;background:#f5f1e9;border-radius:28px 28px 0 0;box-shadow:0 -16px 50px rgba(20,17,12,.24);display:flex;flex-direction:column;overflow:hidden;">
+        <div style="flex:none;padding:16px 24px 8px;"><div style="width:40px;height:4px;border-radius:2px;background:rgba(27,24,19,.16);margin:0 auto 14px;"></div><div style="display:flex;align-items:center;justify-content:space-between;"><div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:24px;">{{ evTitle }}</div><div onClick="{{ closeEventAdd }}" style="width:30px;height:30px;border-radius:50%;background:rgba(27,24,19,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4a463d" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></div></div><div style="font-size:12px;color:#8d8a7f;margin-top:4px;">kdaj se spet dobimo? postavi naslednje.</div></div>
+        <div class="sc" style="flex:1;overflow-y:auto;padding:8px 24px 26px;">
+          <label style="display:block;position:relative;border:1.5px dashed rgba(27,24,19,.22);border-radius:14px;height:132px;overflow:hidden;background:#efece5;margin-bottom:16px;cursor:pointer;">
+            <input type="file" accept="image/*" ref="{{ evPhotoInputRef }}" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+            {{ evPhotoEl }}
+            <sc-if value="{{ noEvPhoto }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:0 22px;text-align:center;"><div style="width:36px;height:36px;border-radius:50%;border:1.5px solid #1b1813;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1b1813" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></div><div style="font-size:13px;color:#1b1813;">naslovna fotografija</div><div style="font-size:11px;color:#8d8a7f;">daj druženju obraz</div></div></sc-if>
+          </label>
+          <div style="margin-bottom:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:6px;">ime druženja</div><input ref="{{ evNameRef }}" placeholder="npr. druženje #5" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:10px;padding:11px 13px;font-size:14px;color:#1b1813;outline:none;"></div>
+          <div style="display:flex;gap:10px;margin-bottom:14px;"><div style="flex:1;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:6px;">datum</div><input ref="{{ evDateRef }}" placeholder="sob · 26. jul" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:10px;padding:11px 13px;font-size:14px;color:#1b1813;outline:none;"></div><div style="width:96px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:6px;">ura</div><input ref="{{ evTimeRef }}" placeholder="16h" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:10px;padding:11px 13px;font-size:14px;color:#1b1813;outline:none;"></div></div>
+          <div style="margin-bottom:14px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:6px;">kje</div><input ref="{{ evPlaceRef }}" placeholder="npr. pri kipu dečka s piščalko" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:10px;padding:11px 13px;font-size:14px;color:#1b1813;outline:none;"></div>
+          <div style="margin-bottom:20px;"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-bottom:6px;">par besed o druženju</div><textarea ref="{{ evDescRef }}" rows="3" maxlength="180" placeholder="kaj bo tokrat posebnega? koga vabiš, kaj naj prinesejo…" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:10px;padding:11px 13px;font-size:14px;color:#1b1813;outline:none;resize:none;line-height:1.45;"></textarea></div>
+          <button onClick="{{ submitEvent }}" style="width:100%;background:#1b1813;color:#efeae0;border:none;border-radius:12px;padding:15px;font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:16px;letter-spacing:.04em;cursor:pointer;">{{ evBtnLabel }}</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ galleryOpen }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="galerija" class="sc" style="position:absolute;inset:0;z-index:52;background:#efeae0;overflow-y:auto;">
+        <div style="position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:18px 22px;background:linear-gradient(180deg,#efeae0,rgba(239,234,224,0));z-index:2;">
+          <div onClick="{{ closeGallery }}" style="font-family:'Actay Condensed',sans-serif;font-size:16px;cursor:pointer;">← nazaj</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:#a09c8f;">galerija</div>
+        </div>
+        <div style="padding:8px 22px 60px;">
+          <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:28px;line-height:1.1;">skupni spomini.</div>
+          <div style="font-size:13px;color:#6b6558;line-height:1.55;margin-top:10px;">fotografije z naših druženj. film, ki ga razvijemo skupaj.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:18px;">
+            <sc-for list="{{ galleryPhotos }}" as="g" hint-placeholder-count="6">
+              {{ g.imgEl }}
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ commentOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeComments }}" style="position:absolute;inset:0;z-index:65;background:rgba(20,17,12,.45);display:flex;align-items:center;justify-content:center;padding:20px;">
+        <div onClick="{{ stopClick }}" style="width:100%;max-width:360px;max-height:72%;background:#f5f1e9;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 26px 70px rgba(20,17,12,.4);">
+          <div style="flex:none;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid rgba(27,24,19,.08);">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:#a09c8f;">komentarji</div>
+            <div onClick="{{ closeComments }}" style="width:26px;height:26px;border-radius:50%;background:rgba(27,24,19,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#4a463d" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>
+          </div>
+          <div class="sc" style="flex:1;overflow-y:auto;padding:12px 16px;">
+            <div style="background:#efece5;border-radius:10px;padding:10px 12px;">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;"><span style="font-size:11.5px;">{{ activePost.by }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#a09c8f;">{{ activePost.when }}</span></div>
+              <div style="font-size:12.5px;color:#4a463d;line-height:1.45;margin-top:4px;">{{ activePost.text }}</div>
+              {{ activePost.photoEl }}
+            </div>
+            <sc-for list="{{ activeComments }}" as="c" hint-placeholder-count="2">
+              <div style="padding:11px 2px;border-bottom:1px solid rgba(27,24,19,.07);">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;"><span style="font-size:11.5px;">{{ c.by }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#a09c8f;">{{ c.when }}</span></div>
+                <div style="font-size:12.5px;color:#4a463d;line-height:1.45;margin-top:3px;">{{ c.text }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="flex:none;display:flex;gap:7px;padding:11px 14px 14px;border-top:1px solid rgba(27,24,19,.08);">
+            <input ref="{{ commentRef }}" placeholder="napiši komentar…" style="flex:1;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:9px 12px;font-size:13px;color:#1b1813;outline:none;">
+            <button onClick="{{ addComment }}" style="background:#1b1813;color:#efeae0;border:none;border-radius:9px;padding:9px 14px;font-family:'Actay',sans-serif;font-size:12px;cursor:pointer;">pošlji</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ profileOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeProfile }}" style="position:absolute;inset:0;z-index:74;background:rgba(20,17,12,.5);"></div>
+      <div data-screen-label="profil" style="position:absolute;left:24px;right:24px;top:50%;transform:translateY(-50%);z-index:74;background:#f5f1e9;border-radius:18px;padding:20px;box-shadow:0 26px 70px rgba(20,17,12,.45);">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:22px;">tvoj profil</div>
+          <div onClick="{{ closeProfile }}" style="width:28px;height:28px;border-radius:50%;background:rgba(27,24,19,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4a463d" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-top:14px;margin-bottom:6px;">ime</div>
+        <input ref="{{ profNameRef }}" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:#a09c8f;margin-top:12px;margin-bottom:6px;">instagram</div>
+        <input ref="{{ profIgRef }}" placeholder="@tvojprofil" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;">
+        <button onClick="{{ saveProfile }}" style="width:100%;background:#1b1813;color:#efeae0;border:none;border-radius:10px;padding:12px;font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:15px;cursor:pointer;margin-top:16px;">shrani</button>
+        <div onClick="{{ deleteProfile }}" style="text-align:center;font-size:11.5px;color:#b06e86;cursor:pointer;margin-top:14px;border-bottom:none;">{{ delProfLabel }}</div>
+        <div style="text-align:center;font-size:10px;color:#a09c8f;margin-top:6px;line-height:1.45;">z izbrisom izginejo tudi vse tvoje objave, slike in aktivnosti.</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ authOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeAuth }}" style="position:absolute;inset:0;z-index:75;background:rgba(20,17,12,.5);display:flex;align-items:center;justify-content:center;padding:24px;">
+        <div onClick="{{ stopClick }}" style="width:100%;max-width:330px;background:#f5f1e9;border-radius:18px;padding:20px;box-shadow:0 26px 70px rgba(20,17,12,.45);">
+          <div style="font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:22px;">lepo, da si tu ✷</div>
+          <div style="font-size:11.5px;color:#8d8a7f;line-height:1.5;margin-top:5px;">dodajanje deluje brez prijave. za urejanje in brisanje pa se prijavi, da vemo, kdo ureja.</div>
+          <div style="display:flex;gap:3px;background:rgba(27,24,19,.06);border-radius:13px;padding:3px;margin-top:14px;">
+            <div onClick="{{ setLoginMode }}" style="flex:1;text-align:center;font-size:11.5px;padding:7px;border-radius:10px;cursor:pointer;background:{{ loginTabBg }};color:{{ loginTabInk }};">prijava</div>
+            <div onClick="{{ setRegMode }}" style="flex:1;text-align:center;font-size:11.5px;padding:7px;border-radius:10px;cursor:pointer;background:{{ regTabBg }};color:{{ regTabInk }};">registracija</div>
+          </div>
+          <input ref="{{ authNameRef }}" placeholder="ime" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;margin-top:12px;">
+          <sc-if value="{{ regMode }}" hint-placeholder-val="{{ false }}"><input ref="{{ authIgRef }}" placeholder="@instagram · da te najdejo" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;margin-top:8px;"></sc-if>
+          <input ref="{{ authPassRef }}" type="password" placeholder="geslo" style="width:100%;border:1px solid rgba(27,24,19,.14);background:#fff;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1b1813;outline:none;margin-top:8px;">
+          <sc-if value="{{ authError }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px;color:#b06e86;margin-top:8px;">{{ authError }}</div></sc-if>
+          <button onClick="{{ doAuth }}" style="width:100%;background:#1b1813;color:#efeae0;border:none;border-radius:10px;padding:12px;font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:15px;cursor:pointer;margin-top:12px;">{{ authBtnLabel }}</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ adminOpen }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="nadzor" class="sc" style="position:absolute;inset:0;z-index:58;background:#efeae0;overflow-y:auto;">
+        <div style="position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:18px 22px;background:linear-gradient(180deg,#efeae0,rgba(239,234,224,0));z-index:2;">
+          <div onClick="{{ closeAdmin }}" style="font-family:'Actay Condensed',sans-serif;font-size:16px;cursor:pointer;">← nazaj</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:#a09c8f;">nadzor</div>
+        </div>
+        <div style="padding:6px 24px 60px;">
+          <div style="display:flex;gap:4px;background:rgba(27,24,19,.06);border-radius:14px;padding:4px;">
+            <div onClick="{{ setAdmArhiv }}" style="flex:1;text-align:center;font-size:12px;padding:8px;border-radius:11px;cursor:pointer;background:{{ aArhivBg }};color:{{ aArhivInk }};">arhiv</div>
+            <div onClick="{{ setAdmLog }}" style="flex:1;text-align:center;font-size:12px;padding:8px;border-radius:11px;cursor:pointer;background:{{ aLogBg }};color:{{ aLogInk }};">zgodovina</div>
+            <div onClick="{{ setAdmUsers }}" style="flex:1;text-align:center;font-size:12px;padding:8px;border-radius:11px;cursor:pointer;background:{{ aUsersBg }};color:{{ aUsersInk }};">uporabniki</div>
+          </div>
+          <sc-if value="{{ adminTabArhiv }}" hint-placeholder-val="{{ true }}">
+            <sc-if value="{{ archEmpty }}" hint-placeholder-val="{{ true }}"><div style="font-size:12.5px;color:#a09c8f;margin-top:20px;text-align:center;">arhiv je prazen — nič ni izbrisanega.</div></sc-if>
+            <sc-for list="{{ archList }}" as="e" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid rgba(27,24,19,.08);">
+                <div style="flex:1;min-width:0;">
+                  <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:#a09c8f;">{{ e.kind }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#c0bcb0;">{{ e.when }}</span></div>
+                  <div style="font-size:14px;margin-top:3px;">{{ e.title }}</div>
+                  <div style="font-size:10.5px;color:#a09c8f;margin-top:1px;">izbrisal/a: {{ e.by }}</div>
+                </div>
+                <div onClick="{{ e.restore }}" style="flex:none;border:1px solid rgba(27,24,19,.2);border-radius:14px;padding:6px 13px;font-size:11.5px;cursor:pointer;">obnovi</div>
+              </div>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{ adminTabLog }}" hint-placeholder-val="{{ false }}">
+            <sc-if value="{{ logEmpty }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:#a09c8f;margin-top:20px;text-align:center;">zgodovina je še prazna.</div></sc-if>
+            <sc-for list="{{ logList }}" as="l" hint-placeholder-count="4">
+              <div style="padding:11px 0;border-bottom:1px solid rgba(27,24,19,.07);">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;"><span style="font-size:12.5px;"><span style="color:#1b1813;">{{ l.user }}</span> <span style="color:#8d8a7f;">{{ l.action }}</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:#c0bcb0;flex:none;">{{ l.when }}</span></div>
+                <div style="font-size:11.5px;color:#6b6558;margin-top:2px;">{{ l.kind }} · {{ l.title }}</div>
+              </div>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{ adminTabUsers }}" hint-placeholder-val="{{ false }}">
+            <sc-if value="{{ usersEmpty }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:#a09c8f;margin-top:20px;text-align:center;">še ni registriranih uporabnikov.</div></sc-if>
+            <sc-for list="{{ userList }}" as="u" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid rgba(27,24,19,.08);">
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:14px;">{{ u.name }}</div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:2px;"><span style="font-size:10.5px;color:{{ u.statusInk }};">{{ u.statusLabel }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#a09c8f;">{{ u.ig }}</span></div>
+                </div>
+                <div onClick="{{ u.toggle }}" style="flex:none;border:1px solid rgba(27,24,19,.2);border-radius:14px;padding:6px 13px;font-size:11.5px;cursor:pointer;">{{ u.toggleLabel }}</div>
+              </div>
+            </sc-for>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ pickerOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:60;background:rgba(20,17,12,.5);display:flex;align-items:center;justify-content:center;padding:16px;">
+        <div style="position:relative;width:100%;max-width:390px;height:72%;background:#f5f1e9;border-radius:20px;overflow:hidden;box-shadow:0 30px 80px rgba(20,17,12,.45);">
+          <div id="picker-map" style="position:absolute;inset:0;z-index:0;"></div>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);z-index:1200;pointer-events:none;"><svg width="34" height="34" viewBox="0 0 24 24" fill="#1b1813" stroke="#fff" stroke-width="1.4"><path d="M12 22s7-6.4 7-12a7 7 0 1 0-14 0c0 5.6 7 12 7 12z"></path><circle cx="12" cy="10" r="2.5" fill="#fff" stroke="none"></circle></svg></div>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1200;width:5px;height:5px;border-radius:50%;background:rgba(0,0,0,.35);pointer-events:none;"></div>
+          <div onClick="{{ closePicker }}" style="position:absolute;top:12px;left:12px;z-index:1200;width:34px;height:34px;border-radius:50%;background:rgba(250,247,240,.95);backdrop-filter:blur(8px);border:1px solid rgba(27,24,19,.08);box-shadow:0 4px 12px rgba(27,24,19,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1b1813" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>
+          <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:1200;background:rgba(250,247,240,.92);backdrop-filter:blur(8px);border-radius:14px;padding:6px 13px;font-size:11px;color:#4a463d;white-space:nowrap;box-shadow:0 4px 12px rgba(27,24,19,.14);">izberi lokacijo, pokaži ostalim kje te najdejo</div>
+          <div style="position:absolute;left:0;right:0;bottom:0;z-index:1200;padding:14px;background:linear-gradient(180deg,rgba(245,241,233,0),rgba(245,241,233,.92) 55%);">
+            <button onClick="{{ savePicker }}" style="width:100%;background:#1b1813;color:#efeae0;border:none;border-radius:12px;padding:14px;font-family:'Actay Condensed',sans-serif;font-weight:300;font-size:16px;letter-spacing:.04em;cursor:pointer;">shrani lokacijo</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;left:50%;bottom:92px;transform:translateX(-50%);z-index:70;background:#1b1813;color:#efeae0;font-size:12.5px;padding:9px 18px;border-radius:20px;box-shadow:0 10px 26px rgba(20,17,12,.3);white-space:nowrap;">{{ toast }}</div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:430,&quot;height&quot;:864}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const ld = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch(e){ return d; } };
+    this.state = {
+      sheet:'peek', dragging:false, dragPx:null, drawer:false, addOpen:false, philOpen:false,
+      liked: ld('dvt_liked',{}), posted: ld('dvt_posted',[]), createdEvents: ld('dvt_events',[]), gallery: ld('dvt_gallery',[]),
+      newCat:'glasba', newPhoto:null, toast:'', sort:'recent', descExpanded:false, guideOpen:false, pickerOpen:false, pickedLoc:null,
+      eventAddOpen:false, galleryOpen:false, evPhoto:null, detailOpen:false, detail:null, detailTab:'gallery',
+      users: ld('dvt_users',[]), session: ld('dvt_session',null), logbook: ld('dvt_log',[]), archive: ld('dvt_archive',[]),
+      posts: ld('dvt_posts',[]), pliked: ld('dvt_pliked',{}), pcomments: ld('dvt_pcomments',{}), buddies: ld('dvt_buddies',[]),
+      seedOver: ld('dvt_seed_over',{}), seedDel: ld('dvt_seed_del',[]), upacts: ld('dvt_upacts',{}),
+      sheetTab:'act', postSort:'new', commentFor:null, authOpen:false, authMode:'login', authError:'',
+      adminOpen:false, adminTab:'arhiv', editingAct:null, editingEv:null, pPhoto:null, upPhoto:null, buddyForm:null, upFormOpen:false, editOpen:false, splash:true, splashHide:false
+    };
+    this.activeEvent = { name:'creative gathering 2', dateLong:'sobota · 12. julij', dateShort:'sob · 12. jul', time:'16h', place:'pri kipu dečka s piščalko', lat:46.0536016, lng:14.494176 };
+    this.sheetH = 620; this.moved = false;
+    this.pillarColors = { 'ustvarjanje':'#bd6f45', 'glasba':'#6f83a6', 'povezovanje':'#b06e86', 'gibanje':'#869a5f', 'prigrizki in pijača':'#c6994e' };
+    this.f = { name:React.createRef(), desc:React.createRef(), where:React.createRef(), ig:React.createRef() };
+    this.prf = { name:React.createRef(), ig:React.createRef() };
+    this.ef = { name:React.createRef(), date:React.createRef(), time:React.createRef(), place:React.createRef(), desc:React.createRef() };
+    this.af = { name:React.createRef(), pass:React.createRef(), ig:React.createRef() };
+    this.pf = { text:React.createRef(), comment:React.createRef() };
+    this.bf = { name:React.createRef(), note:React.createRef() };
+    this.uf = { title:React.createRef(), desc:React.createRef(), by:React.createRef() };
+  }
+  componentWillUnmount(){ clearTimeout(this._spT1); clearTimeout(this._spT2); window.removeEventListener('pointermove', this.onMove); window.removeEventListener('pointerup', this.onUp); if (this._map) { try { this._map.remove(); } catch(e){} this._map = null; } }
+  componentDidMount(){
+    this._mapTries = 0; this.initMap();
+    this._spT1 = setTimeout(() => this.setState({ splashHide:true }), 1600);
+    this._spT2 = setTimeout(() => this.setState({ splash:false }), 2450);
+  }
+  componentDidUpdate(){
+    const st = this.state;
+    const mk = st.posted.length + '|' + (st.seedDel||[]).join(',') + '|' + Object.keys(st.seedOver||{}).map(k=>k+(st.seedOver[k].lat||'')).join(',');
+    if (this._lastMk !== mk) { this._lastMk = mk; this.syncMarkers(); }
+    if (this._lastPicker !== st.pickerOpen) {
+      this._lastPicker = st.pickerOpen;
+      if (st.pickerOpen) this.initPicker(); else this.destroyPicker();
+    }
+    const formOpen = st.addOpen || st.editOpen;
+    if (this._lastAdd !== formOpen) {
+      this._lastAdd = formOpen;
+      if (formOpen) this.initThumb(); else this.destroyThumb();
+    }
+    if (formOpen && this._thumbMap && this._lastThumbLoc !== st.pickedLoc) {
+      this._lastThumbLoc = st.pickedLoc;
+      const c = st.pickedLoc || { lat:46.0536016, lng:14.494176 };
+      try { this._thumbMap.setView([c.lat, c.lng], 16); } catch(e){}
+    }
+  }
+  initThumb = () => {
+    const go = () => {
+      const el = document.getElementById('add-thumb-map');
+      if (!el || !window.L) { setTimeout(go, 80); return; }
+      if (this._thumbMap || el._leaflet_id) return;
+      const L = window.L;
+      const c = this.state.pickedLoc || { lat:46.0536016, lng:14.494176 };
+      const map = L.map(el, { center:[c.lat, c.lng], zoom:16, zoomControl:false, attributionControl:false, dragging:false, scrollWheelZoom:false, doubleClickZoom:false, boxZoom:false, keyboard:false, touchZoom:false });
+      this._thumbMap = map; this._lastThumbLoc = this.state.pickedLoc;
+      this.addBase(map);
+      setTimeout(() => { try { map.invalidateSize(); } catch(e){} }, 160);
+    };
+    go();
+  };
+  destroyThumb = () => { if (this._thumbMap) { try { this._thumbMap.remove(); } catch(e){} this._thumbMap = null; this._lastThumbLoc = undefined; } };
+  allActs(){ const sd = this.state.seedDel || []; const so = this.state.seedOver || {}; return [ ...this.state.posted, ...this.seedData().filter(s => sd.indexOf(s.id) < 0).map(s => so[s.id] ? { ...s, ...so[s.id] } : s) ]; }
+  syncMarkers = () => {
+    const L = window.L, map = this._map;
+    if (!L || !map) return;
+    if (!this._actMarkers) this._actMarkers = {};
+    const all = this.allActs();
+    const ids = {};
+    all.forEach(a => {
+      if (a.lat == null || a.lng == null) return;
+      ids[a.id] = 1;
+      if (this._actMarkers[a.id]) { try { this._actMarkers[a.id].setLatLng([a.lat, a.lng]); } catch(e){} return; }
+      const color = this.pillarColors[a.pillar] || '#8d8a7f';
+      const icon = L.divIcon({ className:'', iconSize:[18,18], iconAnchor:[9,9], html:"<div style='width:14px;height:14px;border-radius:50%;background:"+color+";border:2.5px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.4)'></div>" });
+      const m = L.marker([a.lat, a.lng], { icon }).addTo(map);
+      m.bindPopup("<div style=\"font-family:'Actay',sans-serif;min-width:120px\"><div style='font-size:13px;color:#1b1813;line-height:1.15'>"+a.title+"</div><div style='font-size:11px;color:#8d8a7f;margin-top:3px'>"+(a.where||'')+"</div></div>", { closeButton:false, offset:[0,-3] });
+      this._actMarkers[a.id] = m;
+    });
+    Object.keys(this._actMarkers).forEach(id => { if (!ids[id]) { try { map.removeLayer(this._actMarkers[id]); } catch(e){} delete this._actMarkers[id]; } });
+  };
+  focusActivity = (a) => {
+    this.setState({ sheet:'peek' });
+    const map = this._map;
+    if (map && a.lat != null && a.lng != null) {
+      map.setView([a.lat, a.lng], 18, { animate:true });
+      const m = this._actMarkers && this._actMarkers[a.id];
+      if (m) setTimeout(() => { try { m.openPopup(); } catch(e){} }, 380);
+    }
+  };
+  initPicker = () => {
+    const go = () => {
+      const el = document.getElementById('picker-map');
+      if (!el || !window.L) { setTimeout(go, 80); return; }
+      if (this._pickerMap || el._leaflet_id) return;
+      const L = window.L;
+      const c = this.state.pickedLoc || { lat:46.0536016, lng:14.494176 };
+      const map = L.map(el, { center:[c.lat, c.lng], zoom:17, zoomControl:false, attributionControl:false });
+      this._pickerMap = map;
+      this.addBase(map);
+      L.marker([46.0536016,14.494176], { interactive:false, icon:L.divIcon({ className:'', iconSize:[16,16], iconAnchor:[8,8], html:"<div style='width:11px;height:11px;border-radius:50%;background:#1b1813;border:2px solid #fff'></div>" }) }).addTo(map);
+      const all = this.allActs();
+      all.forEach(a => { if (a.lat == null) return; const color = this.pillarColors[a.pillar] || '#8d8a7f'; L.marker([a.lat,a.lng], { interactive:false, icon:L.divIcon({ className:'', iconSize:[13,13], iconAnchor:[6.5,6.5], html:"<div style='width:11px;height:11px;border-radius:50%;background:"+color+";border:2px solid #fff;opacity:.9'></div>" }) }).addTo(map); });
+      setTimeout(() => { try { map.invalidateSize(); } catch(e){} }, 160);
+    };
+    go();
+  };
+  destroyPicker = () => { if (this._pickerMap) { try { this._pickerMap.remove(); } catch(e){} this._pickerMap = null; } };
+  savePicker = () => { const m = this._pickerMap; if (m) { const c = m.getCenter(); this.setState({ pickedLoc:{ lat:c.lat, lng:c.lng }, pickerOpen:false }); this.flash('lokacija shranjena ✓'); } else this.setState({ pickerOpen:false }); };
+  initMap = () => {
+    const el = document.getElementById('tivoli-map');
+    if (!el) { if (this._mapTries++ < 60) setTimeout(this.initMap, 100); return; }
+    if (!window.L) { if (this._mapTries++ < 60) setTimeout(this.initMap, 100); return; }
+    if (this._map || el._leaflet_id) return;
+    const L = window.L;
+    const map = L.map(el, { center:[46.0536016, 14.494176], zoom:18, zoomControl:false, attributionControl:false, scrollWheelZoom:false });
+    this._map = map;
+    this.addBase(map);
+    const icon = L.divIcon({ className:'', iconSize:[22,22], iconAnchor:[11,11], html:"<div style='width:13px;height:13px;border-radius:50%;background:#1b1813;border:2.5px solid #efeae0;box-shadow:0 2px 7px rgba(0,0,0,.45);margin:4px;'></div>" });
+    L.marker([46.0536016, 14.494176], { icon }).addTo(map);
+    setTimeout(() => { try { map.invalidateSize(); } catch(e){} }, 250);
+    this.syncMarkers();
+  };
+  locateUser = (recenter) => {
+    if (!navigator.geolocation || !this._map) { if (recenter) this.flash('lokacija ni na voljo'); return; }
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const L = window.L, map = this._map; if (!map) return;
+      const lat = pos.coords.latitude, lng = pos.coords.longitude, acc = pos.coords.accuracy || 30;
+      if (!this._userMarker) {
+        this._userMarker = L.marker([lat,lng], { icon: L.divIcon({ className:'', iconSize:[20,20], iconAnchor:[10,10], html:"<div class='userdot'></div>" }) }).addTo(map);
+        this._userAcc = L.circle([lat,lng], { radius:acc, color:'#2b6fff', weight:1, opacity:.5, fillColor:'#2b6fff', fillOpacity:.12 }).addTo(map);
+      } else {
+        this._userMarker.setLatLng([lat,lng]);
+        this._userAcc.setLatLng([lat,lng]).setRadius(acc);
+      }
+      if (recenter) map.setView([lat,lng], 17, { animate:true });
+    }, () => { if (recenter) this.flash('lokacije ni bilo mogoče najti'); }, { enableHighAccuracy:true, timeout:8000, maximumAge:30000 });
+  };
+  flash = (msg) => { this.setState({ toast: msg }); clearTimeout(this._toastT); this._toastT = setTimeout(() => this.setState({ toast:'' }), 1800); };
+  compress = (file, cb, max) => { max = max || 640; const rd = new FileReader(); rd.onload = () => { const img = new Image(); img.onload = () => { const sc = Math.min(1, max / Math.max(img.width, img.height)); const c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); cb(c.toDataURL('image/jpeg', 0.82)); }; img.src = rd.result; }; rd.readAsDataURL(file); };
+  onEventPhoto = (e) => { const file = e.target.files && e.target.files[0]; if (!file) return; this.compress(file, (d) => this.setState({ evPhoto:d }), 900); };
+  submitEvent = () => {
+    const name = ((this.ef.name.current && this.ef.name.current.value) || '').trim();
+    if (!name) { this.flash('daj mu ime :)'); return; }
+    const date = ((this.ef.date.current && this.ef.date.current.value) || '').trim();
+    const time = ((this.ef.time.current && this.ef.time.current.value) || '').trim();
+    const place = ((this.ef.place.current && this.ef.place.current.value) || '').trim();
+    const desc = ((this.ef.desc.current && this.ef.desc.current.value) || '').trim();
+    const eid = this.state.editingEv;
+    if (eid) {
+      const createdEvents = this.state.createdEvents.map(x => x.id === eid ? { ...x, name, date, time, place, desc, photo:this.state.evPhoto || x.photo || null } : x);
+      this.save('dvt_events', createdEvents);
+      ['name','date','time','place','desc'].forEach(k => { if (this.ef[k].current) this.ef[k].current.value=''; });
+      this.setState({ createdEvents, eventAddOpen:false, editingEv:null, evPhoto:null });
+      this.addLog('uredil/a','druženje', name); this.flash('shranjeno ✷');
+      return;
+    }
+    const ev = { id:'ev'+Date.now(), name, date, time, place, desc, photo:this.state.evPhoto || null };
+    const createdEvents = [ev, ...this.state.createdEvents];
+    this.save('dvt_events', createdEvents);
+    ['name','date','time','place','desc'].forEach(k => { if (this.ef[k].current) this.ef[k].current.value=''; });
+    this.setState({ createdEvents, eventAddOpen:false, evPhoto:null });
+    this.addLog('dodal/a','druženje', name); this.flash('druženje postavljeno ✷');
+  };
+  onGalleryPhoto = (e) => {
+    const files = Array.from(e.target.files || []); if (!files.length) return;
+    let added = [];
+    let left = files.length;
+    files.forEach(f => this.compress(f, (d) => {
+      added.push({ id:'g'+Date.now()+Math.random().toString(36).slice(2,6), src:d });
+      if (--left === 0) { const gallery = [...added, ...this.state.gallery]; this.save('dvt_gallery', gallery); this.setState({ gallery }); this.flash('naloženo ✷'); }
+    }, 900));
+  };
+  addToCalendar = () => {
+    const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//ohsohu//tivoli//SL','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:druzenje4-'+Date.now()+'@ohsohu','DTSTAMP:20260708T120000Z','DTSTART:20260712T160000','DTEND:20260712T200000','SUMMARY:' + this.activeEvent.name,'LOCATION:Tivoli\\, ' + this.activeEvent.place.replace(/,/g,'\\,') + '\\, Ljubljana','DESCRIPTION:prostor\\, ne dogodek. če prideš\\, lepo. če ne\\, tudi okej.','END:VEVENT','END:VCALENDAR'].join('\r\n');
+    try {
+      const blob = new Blob([ics], { type:'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'druzenje-v-tivoliju.ics'; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+      this.flash('shranjeno v koledar ✓');
+    } catch(e){ this.flash('koledarja ni bilo mogoče odpreti'); }
+  };
+  openEventDetail = (d) => this.setState({ detail:d, detailOpen:true, detailTab: d.past ? 'gallery' : 'acts', drawer:false, upFormOpen:false });
+  closeDetail = () => this.setState({ detailOpen:false });
+  save(k,v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+  toggleLike = (id) => { this.setState(s => { const liked = { ...s.liked, [id]: !s.liked[id] }; this.save('dvt_liked', liked); return { liked }; }); };
+  onGrab = (e) => { e.preventDefault(); this.startY = e.clientY; this.moved = false; this.base = this.state.sheet === 'full' ? 0 : 0.56 * this.sheetH; this.setState({ dragging:true, dragPx:this.base }); window.addEventListener('pointermove', this.onMove); window.addEventListener('pointerup', this.onUp); };
+  onMove = (e) => { let d = this.base + (e.clientY - this.startY); if (Math.abs(e.clientY - this.startY) > 5) this.moved = true; d = Math.max(0, Math.min(0.56 * this.sheetH, d)); this.setState({ dragPx:d }); };
+  onUp = () => { window.removeEventListener('pointermove', this.onMove); window.removeEventListener('pointerup', this.onUp); let sheet; if (!this.moved) sheet = this.state.sheet === 'full' ? 'peek' : 'full'; else sheet = this.state.dragPx < 0.30 * this.sheetH ? 'full' : 'peek'; this.setState({ dragging:false, sheet, dragPx:null }); };
+  openSheet = () => this.setState({ sheet:'full' });
+  onPhoto = (e) => { const file = e.target.files && e.target.files[0]; if (!file) return; const rd = new FileReader(); rd.onload = () => { const img = new Image(); img.onload = () => { const max = 640; const sc = Math.min(1, max / Math.max(img.width, img.height)); const c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); this.setState({ newPhoto: c.toDataURL('image/jpeg', 0.82) }); }; img.src = rd.result; }; rd.readAsDataURL(file); };
+  submitAdd = () => {
+    const title = ((this.f.name.current && this.f.name.current.value) || '').trim();
+    if (!title) { this.flash('daj mu ime :)'); return; }
+    const rawIg = ((this.f.ig.current && this.f.ig.current.value) || '').trim();
+    let ig, byName;
+    if (!rawIg) { ig = 'nekdo'; byName = true; }
+    else if (rawIg.charAt(0) === '@') { ig = rawIg.replace(/^@+/,''); byName = false; }
+    else { ig = rawIg; byName = true; }
+    const loc = this.state.pickedLoc;
+    const fields = { title, pillar:this.state.newCat,
+      where: ((this.f.where.current && this.f.where.current.value) || '').trim() || 'na travniku',
+      desc: ((this.f.desc.current && this.f.desc.current.value) || '').trim(),
+      ig, byName, photo: this.state.newPhoto || null };
+    const eid = this.state.editingAct;
+    if (eid) {
+      const patch = { ...fields };
+      if (loc) { patch.lat = loc.lat; patch.lng = loc.lng; }
+      if (String(eid).charAt(0) === 'a') { const seedOver = { ...this.state.seedOver, [eid]: { ...(this.state.seedOver[eid]||{}), ...patch } }; this.save('dvt_seed_over', seedOver); this.setState({ seedOver }); }
+      else { const posted = this.state.posted.map(x => x.id === eid ? { ...x, ...patch } : x); this.save('dvt_posted', posted); this.setState({ posted }); }
+      ['name','desc','where','ig'].forEach(k => { if (this.f[k].current) this.f[k].current.value=''; });
+      this.setState({ editOpen:false, editingAct:null, newPhoto:null, pickedLoc:null });
+      this.addLog('uredil/a','aktivnost', title); this.flash('shranjeno ✷');
+      return;
+    }
+    const a = { id:'u'+Date.now(), ...fields, base:1, owner:(this.curUser()||{}).id || null,
+      lat: loc ? loc.lat : 46.0536016 + (Math.random()-0.5)*0.0016, lng: loc ? loc.lng : 14.494176 + (Math.random()-0.5)*0.0022 };
+    const posted = [a, ...this.state.posted];
+    this.save('dvt_posted', posted);
+    ['name','desc','where','ig'].forEach(k => { if (this.f[k].current) this.f[k].current.value=''; });
+    this.setState({ posted, addOpen:false, newPhoto:null, pickedLoc:null, sheet:'full' });
+    this.addLog('dodal/a','aktivnost', title); this.flash('objavljeno ✷');
+  };
+  fmtWhen(t){ const d = new Date(t); const m = ['jan','feb','mar','apr','maj','jun','jul','avg','sep','okt','nov','dec']; const mm = String(d.getMinutes()).padStart(2,'0'); return d.getDate() + '. ' + m[d.getMonth()] + ' · ' + d.getHours() + ':' + mm; }
+  curUser(){ const s = this.state.session; if (!s) return null; if (s === 'admin') return { id:'admin', name:'nik', admin:true, active:true }; return this.state.users.find(u => u.id === s) || null; }
+  addLog(action, kind, title){ const u = this.curUser(); const logbook = [{ t:Date.now(), user:u?u.name:'nekdo', action, kind, title:title||'' }, ...this.state.logbook].slice(0,400); this.save('dvt_log', logbook); this.setState({ logbook }); }
+  requireAuth(fn){ const u = this.curUser(); if (!u) { this._pending = fn; this.setState({ authOpen:true, authError:'', authMode:'login' }); return; } if (u.active === false) { this.flash('tvoj račun je začasno onemogočen'); return; } fn(); }
+  doAuth = () => {
+    const name = ((this.af.name.current && this.af.name.current.value) || '').trim();
+    const pass = ((this.af.pass.current && this.af.pass.current.value) || '');
+    if (!name || !pass) { this.setState({ authError:'vpiši ime in geslo' }); return; }
+    if (this.state.authMode === 'login') {
+      if (name.toLowerCase() === 'nik') { if (pass === 'piščalka' || pass === 'piscalka') this.finishAuth('admin'); else this.setState({ authError:'napačno geslo' }); return; }
+      const u = this.state.users.find(x => x.name.toLowerCase() === name.toLowerCase());
+      if (!u || u.pass !== pass) { this.setState({ authError:'napačno ime ali geslo' }); return; }
+      this.finishAuth(u.id);
+    } else {
+      if (name.toLowerCase() === 'nik') { this.setState({ authError:'to ime je rezervirano :)' }); return; }
+      if (this.state.users.some(x => x.name.toLowerCase() === name.toLowerCase())) { this.setState({ authError:'ime je že zasedeno' }); return; }
+      if (pass.length < 4) { this.setState({ authError:'geslo naj ima vsaj 4 znake' }); return; }
+      const ig = ((this.af.ig.current && this.af.ig.current.value) || '').replace(/^@+/,'').trim();
+      const u = { id:'u'+Date.now(), name, pass, ig, active:true, t:Date.now() };
+      const users = [...this.state.users, u]; this.save('dvt_users', users);
+      this.setState({ users });
+      this.finishAuth(u.id);
+      this.addLog('se je pridružil/a','uporabnik', name);
+    }
+  };
+  finishAuth(id){ this.save('dvt_session', id); this.setState({ session:id, authOpen:false, authError:'' }); const p = this._pending; this._pending = null; this.flash('pozdravljen/a ✷'); if (p) setTimeout(p, 60); }
+  openProfile = () => {
+    const u = this.curUser(); if (!u || this.state.session === 'admin') return;
+    this.setState({ profileOpen:true, delArm:false, drawer:false });
+    setTimeout(() => { if (this.prf.name.current) this.prf.name.current.value = u.name || ''; if (this.prf.ig.current) this.prf.ig.current.value = u.ig ? '@' + u.ig : ''; }, 150);
+  };
+  saveProfile = () => {
+    const u = this.curUser(); if (!u) return;
+    const name = ((this.prf.name.current || {}).value || '').trim();
+    if (!name) { this.flash('ime ne sme biti prazno'); return; }
+    const ig = ((this.prf.ig.current || {}).value || '').trim().replace(/^@+/,'');
+    const users = this.state.users.map(x => x.id === u.id ? { ...x, name, ig } : x);
+    this.save('dvt_users', users); this.setState({ users, profileOpen:false });
+    this.addLog('uredil/a','profil', name); this.flash('profil shranjen ✷');
+  };
+  deleteProfile = () => {
+    if (!this.state.delArm) { this.setState({ delArm:true }); return; }
+    const u = this.curUser(); if (!u) return;
+    const norm = s => String(s || '').toLowerCase().replace(/^@/,'').trim();
+    const mine = v => norm(v) === norm(u.name) || (!!u.ig && norm(v) === norm(u.ig));
+    const posted = this.state.posted.filter(a => !mine(a.ig));
+    const posts = this.state.posts.filter(p => !mine(p.by));
+    const pcom = {}; Object.keys(this.state.pcomments).forEach(k => { pcom[k] = (this.state.pcomments[k] || []).filter(c => !mine(c.by)); });
+    const buddies = this.state.buddies.filter(b => !mine(b.name));
+    const up = {}; Object.keys(this.state.upacts).forEach(k => { up[k] = (this.state.upacts[k] || []).filter(a => !mine(a.by)); });
+    const users = this.state.users.filter(x => x.id !== u.id);
+    this.save('dvt_posted', posted); this.save('dvt_posts', posts); this.save('dvt_pcomments', pcom); this.save('dvt_buddies', buddies); this.save('dvt_upacts', up); this.save('dvt_users', users); this.save('dvt_session', null);
+    this.addLog('izbrisal/a','profil', u.name);
+    this.setState({ posted, posts, pcomments:pcom, buddies, upacts:up, users, session:null, profileOpen:false, delArm:false });
+    this.flash('profil izbrisan');
+  };
+  doLogout = () => { this.save('dvt_session', null); this.setState({ session:null, adminOpen:false, drawer:false }); this.flash('odjavljen/a'); };
+  mapBounds = () => window.L.latLngBounds([[46.0490,14.4848],[46.0588,14.5028]]);
+  addBase = (map) => {
+    const L = window.L;
+    if (!this._svgP) this._svgP = fetch('assets/tivoli-map.svg').then(r => r.text());
+    this._svgP.then(txt => {
+      try {
+        if (!map || !map._loaded && !map._container) return;
+        const doc = new DOMParser().parseFromString(txt, 'image/svg+xml');
+        L.svgOverlay(doc.documentElement, this.mapBounds(), { interactive:false }).addTo(map);
+      } catch(e){}
+    });
+    map.options.maxBoundsViscosity = 1.0;
+    map.setMaxBounds(this.mapBounds().pad(0.05));
+    map.setMinZoom(15); map.setMaxZoom(20);
+    try { map.getContainer().style.background = '#e8e4d4'; } catch(e){}
+  };
+  imgEl = (src, style) => src ? React.createElement('img', { src, style }) : null;
+  swapBadge = () => React.createElement('div', { style:{ position:'absolute', right:8, bottom:8, background:'rgba(27,24,19,.7)', color:'#efeae0', fontSize:10, padding:'3px 9px', borderRadius:11 } }, 'zamenjaj');
+  coverImg = (src) => this.imgEl(src, { position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' });
+  openMaps = () => { try { window.open('https://www.google.com/maps/search/?api=1&query=' + this.activeEvent.lat + ',' + this.activeEvent.lng, '_blank'); } catch(e){} };
+  openAddForm = () => {
+    this.setState({ addOpen:true, pickedLoc:null, editingAct:null, newPhoto:null });
+    const u = this.curUser();
+    if (u && u.ig) setTimeout(() => { if (this.f.ig.current && !this.f.ig.current.value) this.f.ig.current.value = '@' + u.ig; }, 150);
+  };
+  startEditAct(a){
+    this._editObj = a;
+    this.setState({ editOpen:true, editingAct:a.id, newCat:a.pillar, newPhoto:a.photo || null, pickedLoc:(a.lat != null ? { lat:a.lat, lng:a.lng } : null) });
+    setTimeout(() => { if (this.f.name.current) this.f.name.current.value = a.title || ''; if (this.f.desc.current) this.f.desc.current.value = a.desc || ''; if (this.f.where.current) this.f.where.current.value = a.where || ''; if (this.f.ig.current) this.f.ig.current.value = a.byName ? (a.ig || '') : ('@' + (a.ig || '')); }, 150);
+  }
+  deleteAct(a){
+    const entry = { kind:'aktivnost', item:a, t:Date.now(), by:(this.curUser()||{}).name || 'nekdo' };
+    const archive = [entry, ...this.state.archive]; this.save('dvt_archive', archive);
+    if (String(a.id).charAt(0) === 'a') { const seedDel = [...this.state.seedDel, a.id]; this.save('dvt_seed_del', seedDel); this.setState({ seedDel, archive }); }
+    else { const posted = this.state.posted.filter(x => x.id !== a.id); this.save('dvt_posted', posted); this.setState({ posted, archive }); }
+    this.addLog('izbrisal/a','aktivnost', a.title); this.flash('premaknjeno v arhiv');
+  }
+  onPostPhoto = (e) => { const f = e.target.files && e.target.files[0]; if (!f) return; this.compress(f, (d) => this.setState({ pPhoto:d }), 900); };
+  addPost = () => {
+    const text = ((this.pf.text.current && this.pf.text.current.value) || '').trim();
+    if (!text && !this.state.pPhoto) { this.flash('napiši kaj :)'); return; }
+    const u = this.curUser();
+    const p = { id:'p'+Date.now(), text, photo:this.state.pPhoto || null, by:u?u.name:'nekdo', t:Date.now(), base:0 };
+    const posts = [p, ...this.state.posts]; this.save('dvt_posts', posts);
+    if (this.pf.text.current) this.pf.text.current.value = '';
+    this.setState({ posts, pPhoto:null }); this.addLog('objavil/a','objavo', text.slice(0,40) || 'slika'); this.flash('objavljeno ✷');
+  };
+  togglePostLike(id){ const pliked = { ...this.state.pliked, [id]: !this.state.pliked[id] }; this.save('dvt_pliked', pliked); this.setState({ pliked }); }
+  addComment = () => {
+    const id = this.state.commentFor; if (!id) return;
+    const text = ((this.pf.comment.current && this.pf.comment.current.value) || '').trim(); if (!text) return;
+    const u = this.curUser();
+    const list = [...(this.state.pcomments[id] || []), { by:u?u.name:'nekdo', text, t:Date.now() }];
+    const pcomments = { ...this.state.pcomments, [id]:list }; this.save('dvt_pcomments', pcomments);
+    if (this.pf.comment.current) this.pf.comment.current.value = '';
+    this.setState({ pcomments });
+  };
+  seedPosts(){ return [
+    { id:'sp1', text:'še vedno mislim na prejšnjo soboto. hvala vsem, ki ste prinesli inštrumente — tisti zadnji skupni komad ✷', by:'eva', t:Date.now()-172800000, base:14, photo:'assets/photos/p06.jpg' },
+    { id:'sp2', text:'prvič pridem v soboto in mal me je trema, ampak se veselim!', by:'žan', t:Date.now()-86400000, base:9, photo:null }
+  ]; }
+  seedBuddies(){ return [
+    { id:'sb1', role:'guide', name:'@marusa.rise', note:'piši mi in te počakam pri vhodu, greva skupaj do odeje :)', t:Date.now()-259200000 },
+    { id:'sb2', role:'guide', name:'@tin.plays', note:'jaz sem tam že od 15h, dobiva se pri kipu.', t:Date.now()-172800000 }
+  ]; }
+  addBuddy(role){
+    const name = ((this.bf.name.current && this.bf.name.current.value) || '').trim();
+    const note = ((this.bf.note.current && this.bf.note.current.value) || '').trim();
+    if (!name) { this.flash('vpiši ime ali @profil'); return; }
+    const b = { id:'b'+Date.now(), role, name, note, t:Date.now() };
+    const buddies = [b, ...this.state.buddies]; this.save('dvt_buddies', buddies);
+    if (this.bf.name.current) this.bf.name.current.value = ''; if (this.bf.note.current) this.bf.note.current.value = '';
+    this.setState({ buddies, buddyForm:null }); this.addLog('se je javil/a','prvič tu', name); this.flash('hvala ✷');
+  }
+  onUpPhoto = (e) => { const f = e.target.files && e.target.files[0]; if (!f) return; this.compress(f, (d) => this.setState({ upPhoto:d }), 700); };
+  upSubmit = () => {
+    const d = this.state.detail; if (!d) return;
+    const title = ((this.uf.title.current && this.uf.title.current.value) || '').trim();
+    if (!title) { this.flash('daj ji ime :)'); return; }
+    const by = ((this.uf.by.current && this.uf.by.current.value) || '').trim() || ((this.curUser()||{}).name) || 'nekdo';
+    const a = { id:'ua'+Date.now(), title, pillar:this.state.newCat, desc:((this.uf.desc.current && this.uf.desc.current.value) || '').trim(), by, photo:this.state.upPhoto || null, t:Date.now() };
+    const key = d.name; const list = [...(this.state.upacts[key] || []), a];
+    const upacts = { ...this.state.upacts, [key]:list }; this.save('dvt_upacts', upacts);
+    ['title','desc','by'].forEach(k => { if (this.uf[k].current) this.uf[k].current.value = ''; });
+    this.setState({ upacts, upFormOpen:false, upPhoto:null }); this.addLog('prijavil/a','aktivnost (prihaja)', title); this.flash('prijavljeno ✷');
+  };
+  startEditEvent(ev){
+    this.setState({ eventAddOpen:true, editingEv:ev.id, evPhoto:ev.photo || null, detailOpen:false });
+    setTimeout(() => { if (this.ef.name.current) this.ef.name.current.value = ev.name || ''; if (this.ef.date.current) this.ef.date.current.value = ev.date || ''; if (this.ef.time.current) this.ef.time.current.value = ev.time || ''; if (this.ef.place.current) this.ef.place.current.value = ev.rawPlace || ''; if (this.ef.desc.current) this.ef.desc.current.value = ev.rawDesc || ''; }, 150);
+  }
+  deleteEvent(ev){
+    const item = this.state.createdEvents.find(x => x.id === ev.id); if (!item) return;
+    const archive = [{ kind:'druženje', item, t:Date.now(), by:(this.curUser()||{}).name || 'nik' }, ...this.state.archive]; this.save('dvt_archive', archive);
+    const createdEvents = this.state.createdEvents.filter(x => x.id !== ev.id); this.save('dvt_events', createdEvents);
+    this.setState({ createdEvents, archive, detailOpen:false }); this.addLog('izbrisal/a','druženje', item.name); this.flash('premaknjeno v arhiv');
+  }
+  adminRestore(i){
+    const archive = [...this.state.archive]; const e = archive.splice(i,1)[0]; if (!e) return; this.save('dvt_archive', archive);
+    if (e.kind === 'druženje') { const createdEvents = [e.item, ...this.state.createdEvents]; this.save('dvt_events', createdEvents); this.setState({ createdEvents, archive }); }
+    else { const id = String(e.item.id); if (id.charAt(0) === 'a') { const seedDel = this.state.seedDel.filter(x => x !== id); this.save('dvt_seed_del', seedDel); this.setState({ seedDel, archive }); } else { const posted = [e.item, ...this.state.posted]; this.save('dvt_posted', posted); this.setState({ posted, archive }); } }
+    this.addLog('obnovil/a', e.kind, e.item.title || e.item.name); this.flash('obnovljeno ✷');
+  }
+  adminToggleUser(id){
+    const users = this.state.users.map(u => u.id === id ? { ...u, active: u.active === false ? true : false } : u);
+    this.save('dvt_users', users); const u = users.find(x => x.id === id); this.setState({ users });
+    this.addLog(u.active ? 'omogočil/a' : 'onemogočil/a', 'uporabnika', u.name);
+  }
+  seedData(){
+    return [
+      { id:'a1', title:'risanje & barvice', pillar:'ustvarjanje', lat:46.0539316, lng:14.4946960, where:'pod velikim drevesom', desc:'prinesem dekco in barvice, razdelimo si jih. mogoče rišemo isto stvar, mogoče vsak svojo.', base:34, ig:'marusa.rise', photo:'assets/photos/p03.jpg' },
+      { id:'a2', title:'kitara & skupno petje', pillar:'glasba', lat:46.0532016, lng:14.4935760, where:'na travi pri kipu', desc:'prinesem kitaro, ti prineseš glas. pojemo ljube nam pesmi, brez not.', base:41, ig:'tin.plays', photo:'assets/photos/p06.jpg' },
+      { id:'a3', title:'izdelava zapestnic', pillar:'ustvarjanje', lat:46.0541016, lng:14.4944760, where:'ob spodnjem ribniku', desc:'vrvice, perlice, čas. odideš z nečim, kar si spletel sam.', base:27, ig:'ana.veze', photo:'assets/photos/p18.jpg' },
+      { id:'a4', title:'frizbi & balinčki', pillar:'gibanje', lat:46.0530816, lng:14.4946160, where:'na odprti travi', desc:'klasika. pridi metat — ni treba znati, samo za razgibat se.', base:19, ig:'blaz.frizbi', photo:'assets/photos/p12.jpg' },
+      { id:'a5', title:'pogovorni krog', pillar:'povezovanje', lat:46.0537216, lng:14.4934960, where:'v senci pod hribom', desc:'sedemo v krog, ena kartica z vprašanjem, pa gremo. telefoni v žep.', base:23, ig:'eva.dobro', photo:'assets/photos/p09.jpg' },
+      { id:'a6', title:'kvačkanje & štrikanje', pillar:'ustvarjanje', lat:46.0541816, lng:14.4939960, where:'na skupni odeji', desc:'prinesi kvačke ali se nauči. mogoče koga navdušiš nad novim hobijem.', base:16, ig:'mila.plete', photo:'assets/photos/p03.jpg' },
+      { id:'a7', title:'jam session', pillar:'glasba', lat:46.0533016, lng:14.4948160, where:'pri velikem drevesu', desc:'kdorkoli z instrumentom. brez not, samo flow.', base:38, ig:'sonic.lj', photo:'assets/photos/p06.jpg' },
+      { id:'a8', title:'skupna odeja & prigrizki', pillar:'prigrizki in pijača', lat:46.0530016, lng:14.4938360, where:'sredina travnika', desc:'ena velika odeja, vsak prinese nekaj za pod zob in za spit. deljenje je point.', base:52, ig:'skupnaodeja', photo:'assets/photos/p18.jpg' }
+    ];
+  }
+  renderVals(){
+    const PC = this.pillarColors;
+    const liked = this.state.liked;
+    const all = this.allActs();
+    const esc = (u) => String(u).replace(/"/g,'%22');
+    const sort = this.state.sort;
+    const countOf = (a) => (a.base || 0) + (liked[a.id] ? 1 : 0);
+    const ordered = sort === 'liked' ? all.slice().sort((a,b) => countOf(b) - countOf(a)) : all;
+    const activities = ordered.map(a => {
+      const has = !!a.photo;
+      return { ...a,
+        desc: a.desc || '',
+        igUrl: 'https://instagram.com/' + String(a.ig || '').replace(/^@/,''),
+        isIg: !a.byName, notIg: !!a.byName,
+        byLabel: a.byName ? String(a.ig || '') : ('@' + String(a.ig || '').replace(/^@/,'')),
+        pillarColor: PC[a.pillar] || '#8d8a7f',
+        liked: !!liked[a.id],
+        heart: liked[a.id] ? '♥' : '♡',
+        likeColor: liked[a.id] ? '#1b1813' : '#8d8a7f',
+        count: (a.base || 0) + (liked[a.id] ? 1 : 0),
+        hasPhoto: has,
+        photoEl: has ? React.createElement('img', { src:a.photo, style:{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', filter:'saturate(.95)' } }) : null,
+        toggle: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.toggleLike(a.id); },
+        focus: () => this.focusActivity(a),
+        editIt: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.requireAuth(() => this.startEditAct(a)); },
+        delIt: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.requireAuth(() => this.deleteAct(a)); },
+        photoStyle: has
+          ? ('background-image:url("' + esc(a.photo) + '");background-size:cover;background-position:center;filter:saturate(.95);')
+          : 'background:repeating-linear-gradient(135deg,#e0dccf 0 7px,#d6d2c4 7px 14px);'
+      };
+    });
+    const nc = this.state.newCat;
+    const descPlaceholders = {
+      'ustvarjanje':'npr. skupaj rišemo, kar vidimo okoli sebe — prinesi barvice ali si jih deli z nami. vsak list postane nekaj svojega.',
+      'glasba':'npr. brenkamo in pojemo, kar nam pride. ne rabiš znati not — samo pridi in se pridruži ritmu.',
+      'povezovanje':'npr. sedemo v krog in se pogovorimo o stvareh, ki štejejo. brez telefonov, samo pristni ljudje.',
+      'gibanje':'npr. razgibamo se skupaj — joga, frizbi ali ples na travi. pridi tak, kot si.',
+      'prigrizki in pijača':'npr. razgrnemo veliko odejo, vsak prinese nekaj za deliti. miza, ki jo napolnimo skupaj.'
+    };
+    const descPlaceholder = descPlaceholders[nc] || 'opiši aktivnost tako, da bo pritegnila druge…';
+    const cats = Object.keys(PC).map(name => { const sel = name === nc; return { name, color:PC[name], selected:sel, border: sel?PC[name]:'rgba(27,24,19,.16)', bg: sel?(PC[name]+'22'):'#faf7f0', ink: sel?'#1b1813':'#4a463d', pick:()=>this.setState({newCat:name}) }; });
+    const st = this.state;
+    const sheetTransform = st.dragging ? ('translateY(' + st.dragPx + 'px)') : (st.sheet === 'full' ? 'translateY(0px)' : 'translateY(56%)');
+    const sheetTransition = st.dragging ? 'none' : 'transform .5s cubic-bezier(.22,.61,.36,1)';
+    const peekPx = 0.56 * (this.sheetH || 620);
+    const openRatio = st.dragging ? Math.max(0, Math.min(1, 1 - (st.dragPx / peekPx))) : (st.sheet === 'full' ? 1 : 0);
+    const locateOpacity = Math.max(0, 1 - openRatio * 1.3);
+    const locatePE = openRatio > 0.4 ? 'none' : 'auto';
+    const recentBg = sort === 'recent' ? '#1b1813' : 'transparent';
+    const recentInk = sort === 'recent' ? '#efeae0' : '#8d8a7f';
+    const likedBg = sort === 'liked' ? '#1b1813' : 'transparent';
+    const likedInk = sort === 'liked' ? '#efeae0' : '#8d8a7f';
+    return {
+      activities, cats, count: all.length,
+      recentBg, recentInk, likedBg, likedInk,
+      onSortRecent: () => this.setState({ sort:'recent' }),
+      onSortLiked: () => this.setState({ sort:'liked' }),
+      stopGrab: (e) => { e.stopPropagation(); },
+      grabRef: (el) => { if (el) el.onpointerdown = this.onGrab; },
+      stopGrabRef: (el) => { if (el) el.onpointerdown = (e) => e.stopPropagation(); },
+      photoInputRef: (el) => { if (el) el.onchange = this.onPhoto; },
+      evPhotoInputRef: (el) => { if (el) el.onchange = this.onEventPhoto; },
+      stopClick: (e) => { if (e && e.stopPropagation) e.stopPropagation(); },
+      recenter: () => this.locateUser(true),
+      locateOpacity, locatePE,
+      descExpanded: st.descExpanded,
+      descBtnLabel: st.descExpanded ? 'manj ↑' : 'preberi več →',
+      toggleDesc: () => this.setState(s => ({ descExpanded: !s.descExpanded, sheet: !s.descExpanded ? 'full' : s.sheet })),
+      eventDesc: 'druženje v tivoliju ni klasičen dogodek — je odprt prostor za vse, ki iščejo pristen stik. pridi kadarkoli po 16h in ostani kolikor želiš. prinesi karkoli: odejo, instrument, nekaj za pod zob, prijatelja ali samo dobro voljo. ni programa in ni pritiska — samo ljudje, trava in popoldne, ki ga soustvarimo skupaj. dobimo se pri kipu dečka s piščalko; barvne oznake na zemljevidu vodijo do posameznih aktivnosti.',
+      sheetTransform, sheetTransition,
+      sheetRef: (el) => { if (el) { this.sheetEl = el; this.sheetH = el.offsetHeight || 620; } },
+      onGrab: this.onGrab, openSheet: this.openSheet,
+      drawer: st.drawer, addOpen: st.addOpen, philOpen: st.philOpen,
+      newPhoto: st.newPhoto, noPhoto: !st.newPhoto, toast: st.toast,
+      newPhotoEl: this.coverImg(st.newPhoto),
+      newPhotoSwapEl: st.newPhoto ? React.createElement(React.Fragment, null, this.coverImg(st.newPhoto), this.swapBadge()) : null,
+      upPhotoEl: st.upPhoto ? React.createElement(React.Fragment, null, this.coverImg(st.upPhoto), this.swapBadge()) : null,
+      evPhotoEl: this.coverImg(st.evPhoto),
+      pPhotoEl: this.imgEl(st.pPhoto, { width:22, height:22, borderRadius:5, objectFit:'cover', flex:'none', display:'block' }),
+      openDrawer: () => this.setState({ drawer:true }), closeDrawer: () => this.setState({ drawer:false }),
+      openAdd: this.openAddForm, closeAdd: () => this.setState({ addOpen:false, editingAct:null, newPhoto:null }),
+      editOpen: st.editOpen,
+      closeEdit: () => this.setState({ editOpen:false, editingAct:null, newPhoto:null, pickedLoc:null }),
+      deleteFromEdit: () => { if (this._editObj) this.deleteAct(this._editObj); this.setState({ editOpen:false, editingAct:null, newPhoto:null, pickedLoc:null }); },
+      openMaps: this.openMaps,
+      activeName: this.activeEvent.name, activeDateLong: this.activeEvent.dateLong, activeTime: this.activeEvent.time, activePlace: this.activeEvent.place,
+      activeSub: this.activeEvent.dateShort + ' · ' + this.activeEvent.place,
+      splash: st.splash, splashOpacity: st.splashHide ? 0 : 1,
+      pickerOpen: st.pickerOpen, hasPicked: !!st.pickedLoc,
+      openPicker: () => this.setState({ pickerOpen:true }), closePicker: () => this.setState({ pickerOpen:false }), savePicker: this.savePicker,
+      descPlaceholder,
+      openPhil: () => this.setState({ philOpen:true, drawer:false }), closePhil: () => this.setState({ philOpen:false }),
+      guideOpen: st.guideOpen, openGuide: () => this.setState({ guideOpen:true, drawer:false }), closeGuide: () => this.setState({ guideOpen:false }),
+      upcomingEvents: (() => {
+        const created = st.createdEvents.map(e => ({ id:e.id, name:e.name, sub:[e.date, e.time].filter(Boolean).join(' · ') || 'kmalu', place:e.place || 'še določimo', desc:e.desc || 'podrobnosti kmalu.', rawPlace:e.place||'', rawDesc:e.desc||'', date:e.date||'', time:e.time||'', photo:e.photo||null, gallery:[], acts:[], past:false, editable:true }));
+        const seed5 = { name:'druženje #5', sub:'sob · 26. julij', place:'še določimo', desc:'naslednjič se dobimo konec julija. podrobnosti kmalu — spremljaj.', gallery:[], acts:[], past:false };
+        return [...created, seed5].map(d => ({ ...d, open: () => this.openEventDetail(d) }));
+      })(),
+      pastEvents: (() => {
+        const P = 'assets/photos/';
+        const seed = [
+          { id:'e3', name:'druženje #3', when:'28. jun', sub:'sob · 28. junij', place:'jakopičevo sprehajališče', desc:'topel večer, poln glasbe in pogovorov pozno v noč. eno tistih, ki jih ne pozabiš.', gallery:[P+'p05.jpg',P+'p06.jpg',P+'p09.jpg',P+'p12.jpg',P+'p18.jpg',P+'p03.jpg'], acts:[{title:'jam session',pillar:'glasba',color:'#6f83a6',likes:47,photo:P+'p06.jpg'},{title:'skupna odeja & prigrizki',pillar:'prigrizki in pijača',color:'#c6994e',likes:39,photo:P+'p18.jpg'},{title:'risanje & barvice',pillar:'ustvarjanje',color:'#bd6f45',likes:22,photo:P+'p03.jpg'}], past:true },
+          { id:'e2', name:'druženje #2', when:'14. jun', sub:'sob · 14. junij', place:'pri spodnjem ribniku', desc:'prvo pravo poletno druženje. spoznali smo se na novo.', gallery:[P+'p11.jpg',P+'p01.jpg',P+'p02.jpg',P+'p04.jpg',P+'p07.jpg'], acts:[{title:'pogovorni krog',pillar:'povezovanje',color:'#b06e86',likes:26,photo:P+'p09.jpg'},{title:'frizbi & balinčki',pillar:'gibanje',color:'#869a5f',likes:18,photo:P+'p12.jpg'}], past:true }
+        ];
+        return seed.map(d => ({ ...d, open: () => this.openEventDetail(d) }));
+      })(),
+      detail: (() => { const d = st.detail || { gallery:[], acts:[] }; return { ...d, gallery: (d.gallery||[]).map(g => { const o = typeof g === 'string' ? { src:g, cap:'' } : g; return { ...o, imgEl: this.imgEl(o.src, { width:'100%', aspectRatio:'1', borderRadius:7, objectFit:'cover', display:'block', filter:'saturate(.96)' }) }; }) }; })(),
+      detailOpen: st.detailOpen,
+      detailTag: (st.detail && st.detail.past) ? 'preteklo druženje' : (st.detail && !st.detail.past) ? 'prihaja' : 'druženje',
+      detailPast: !!(st.detail && st.detail.past),
+      detailUpcoming: !!(st.detail && !st.detail.past),
+      detailEditable: !!(st.detail && st.detail.editable) && st.session === 'admin',
+      editEvent: () => this.startEditEvent(st.detail),
+      delEvent: () => this.deleteEvent(st.detail),
+      upList: ((st.upacts[(st.detail||{}).name] || [])).map(a => ({ ...a, color: PC[a.pillar] || '#8d8a7f', hasPhoto: !!a.photo, photoEl: this.imgEl(a.photo, { width:46, height:46, flex:'none', borderRadius:8, objectFit:'cover', display:'block' }) })),
+      upFormOpen: st.upFormOpen, openUpForm: () => this.setState({ upFormOpen:true }), closeUpForm: () => this.setState({ upFormOpen:false }),
+      upTitleRef: this.uf.title, upDescRef: this.uf.desc, upByRef: this.uf.by,
+      upPhotoInputRef: (el) => { if (el) el.onchange = this.onUpPhoto; },
+      upPhoto: st.upPhoto, noUpPhoto: !st.upPhoto, upSubmit: this.upSubmit,
+      showDetailGallery: st.detailTab === 'gallery' && !!(st.detail && st.detail.past), showDetailActs: st.detailTab === 'acts',
+      galTabBg: st.detailTab === 'gallery' ? '#1b1813' : 'transparent', galTabInk: st.detailTab === 'gallery' ? '#efeae0' : '#8d8a7f',
+      actTabBg: st.detailTab === 'acts' ? '#1b1813' : 'transparent', actTabInk: st.detailTab === 'acts' ? '#efeae0' : '#8d8a7f',
+      tabGallery: () => this.setState({ detailTab:'gallery' }), tabActs: () => this.setState({ detailTab:'acts' }),
+      closeDetail: this.closeDetail, addToCalendar: this.addToCalendar,
+      eventAddOpen: st.eventAddOpen, openEventAdd: () => this.setState({ eventAddOpen:true, drawer:false, evPhoto:null, editingEv:null }), closeEventAdd: () => this.setState({ eventAddOpen:false, editingEv:null }),
+      evPhoto: st.evPhoto, noEvPhoto: !st.evPhoto, onEventPhoto: this.onEventPhoto, submitEvent: this.submitEvent,
+      evNameRef: this.ef.name, evDateRef: this.ef.date, evTimeRef: this.ef.time, evPlaceRef: this.ef.place, evDescRef: this.ef.desc,
+      galleryOpen: st.galleryOpen, openGallery: () => this.setState({ galleryOpen:true, drawer:false }), closeGallery: () => this.setState({ galleryOpen:false }),
+      galleryPhotos: st.gallery.map(g => ({ ...g, imgEl: this.imgEl(g.src, { width:'100%', aspectRatio:'1', borderRadius:7, objectFit:'cover', display:'block', filter:'saturate(.96)' }) })), onGalleryPhoto: this.onGalleryPhoto,
+      onPhoto: this.onPhoto, submitAdd: this.submitAdd,
+      nameRef: this.f.name, descRef: this.f.desc, whereRef: this.f.where, igRef: this.f.ig,
+      addTitle: st.editingAct ? 'uredi aktivnost' : 'dodaj svoj košček',
+      addBtnLabel: st.editingAct ? 'shrani spremembe' : 'objavi',
+      evTitle: st.editingEv ? 'uredi druženje' : 'novo druženje',
+      evBtnLabel: st.editingEv ? 'shrani spremembe' : 'postavi druženje',
+      loggedIn: !!this.curUser(), userName: (this.curUser()||{}).name || '', notAdmin: st.session !== 'admin',
+      profileOpen: !!st.profileOpen, openProfile: this.openProfile, closeProfile: () => this.setState({ profileOpen:false }),
+      profNameRef: this.prf.name, profIgRef: this.prf.ig, saveProfile: this.saveProfile, deleteProfile: this.deleteProfile,
+      delProfLabel: st.delArm ? 'zares izbrišem? klikni še enkrat' : 'izbriši profil',
+      isAdmin: st.session === 'admin',
+      openAuth: () => this.setState({ authOpen:true, authError:'', drawer:false }),
+      closeAuth: () => { this._pending = null; this.setState({ authOpen:false }); },
+      doAuth: this.doAuth, doLogout: this.doLogout,
+      authError: st.authError, regMode: st.authMode === 'reg',
+      authBtnLabel: st.authMode === 'reg' ? 'pridruži se' : 'prijava',
+      setLoginMode: () => this.setState({ authMode:'login', authError:'' }),
+      setRegMode: () => this.setState({ authMode:'reg', authError:'' }),
+      loginTabBg: st.authMode === 'login' ? '#1b1813' : 'transparent', loginTabInk: st.authMode === 'login' ? '#efeae0' : '#8d8a7f',
+      regTabBg: st.authMode === 'reg' ? '#1b1813' : 'transparent', regTabInk: st.authMode === 'reg' ? '#efeae0' : '#8d8a7f',
+      authOpen: st.authOpen, authNameRef: this.af.name, authPassRef: this.af.pass, authIgRef: this.af.ig,
+      showTabAct: st.sheetTab === 'act', showTabPosts: st.sheetTab === 'posts', showTabFirst: st.sheetTab === 'first',
+      tabAct: () => this.setState({ sheetTab:'act' }), tabPosts: () => this.setState({ sheetTab:'posts', sheet:'full' }), tabFirst: () => this.setState({ sheetTab:'first', sheet:'full' }),
+      tActBg: st.sheetTab === 'act' ? '#1b1813' : 'rgba(27,24,19,.05)', tActInk: st.sheetTab === 'act' ? '#efeae0' : '#6b6558',
+      tPostsBg: st.sheetTab === 'posts' ? '#1b1813' : 'rgba(27,24,19,.05)', tPostsInk: st.sheetTab === 'posts' ? '#efeae0' : '#6b6558',
+      tFirstBg: st.sheetTab === 'first' ? '#1b1813' : 'rgba(27,24,19,.05)', tFirstInk: st.sheetTab === 'first' ? '#efeae0' : '#6b6558',
+      posts: (() => {
+        const combined = [ ...st.posts, ...this.seedPosts() ];
+        const cnt = (p) => (p.base||0) + (st.pliked[p.id] ? 1 : 0);
+        const sorted = st.postSort === 'top' ? combined.slice().sort((a,b) => cnt(b)-cnt(a)) : combined.slice().sort((a,b) => b.t-a.t);
+        return sorted.map(p => ({ ...p,
+          when: this.fmtWhen(p.t),
+          likes: cnt(p),
+          heart: st.pliked[p.id] ? '♥' : '♡',
+          likeInk: st.pliked[p.id] ? '#1b1813' : '#8d8a7f',
+          cCount: (st.pcomments[p.id] || []).length,
+          hasPhoto: !!p.photo,
+          photoEl: p.photo ? React.createElement('div', { style:{ marginTop:10, borderRadius:10, overflow:'hidden' } }, React.createElement('img', { src:p.photo, style:{ width:'100%', height:170, objectFit:'cover', display:'block', filter:'saturate(.96)' } })) : null,
+          toggleLike: () => this.togglePostLike(p.id),
+          openComments: () => this.setState({ commentFor:p.id })
+        }));
+      })(),
+      postCount: st.posts.length + this.seedPosts().length,
+      postTextRef: this.pf.text,
+      postPhotoInputRef: (el) => { if (el) el.onchange = this.onPostPhoto; },
+      pPhoto: st.pPhoto, noPPhoto: !st.pPhoto, addPost: this.addPost,
+      pnBg: st.postSort === 'new' ? '#1b1813' : 'transparent', pnInk: st.postSort === 'new' ? '#efeae0' : '#8d8a7f',
+      ptBg: st.postSort === 'top' ? '#1b1813' : 'transparent', ptInk: st.postSort === 'top' ? '#efeae0' : '#8d8a7f',
+      sortPostsNew: () => this.setState({ postSort:'new' }), sortPostsTop: () => this.setState({ postSort:'top' }),
+      commentOpen: !!st.commentFor,
+      closeComments: () => this.setState({ commentFor:null }),
+      activePost: (() => { const combined = [ ...st.posts, ...this.seedPosts() ]; const p = combined.find(x => x.id === st.commentFor); return p ? { ...p, when:this.fmtWhen(p.t), hasPhoto: !!p.photo, photoEl: p.photo ? React.createElement('div', { style:{ marginTop:8, borderRadius:8, overflow:'hidden' } }, React.createElement('img', { src:p.photo, style:{ width:'100%', height:110, objectFit:'cover', display:'block', filter:'saturate(.96)' } })) : null } : { text:'', by:'', when:'', hasPhoto:false }; })(),
+      activeComments: (st.pcomments[st.commentFor] || []).map(c => ({ ...c, when:this.fmtWhen(c.t) })),
+      addComment: this.addComment, commentRef: this.pf.comment,
+      guides: [ ...st.buddies, ...this.seedBuddies() ].filter(b => b.role === 'guide').map(b => ({ ...b, isIg: b.name.charAt(0) === '@', notIg: b.name.charAt(0) !== '@', igUrl:'https://instagram.com/' + b.name.replace(/^@+/,'') })),
+      firsts: [ ...st.buddies ].filter(b => b.role === 'first').map(b => ({ ...b, isIg: b.name.charAt(0) === '@', notIg: b.name.charAt(0) !== '@', igUrl:'https://instagram.com/' + b.name.replace(/^@+/,'') })),
+      hasFirsts: st.buddies.some(b => b.role === 'first'),
+      notLoggedIn: !this.curUser(),
+      upFormClosed: !st.upFormOpen,
+      buddyFormGuide: st.buddyForm === 'guide', buddyFormFirst: st.buddyForm === 'first', buddyFormOpen: !!st.buddyForm,
+      openBuddyGuide: () => this.setState({ buddyForm:'guide' }), openBuddyFirst: () => this.setState({ buddyForm:'first' }),
+      cancelBuddy: () => this.setState({ buddyForm:null }),
+      buddyNameRef: this.bf.name, buddyNoteRef: this.bf.note,
+      submitBuddy: () => this.addBuddy(st.buddyForm),
+      buddyFormTitle: st.buddyForm === 'guide' ? 'koga pospremim' : 'rad/a bi spremstvo',
+      buddyNotePlaceholder: st.buddyForm === 'guide' ? 'npr. dobiva se pri vhodu in greva skupaj :)' : 'npr. malo me je trema, vesel/a bom družbe že pri prihodu',
+      adminOpen: st.adminOpen, openAdmin: () => this.setState({ adminOpen:true, drawer:false }), closeAdmin: () => this.setState({ adminOpen:false }),
+      adminTabArhiv: st.adminTab === 'arhiv', adminTabLog: st.adminTab === 'log', adminTabUsers: st.adminTab === 'users',
+      setAdmArhiv: () => this.setState({ adminTab:'arhiv' }), setAdmLog: () => this.setState({ adminTab:'log' }), setAdmUsers: () => this.setState({ adminTab:'users' }),
+      aArhivBg: st.adminTab === 'arhiv' ? '#1b1813' : 'transparent', aArhivInk: st.adminTab === 'arhiv' ? '#efeae0' : '#8d8a7f',
+      aLogBg: st.adminTab === 'log' ? '#1b1813' : 'transparent', aLogInk: st.adminTab === 'log' ? '#efeae0' : '#8d8a7f',
+      aUsersBg: st.adminTab === 'users' ? '#1b1813' : 'transparent', aUsersInk: st.adminTab === 'users' ? '#efeae0' : '#8d8a7f',
+      archList: st.archive.map((e, i) => ({ kind:e.kind, title:(e.item||{}).title || (e.item||{}).name || '—', when:this.fmtWhen(e.t), by:e.by || '', restore: () => this.adminRestore(i) })),
+      archEmpty: st.archive.length === 0,
+      logList: st.logbook.map(l => ({ ...l, when:this.fmtWhen(l.t) })),
+      logEmpty: st.logbook.length === 0,
+      userList: st.users.map(u => ({ name:u.name, ig:u.ig || '', statusLabel: u.active === false ? 'onemogočen' : 'aktiven', statusInk: u.active === false ? '#b06e86' : '#869a5f', toggleLabel: u.active === false ? 'omogoči' : 'onemogoči', toggle: () => this.adminToggleUser(u.id) })),
+      usersEmpty: st.users.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>
