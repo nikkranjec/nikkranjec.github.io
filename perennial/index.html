@@ -33,8 +33,8 @@ a:hover{color:#141414;}
 </style>
 </helmet>
 <div data-screen-label="Perennial site">
-<section data-screen-label="01 Hero" style="position:relative;height:100vh;">
-<div style="position:absolute;inset:12px;border-radius:75px;overflow:hidden;background:#e8e3da;">
+<section data-screen-label="01 Hero" style="position:relative;height:100svh;">
+<div style="position:absolute;inset:12px;border-radius:min(75px,9vw);overflow:hidden;background:#e8e3da;">
 <div style="position:absolute;inset:0;opacity:{{ img0Op }};transition:opacity 1.2s ease;">
 <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="hero-visual-3" shape="rect" placeholder="hero visual 03" hint-size="100%,100%" style="position:absolute;inset:0;"></x-import>
 </div>
@@ -44,7 +44,7 @@ a:hover{color:#141414;}
 <div style="position:absolute;inset:0;opacity:{{ img2Op }};transition:opacity 1.2s ease;">
 <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="hero-visual-3" shape="rect" placeholder="hero visual 03" hint-size="100%,100%" style="position:absolute;inset:0;"></x-import>
 </div>
-<div style="position:absolute;left:54px;right:54px;bottom:38px;display:flex;justify-content:space-between;align-items:flex-end;font-size:13px;line-height:1.55;">
+<div style="position:absolute;left:clamp(24px,4.5vw,54px);right:clamp(24px,4.5vw,54px);bottom:clamp(22px,4.5vh,38px);display:flex;justify-content:space-between;align-items:flex-end;font-size:13px;line-height:1.55;">
 <a data-hov="1" href="https://www.instagram.com/perennial.made" target="_blank" rel="noreferrer" style-hover="font-style:italic">@perennial.made</a>
 <div style="text-align:right;display:flex;gap:14px;">Ljubljana<span>{{ time }}</span></div>
 </div>
@@ -54,21 +54,21 @@ a:hover{color:#141414;}
 <h1 style="font-size:clamp(26px,3.4vw,46px);font-weight:500;letter-spacing:-0.01em;margin:0 0 24px;">Perennial is a narrative shift.</h1>
 <p style="font-size:14px;line-height:1.75;max-width:470px;margin:0;color:#3a3a3a;text-wrap:pretty;">A creative studio for the next era of brands. A return to being human.</p>
 </section>
-<section data-screen-label="03 Manifest" style="position:relative;display:grid;grid-template-columns:1fr minmax(280px,34vw) 1fr;gap:36px;padding:4vh 44px 16vh;box-sizing:border-box;align-items:start;">
-<div style="position:sticky;top:46vh;justify-self:end;max-width:200px;font-size:13px;line-height:1.65;color:#2c2c2c;text-wrap:pretty;">We exist to help people connect with themselves and others.</div>
+<section data-screen-label="03 Manifest" style="position:relative;display:grid;grid-template-columns:{{ manifestCols }};gap:clamp(20px,2.5vw,36px);padding:4vh clamp(20px,3vw,44px) 14vh;box-sizing:border-box;align-items:start;">
+<div style="position:{{ capPos }};top:46vh;justify-self:{{ cap1Justify }};max-width:{{ capMax }};font-size:13px;line-height:1.65;color:#2c2c2c;text-wrap:pretty;">We exist to help people connect with themselves and others.</div>
 <div style="overflow: hidden; height: 118vh; background: #e8e3da">
 <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="tall-visual" shape="rect" placeholder="tall visual — video / fast photo animation" hint-size="100%,100%" style="display:block;width:100%;height:100%;"></x-import>
 </div>
-<div style="position:sticky;top:46vh;justify-self:start;max-width:200px;font-size:13px;line-height:1.65;color:#2c2c2c;text-wrap:pretty;">Through digital media, we are bringing the attention back into the real world.</div>
+<div style="position:{{ capPos }};top:46vh;justify-self:start;max-width:{{ capMax }};font-size:13px;line-height:1.65;color:#2c2c2c;text-wrap:pretty;">Through digital media, we are bringing the attention back into the real world.</div>
 </section>
-<section id="work" data-screen-label="04 Work — showreel" style="position:relative;height:100vh;">
-<div style="position:absolute;top:14vh;left:12px;right:12px;bottom:9vh;border-radius:75px;overflow:hidden;background:#101010;">
+<section id="work" data-screen-label="04 Work — showreel" style="position:relative;height:100svh;">
+<div style="position:absolute;top:14vh;left:12px;right:12px;bottom:9vh;border-radius:min(75px,9vw);overflow:hidden;background:#101010;">
 <video ref="{{ videoRef }}" src="uploads/showreel.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
 <div data-hov="1" onClick="{{ openWork }}" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(16,16,16,0);color:rgba(255,253,250,0);font-size:clamp(28px,3.6vw,58px);font-weight:600;letter-spacing:0.02em;transition:background 0.45s ease,color 0.45s ease;" style-hover="background:rgba(16,16,16,0.55);color:rgba(255,253,250,1)">Work</div>
-<div data-hov="1" onClick="{{ toggleSound }}" style="position:absolute;right:60px;bottom:52px;width:74px;height:74px;border:1px solid rgba(255,253,250,0.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:0.14em;color:#fffdfa;background:rgba(16,16,16,0.25);backdrop-filter:blur(6px);transition:transform 0.35s ease;" style-hover="transform:scale(1.08)">{{ soundLabel }}</div>
+<div data-hov="1" onClick="{{ toggleSound }}" style="position:absolute;right:clamp(24px,5vw,60px);bottom:clamp(24px,5vw,52px);width:clamp(56px,9vw,74px);height:clamp(56px,9vw,74px);border:1px solid rgba(255,253,250,0.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:0.14em;color:#fffdfa;background:rgba(16,16,16,0.25);backdrop-filter:blur(6px);transition:transform 0.35s ease;" style-hover="transform:scale(1.08)">{{ soundLabel }}</div>
 </div>
 </section>
-<section id="contact" ref="{{ footerRef }}" data-screen-label="05 Contact" style="position:relative;height:100vh;overflow:hidden;">
+<section id="contact" ref="{{ footerRef }}" data-screen-label="05 Contact" style="position:relative;height:100svh;overflow:hidden;">
 <div style="position:absolute;top:24vh;left:0;right:0;text-align:center;font-size:12px;letter-spacing:0.2em;font-weight:600;">SOCIALS</div>
 <div style="position:absolute;left:0;right:0;bottom:7.5vh;">
 <div style="display:flex;justify-content:space-between;align-items:flex-end;margin:0 0 -2.1vw;padding:0 8.4vw;position:relative;z-index:1;">
@@ -78,15 +78,15 @@ a:hover{color:#141414;}
 <div style="font-weight:700;font-size:20.5vw;line-height:0.8;letter-spacing:-0.02em;white-space:nowrap;user-select:none;text-align:center;">perennial</div>
 </div>
 </section>
-<div style="position:fixed;inset:12px;border-radius:75px;border:1px solid rgba(20,20,20,0.5);pointer-events:none;z-index:50;"></div>
-<header style="position:fixed;top:12px;left:12px;right:12px;z-index:55;display:flex;align-items:center;justify-content:space-between;padding:26px 54px;box-sizing:border-box;opacity:{{ headerOpacity }};transition:opacity 0.6s ease;pointer-events:{{ headerPE }};">
-<a data-hov="1" href="#" onClick="{{ goTop }}" style="font-weight:600;font-size:17px;" style-hover="font-style:italic;font-weight:700">perennial</a>
-<nav style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:baseline;font-size:14px;">
+<div style="position:fixed;inset:12px;border-radius:min(75px,9vw);border:1px solid rgba(20,20,20,0.5);pointer-events:none;z-index:50;"></div>
+<header style="position:fixed;top:12px;left:12px;right:12px;z-index:55;display:flex;align-items:center;justify-content:space-between;padding:clamp(16px,3vw,26px) clamp(20px,4.5vw,54px);box-sizing:border-box;opacity:{{ headerOpacity }};transition:opacity 0.6s ease;pointer-events:{{ headerPE }};">
+<a data-hov="1" href="#" onClick="{{ goTop }}" style="font-weight:600;font-size:clamp(14px,1.7vw,17px);" style-hover="font-style:italic;font-weight:700">perennial</a>
+<nav style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:baseline;font-size:clamp(12px,1.4vw,14px);">
 <a data-hov="1" href="#work" onClick="{{ openWork }}" style-hover="font-style:italic;font-weight:700">work</a><span style="margin-right:7px;">,</span>
 <a data-hov="1" href="#about" onClick="{{ goAbout }}" style-hover="font-style:italic;font-weight:700">about</a><span style="margin-right:7px;">,</span>
 <a data-hov="1" href="#contact" onClick="{{ goContact }}" style-hover="font-style:italic;font-weight:700">contact</a>
 </nav>
-<a data-hov="1" href="#" style="font-size:12px;font-weight:600;letter-spacing:0.14em;" style-hover="font-style:italic;font-weight:700">THIRD SPACE</a>
+<a data-hov="1" href="#" style="font-size:clamp(10px,1.2vw,12px);font-weight:600;letter-spacing:0.14em;" style-hover="font-style:italic;font-weight:700">THIRD SPACE</a>
 </header>
 <sc-if value="{{ showWork }}" hint-placeholder-val="{{ false }}">
 <div data-screen-label="06 Work subpage" style="position:fixed;inset:0;z-index:45;background:#fffdfa;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;animation:workIn 0.5s ease both;">
@@ -111,7 +111,7 @@ a:hover{color:#141414;}
 <div data-screen-label="00 Intro" style="position:fixed;inset:0;z-index:70;background:#ffffff;opacity:{{ overlayOpacity }};transition:opacity 0.85s ease;pointer-events:{{ overlayPE }};">
 <div style="position:absolute;inset:0;background:#fffdfa;opacity:{{ bgShift }};transition:opacity 1.2s ease;"></div>
 <canvas ref="{{ canvasRef }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:{{ canvasOpacity }};transition:opacity 0.55s ease;"></canvas>
-<div style="position:absolute;inset:12px;border-radius:75px;border:1px solid rgba(20,20,20,0.5);opacity:{{ frameOpacity }};transition:opacity 1.1s ease;"></div>
+<div style="position:absolute;inset:12px;border-radius:min(75px,9vw);border:1px solid rgba(20,20,20,0.5);opacity:{{ frameOpacity }};transition:opacity 1.1s ease;"></div>
 <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
 <div ref="{{ wordRef }}" style="font-weight:600;font-size:{{ wordPx }}px;line-height:1;opacity:{{ wordOpacity }};transition:opacity 0.55s ease;">perennial</div>
 </div>
@@ -129,7 +129,7 @@ class Component extends DCLogic {
     const reduce=(typeof window!=='undefined'&&window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     const skip=(props&&props.showIntro===false)||reduce;
     this.skipIntro=skip;
-    this.state={phase:skip?'site':'intro',overlayGone:skip,overlayOpacity:1,bgShift:0,canvasOpacity:1,frameOpacity:0,wordOpacity:0,hintOpacity:0,wordPx:120,activeImg:0,headerHidden:false,time:'',soundOn:false,workOpen:false};
+    this.state={phase:skip?'site':'intro',overlayGone:skip,overlayOpacity:1,bgShift:0,canvasOpacity:1,frameOpacity:0,wordOpacity:0,hintOpacity:0,wordPx:120,activeImg:0,headerHidden:false,time:'',soundOn:false,workOpen:false,isMobile:(typeof window!=='undefined'&&window.matchMedia&&window.matchMedia('(max-width:719px)').matches)||false};
     this.FLY_END=3100;this.HOLD_END=4750;this.MORPH_DUR=1750;
     this.blobs=[];this.dots=[];this.textPts=[];this.t0=0;this.skipOffset=0;this.dotsBuilt=false;this.wordShown=false;this._entered=skip;
   }
@@ -151,7 +151,11 @@ class Component extends DCLogic {
     }
     this.io=new IntersectionObserver((es)=>{es.forEach((en)=>this.setState({headerHidden:en.intersectionRatio>0.45}));},{threshold:[0,0.45,1]});
     if(this.footerRef.current)this.io.observe(this.footerRef.current);
-    this.onResize=()=>{if(this.state.phase==='intro')this.sizeCanvas();};
+    this.onResize=()=>{
+      const m=window.matchMedia('(max-width:719px)').matches;
+      if(m!==this.state.isMobile)this.setState({isMobile:m});
+      if(this.state.phase==='intro')this.sizeCanvas();
+    };
     window.addEventListener('resize',this.onResize);
   }
   componentWillUnmount(){
@@ -445,6 +449,10 @@ class Component extends DCLogic {
       canvasRef:this.canvasRef,wordRef:this.wordRef,cursorRef:this.cursorRef,footerRef:this.footerRef,videoRef:this.videoRef,
       toggleSound:this._toggleSound,soundLabel:s.soundOn?'MUTE':'SOUND',
       showWork:s.workOpen,openWork:this._openWork,workWheel:this._workWheel,workScrollRef:this.workScrollRef,workItems:this._workItems,
+      manifestCols:s.isMobile?'1fr':'1fr minmax(280px,34vw) 1fr',
+      capPos:s.isMobile?'static':'sticky',
+      cap1Justify:s.isMobile?'start':'end',
+      capMax:s.isMobile?'78vw':'200px',
       goWork:this._goWork,goAbout:this._goAbout,goContact:this._goContact,goTop:this._goTop
     };
   }
