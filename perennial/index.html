@@ -89,15 +89,15 @@ a:hover{color:#141414;}
 <a data-hov="1" href="#" style="font-size:clamp(10px,1.2vw,12px);font-weight:600;letter-spacing:0.14em;" style-hover="font-style:italic;font-weight:700">THIRD SPACE</a>
 </header>
 <sc-if value="{{ showWork }}" hint-placeholder-val="{{ false }}">
-<div data-screen-label="06 Work subpage" style="position:fixed;inset:0;z-index:45;background:#fffdfa;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;animation:workIn 0.5s ease both;">
-<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6vw;padding:0 8.4vw;margin:0 0 8vh;flex-wrap:wrap;">
-<h2 style="font-size:clamp(34px,4.6vw,74px);font-weight:500;letter-spacing:-0.01em;margin:0;">Our work</h2>
-<p style="max-width:560px;font-size:clamp(15px,1.35vw,20px);line-height:1.55;margin:0;color:#2c2c2c;text-wrap:pretty;">Every company has a story. Most have simply forgotten how to tell it.  We help organizations rediscover their voice, clarify their purpose, and express it through meaningful creative work.  Whether we're developing a brand, producing a film, designing an experience, or bringing people together in the real world, the goal is always the same: creating work that helps people feel something real.  Because the best marketing doesn't interrupt people's lives. It becomes part of them.</p>
+<div data-screen-label="06 Work subpage" style="position:fixed;inset:0;z-index:45;background:#fffdfa;display:flex;flex-direction:column;justify-content:{{ workJustify }};overflow:hidden {{ workOverY }};padding-top:{{ workPadTop }};box-sizing:border-box;animation:workIn 0.5s ease both;">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:3vh 6vw;padding:0 8.4vw;margin:0 0 {{ workGap }};flex-wrap:wrap;">
+<h2 style="font-size:{{ workH2Fs }};font-weight:500;letter-spacing:-0.01em;margin:0;">Our work</h2>
+<p style="max-width:560px;font-size:{{ workPFs }};line-height:1.5;margin:0;color:#2c2c2c;text-wrap:pretty;">Every company has a story. Most have simply forgotten how to tell it.  We help organizations rediscover their voice, clarify their purpose, and express it through meaningful creative work.  Whether we're developing a brand, producing a film, designing an experience, or bringing people together in the real world, the goal is always the same: creating work that helps people feel something real.  Because the best marketing doesn't interrupt people's lives. It becomes part of them.</p>
 </div>
-<div data-ws="1" ref="{{ workScrollRef }}" onWheel="{{ workWheel }}" style="overflow-x:auto;overflow-y:hidden;display:flex;gap:2.6vw;padding:0 8.4vw 8vh;align-items:flex-end;scrollbar-width:none;">
+<div data-ws="1" ref="{{ workScrollRef }}" onWheel="{{ workWheel }}" style="overflow-x:auto;overflow-y:hidden;display:flex;gap:{{ workCardGap }};padding:{{ workCardsPad }};align-items:flex-end;scrollbar-width:none;">
 <sc-for list="{{ workItems }}" as="wi" hint-placeholder-count="4">
-<div style="flex:none;width:clamp(280px,27vw,440px);">
-<div style="height:clamp(190px,29vh,330px);overflow:hidden;background:#e8e3da;">
+<div style="flex:none;width:{{ workCardW }};">
+<div style="height:{{ workCardH }};overflow:hidden;background:#e8e3da;">
 <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ wi.slot }}" shape="rect" placeholder="{{ wi.ph }}" hint-size="100%,100%" style="display:block;width:100%;height:100%;"></x-import>
 </div>
 <div style="margin-top:14px;font-size:11px;letter-spacing:0.16em;color:#6b6b6b;text-transform:uppercase;">{{ wi.client }}</div>
@@ -449,6 +449,16 @@ class Component extends DCLogic {
       canvasRef:this.canvasRef,wordRef:this.wordRef,cursorRef:this.cursorRef,footerRef:this.footerRef,videoRef:this.videoRef,
       toggleSound:this._toggleSound,soundLabel:s.soundOn?'MUTE':'SOUND',
       showWork:s.workOpen,openWork:this._openWork,workWheel:this._workWheel,workScrollRef:this.workScrollRef,workItems:this._workItems,
+      workJustify:s.isMobile?'flex-start':'flex-end',
+      workOverY:'hidden',
+      workPadTop:s.isMobile?'13vh':'12vh',
+      workGap:s.isMobile?'3vh':'8vh',
+      workCardW:s.isMobile?'70vw':'clamp(280px,27vw,440px)',
+      workCardH:s.isMobile?'42vw':'clamp(190px,29vh,330px)',
+      workH2Fs:s.isMobile?'26px':'clamp(34px,4.6vw,74px)',
+      workPFs:s.isMobile?'11.5px':'clamp(15px,1.35vw,20px)',
+      workCardGap:s.isMobile?'5vw':'2.6vw',
+      workCardsPad:s.isMobile?'0 8.4vw 4vh':'0 8.4vw 8vh',
       manifestCols:s.isMobile?'1fr':'1fr minmax(280px,34vw) 1fr',
       capPos:s.isMobile?'static':'sticky',
       cap1Justify:s.isMobile?'start':'end',
