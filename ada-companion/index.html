@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;0,700;1,400&amp;family=Young+Serif&amp;display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;height:100%;background:#1C0806;overflow:hidden}
+a{color:#F2C16B}a:hover{color:#FFEDC2}
+button{font-family:inherit}
+@keyframes wfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+
+<div style="position:fixed;inset:0;background:radial-gradient(ellipse at 50% -10%,#3A1210,#1C0806 70%)"></div>
+<iframe src="./ada-map.html" title="preload" aria-hidden="true" tabindex="-1" style="position:fixed;left:-9999px;top:0;width:390px;height:620px;border:none;pointer-events:none;opacity:0"></iframe>
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+<div style="position:fixed;left:50%;top:50%;width:1440px;height:900px;transform:translate(-50%,-50%) scale({{ stageScale }});color:#FEF5ED;font-family:Poppins,system-ui,sans-serif;display:flex;flex-direction:column">
+
+<div style="flex:none;display:flex;align-items:baseline;gap:14px;padding:22px 34px 0">
+<span style="font-weight:600;font-style:italic;font-size:15px;line-height:1;color:#FEF5ED">Ada Dĩvine Awakenĩng</span>
+<span style="font:700 9px Poppins;letter-spacing:2px;color:rgba(254,245,237,.4)">THE COMPANION · A DAY WITH IT</span>
+</div>
+
+<div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;gap:74px;padding:10px 34px 0;opacity:{{ stageOp }};transition:opacity .6s ease;pointer-events:{{ stagePE }}">
+
+<div key="{{ leftKey }}" style="width:330px;flex:none;animation:{{ panelAnim }};opacity:{{ panelOp }};transition:opacity .5s ease">
+<div style="font:700 10px Poppins;letter-spacing:2px;color:#E6916C">{{ kicker }}</div>
+<div style="font-family:'Young Serif',Georgia,serif;font-size:33px;line-height:1.15;margin-top:12px;text-wrap:pretty">{{ title }}</div>
+<sc-for list="{{ storyLines }}" as="p" hint-placeholder-count="2">
+<div style="font:400 13.5px/1.65 Poppins;color:rgba(254,245,237,.72);margin-top:14px;text-wrap:pretty">{{ p.pre }}<sc-if value="{{ p.hasLink }}" hint-placeholder-val="{{ false }}"><span onClick="{{ p.linkTap }}" style="color:#F2C16B;text-decoration:underline;text-underline-offset:3px;cursor:pointer">{{ p.link }}</span><span>{{ p.post }}</span></sc-if></div>
+</sc-for>
+<div style="display:flex;gap:9px;align-items:flex-start;margin-top:20px">
+<span style="flex:none;font:700 9.5px Poppins;letter-spacing:1.6px;color:#F2C16B;padding-top:2px">TRY IT</span>
+<span style="flex:1;font:600 12.5px/1.55 Poppins;color:rgba(255,237,194,.9);text-wrap:pretty">{{ tryLine }}</span>
+</div>
+<sc-if value="{{ askShow }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:18px;border-radius:14px;background:rgba(242,193,107,.09);border:1px solid rgba(242,193,107,.35);padding:13px 15px">
+<div style="font:700 8.5px Poppins;letter-spacing:1.5px;color:#F2C16B">THIS SEPTEMBER</div>
+<div style="font:400 12px/1.55 Poppins;color:rgba(255,237,194,.92);margin-top:6px;text-wrap:pretty">{{ askLine }}</div>
+</div>
+</sc-if>
+</div>
+
+<div ref="{{ phoneRef }}" style="flex:none;width:{{ phoneW }}px;height:{{ phoneH }}px;position:relative">
+<div style="position:absolute;inset:0;border-radius:44px;box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 0 1px rgba(254,245,237,.09);overflow:hidden;background:#2D0C0A">
+<sc-if value="{{ mountA }}" hint-placeholder-val="{{ true }}"><dc-import name="ADA Companion" boot="{{ bootJson }}" show-simulator="{{ off }}" embed-scale="{{ scale }}" on-surface="{{ onSurface }}" register="{{ regPhone }}" hint-size="100%,100%" style="width:100%;height:100%"></dc-import></sc-if>
+<sc-if value="{{ mountB }}" hint-placeholder-val="{{ false }}"><dc-import name="ADA Companion" boot="{{ bootJson }}" show-simulator="{{ off }}" embed-scale="{{ scale }}" on-surface="{{ onSurface }}" register="{{ regPhone }}" hint-size="100%,100%" style="width:100%;height:100%"></dc-import></sc-if>
+</div>
+</div>
+
+<div key="{{ rightKey }}" style="width:300px;flex:none;animation:{{ panelAnim }};opacity:{{ panelOp }};transition:opacity .5s ease">
+<div style="font:700 9.5px Poppins;letter-spacing:1.8px;color:rgba(254,245,237,.4)">WORTH NOTICING</div>
+<div style="display:flex;flex-direction:column;gap:13px;margin-top:14px">
+<sc-for list="{{ notices }}" as="n" hint-placeholder-count="3">
+<div style="display:flex;gap:10px;align-items:flex-start">
+<span style="flex:none;width:5px;height:5px;border-radius:50%;background:#F2C16B;margin-top:8px"></span>
+<span style="font:400 12.5px/1.55 Poppins;color:rgba(254,245,237,.65);text-wrap:pretty">{{ n.text }}</span>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ roseShow }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:18px;border-radius:14px;background:rgba(239,174,207,.08);border:1px solid rgba(239,174,207,.3);padding:13px 15px">
+<div style="font:700 8.5px Poppins;letter-spacing:1.5px;color:#EFAECF">✦ &nbsp;THE PINK RULE</div>
+<div style="font:400 12px/1.55 Poppins;color:rgba(239,174,207,.9);margin-top:6px">Everything written in this pink is the companion speaking. Everything else is Mara’s own.</div>
+</div>
+</sc-if>
+<sc-if value="{{ fwdShow }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:18px;border-radius:14px;background:rgba(254,245,237,.05);border:1px solid rgba(254,245,237,.16);padding:13px 15px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<span style="font:700 8.5px Poppins;letter-spacing:1.5px;color:rgba(254,245,237,.5)">FOR YOUR TEAM</span>
+<button onClick="{{ copyFwd }}" style="background:transparent;border:1px solid rgba(242,193,107,.4);border-radius:999px;padding:4px 11px;font:700 9px Poppins;color:#F2C16B;cursor:pointer">{{ copyLabel }}</button>
+</div>
+<sc-for list="{{ fwdLines }}" as="f" hint-placeholder-count="3">
+<div style="font:400 11.5px/1.5 Poppins;color:rgba(254,245,237,.7);margin-top:8px">{{ f.text }}</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+
+</div>
+
+<sc-if value="{{ introOn }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;right:0;top:0;bottom:80px;display:flex;align-items:center;justify-content:center;animation:wfade .6s ease both">
+<div style="max-width:560px;text-align:left;padding:0 30px">
+<div style="font:700 10px Poppins;letter-spacing:2.4px;color:#E6916C">{{ kicker }}</div>
+<div style="font-family:'Young Serif',Georgia,serif;font-size:42px;line-height:1.14;margin-top:16px;color:#FEF5ED;text-wrap:balance">{{ title }}</div>
+<sc-for list="{{ storyLines }}" as="p" hint-placeholder-count="2">
+<div style="font:400 14.5px/1.7 Poppins;color:rgba(254,245,237,.72);margin-top:18px;text-wrap:pretty">{{ p.pre }}</div>
+</sc-for>
+<div style="display:flex;flex-direction:column;gap:7px;margin-top:26px">
+<sc-for list="{{ notices }}" as="n" hint-placeholder-count="2">
+<div style="font:400 11.5px Poppins;color:rgba(254,245,237,.45)">✦ &nbsp;{{ n.text }}</div>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<div style="flex:none;display:flex;align-items:center;justify-content:center;gap:22px;padding:16px 0 20px">
+<button onClick="{{ prev }}" style="background:transparent;border:1px solid rgba(254,245,237,.22);border-radius:999px;padding:9px 18px;font:700 11.5px Poppins;color:rgba(254,245,237,.75);cursor:pointer;visibility:{{ prevVis }}">‹ Back</button>
+<sc-if value="{{ isLast }}" hint-placeholder-val="{{ false }}"><button onClick="{{ replay }}" title="From the top" style="background:transparent;border:1px solid rgba(254,245,237,.22);border-radius:999px;padding:9px 14px;font:700 11.5px Poppins;color:rgba(254,245,237,.6);cursor:pointer">↺</button></sc-if>
+<div style="display:flex;gap:5px;align-items:center">
+<sc-for list="{{ dots }}" as="d" hint-placeholder-count="11">
+<span onClick="{{ d.tap }}" onMouseEnter="{{ d.over }}" onMouseLeave="{{ d.out }}" style="position:relative;display:flex;align-items:center;height:22px;border-radius:999px;cursor:pointer;padding:7px">
+<span style="width:8px;height:8px;border-radius:50%;background:{{ d.bg }};flex:none;transition:background .25s ease"></span>
+<span style="position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%) translateY({{ d.tipY }});background:#2D0C0A;border:1px solid {{ d.tipBorder }};border-radius:999px;padding:5px 11px;font:700 8.5px Poppins;letter-spacing:1.3px;color:{{ d.tipColor }};white-space:nowrap;opacity:{{ d.tipOp }};transition:opacity .25s ease,transform .25s ease,color .25s ease;pointer-events:none">{{ d.label }}</span>
+</span>
+</sc-for>
+</div>
+<button onClick="{{ next }}" style="background:#F2C16B;border:none;border-radius:999px;padding:10px 20px;font:700 11.5px Poppins;color:#8E1F1A;cursor:pointer">{{ nextLabel }}</button>
+</div>
+
+</div>
+
+</sc-if>
+
+<sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;color:#FEF5ED;font-family:Poppins,system-ui,sans-serif;display:flex;flex-direction:column">
+<div style="flex:none;display:flex;align-items:baseline;gap:10px;padding:12px 16px 0">
+<span style="font-weight:600;font-style:italic;font-size:13px;line-height:1;color:#FEF5ED">Ada Dĩvine Awakenĩng</span>
+<span style="font:700 8px Poppins;letter-spacing:1.6px;color:rgba(254,245,237,.4)">THE COMPANION</span>
+</div>
+<div style="flex:1;min-height:0;display:flex;gap:12px;padding:10px 12px 0;align-items:center;opacity:{{ stageOp }};transition:opacity .6s ease;pointer-events:{{ stagePE }}">
+<div key="{{ leftKey }}" style="flex:1;min-width:0;max-height:100%;overflow-y:auto;padding:4px 2px;opacity:{{ panelOp }};transition:opacity .5s ease">
+<div style="font:700 8.5px Poppins;letter-spacing:1.6px;color:#E6916C">{{ kicker }}</div>
+<div style="font-family:'Young Serif',Georgia,serif;font-size:21px;line-height:1.16;margin-top:8px;text-wrap:pretty">{{ title }}</div>
+<sc-for list="{{ storyLines }}" as="p" hint-placeholder-count="2">
+<div style="font:400 11px/1.6 Poppins;color:rgba(254,245,237,.72);margin-top:9px;text-wrap:pretty">{{ p.pre }}<sc-if value="{{ p.hasLink }}" hint-placeholder-val="{{ false }}"><span onClick="{{ p.linkTap }}" style="color:#F2C16B;text-decoration:underline;text-underline-offset:3px;cursor:pointer">{{ p.link }}</span><span>{{ p.post }}</span></sc-if></div>
+</sc-for>
+<div style="display:flex;gap:7px;align-items:flex-start;margin-top:12px">
+<span style="flex:none;font:700 8px Poppins;letter-spacing:1.4px;color:#F2C16B;padding-top:2px">TRY IT</span>
+<span style="flex:1;font:600 10.5px/1.5 Poppins;color:rgba(255,237,194,.9);text-wrap:pretty">{{ tryLine }}</span>
+</div>
+<sc-if value="{{ askShow }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:12px;border-radius:12px;background:rgba(242,193,107,.09);border:1px solid rgba(242,193,107,.35);padding:10px 12px">
+<div style="font:700 7.5px Poppins;letter-spacing:1.3px;color:#F2C16B">THIS SEPTEMBER</div>
+<div style="font:400 10.5px/1.5 Poppins;color:rgba(255,237,194,.92);margin-top:5px">{{ askLine }}</div>
+</div>
+</sc-if>
+<div style="font:700 8px Poppins;letter-spacing:1.5px;color:rgba(254,245,237,.4);margin-top:16px">WORTH NOTICING</div>
+<div style="display:flex;flex-direction:column;gap:8px;margin-top:9px">
+<sc-for list="{{ notices }}" as="n" hint-placeholder-count="3">
+<div style="display:flex;gap:8px;align-items:flex-start">
+<span style="flex:none;width:4px;height:4px;border-radius:50%;background:#F2C16B;margin-top:6px"></span>
+<span style="font:400 10.5px/1.5 Poppins;color:rgba(254,245,237,.65);text-wrap:pretty">{{ n.text }}</span>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ roseShow }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:12px;border-radius:12px;background:rgba(239,174,207,.08);border:1px solid rgba(239,174,207,.3);padding:10px 12px">
+<div style="font:700 7.5px Poppins;letter-spacing:1.3px;color:#EFAECF">✦ &nbsp;THE PINK RULE</div>
+<div style="font:400 10.5px/1.5 Poppins;color:rgba(239,174,207,.9);margin-top:5px">Everything written in this pink is the companion speaking. Everything else is Mara’s own.</div>
+</div>
+</sc-if>
+<sc-if value="{{ fwdShow }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:12px;border-radius:12px;background:rgba(254,245,237,.05);border:1px solid rgba(254,245,237,.16);padding:10px 12px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<span style="font:700 7.5px Poppins;letter-spacing:1.3px;color:rgba(254,245,237,.5)">FOR YOUR TEAM</span>
+<button onClick="{{ copyFwd }}" style="background:transparent;border:1px solid rgba(242,193,107,.4);border-radius:999px;padding:3px 9px;font:700 8.5px Poppins;color:#F2C16B;cursor:pointer">{{ copyLabel }}</button>
+</div>
+<sc-for list="{{ fwdLines }}" as="f" hint-placeholder-count="3">
+<div style="font:400 10.5px/1.5 Poppins;color:rgba(254,245,237,.7);margin-top:7px">{{ f.text }}</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+<div ref="{{ phoneRef }}" style="flex:none;width:{{ phoneWM }}px;height:{{ phoneHM }}px;position:relative">
+<div style="position:absolute;inset:0;border-radius:34px;box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 0 1px rgba(254,245,237,.09);overflow:hidden;background:#2D0C0A">
+<sc-if value="{{ mountA }}" hint-placeholder-val="{{ true }}"><dc-import name="ADA Companion" boot="{{ bootJson }}" show-simulator="{{ off }}" embed-scale="{{ scaleM }}" on-surface="{{ onSurface }}" register="{{ regPhone }}" hint-size="100%,100%" style="width:100%;height:100%"></dc-import></sc-if>
+<sc-if value="{{ mountB }}" hint-placeholder-val="{{ false }}"><dc-import name="ADA Companion" boot="{{ bootJson }}" show-simulator="{{ off }}" embed-scale="{{ scaleM }}" on-surface="{{ onSurface }}" register="{{ regPhone }}" hint-size="100%,100%" style="width:100%;height:100%"></dc-import></sc-if>
+</div>
+</div>
+</div>
+<sc-if value="{{ introOn }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;right:0;top:0;bottom:70px;display:flex;align-items:center;justify-content:center;animation:wfade .6s ease both">
+<div style="max-width:440px;text-align:left;padding:0 26px">
+<div style="font:700 8.5px Poppins;letter-spacing:2px;color:#E6916C">{{ kicker }}</div>
+<div style="font-family:'Young Serif',Georgia,serif;font-size:27px;line-height:1.16;margin-top:12px;color:#FEF5ED;text-wrap:balance">{{ title }}</div>
+<sc-for list="{{ storyLines }}" as="p" hint-placeholder-count="2">
+<div style="font:400 11.5px/1.65 Poppins;color:rgba(254,245,237,.72);margin-top:13px;text-wrap:pretty">{{ p.pre }}</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+<div style="flex:none;display:flex;align-items:center;justify-content:center;gap:14px;padding:12px 0 14px">
+<button onClick="{{ prev }}" style="background:transparent;border:1px solid rgba(254,245,237,.22);border-radius:999px;padding:8px 14px;font:700 10.5px Poppins;color:rgba(254,245,237,.75);cursor:pointer;visibility:{{ prevVis }}">‹ Back</button>
+<div style="display:flex;gap:4px;align-items:center">
+<sc-for list="{{ dots }}" as="d" hint-placeholder-count="11">
+<span onClick="{{ d.tap }}" style="position:relative;display:flex;align-items:center;height:18px;border-radius:999px;cursor:pointer;padding:5px">
+<span style="width:7px;height:7px;border-radius:50%;background:{{ d.bg }};flex:none;transition:background .25s ease"></span>
+<span style="position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%) translateY({{ d.tipY }});background:#2D0C0A;border:1px solid {{ d.tipBorder }};border-radius:999px;padding:4px 9px;font:700 7.5px Poppins;letter-spacing:1.1px;color:{{ d.tipColor }};white-space:nowrap;opacity:{{ d.tipOp }};transition:opacity .25s ease,transform .25s ease;pointer-events:none">{{ d.label }}</span>
+</span>
+</sc-for>
+</div>
+<button onClick="{{ next }}" style="background:#F2C16B;border:none;border-radius:999px;padding:9px 16px;font:700 10.5px Poppins;color:#8E1F1A;cursor:pointer">{{ nextLabel }}</button>
+</div>
+</div>
+</sc-if></x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+const CLEAN = { bi: 0, mi: -1, assessDone: {}, readings: {}, intention: '', threads: [], noticed: '', opened: {}, pages: {}, moods: {}, attended: {}, saved: [], closedD: {}, jopen: {} };
+const CACAO = '4-hearth-1345';
+const CACAO_TEXT = 'Cacao next to Nika. The gong went through the floor and straight into the thing I wrote on Tuesday.';
+const BOOK_URL = 'https://calendar.app.google/D8QzZkPVQXpxJtqw5';
+const ASK_LINE = 'From ADA it needs three things: the real programme, the site map, and your words in its voice. Everything else you have just seen working.';
+const FWD_LINES = [
+  'A companion app for ADA: the programme, a live island map, and a guided journal that helps guests integrate the experience after the festival, so the week does not end on the drive home.',
+  'Our announcements reach every phone in the app, and we can follow, anonymously, where people are going, what they love, and how the week feels to them.',
+  'The prototype already works. To run it this September it needs only our programme, the site map, and our voice.'
+];
+const LABELS = ['WELCOME', 'MARA', 'ARRIVAL', 'TODAY', 'FREE HOURS', 'THE MAP', 'PROGRAMME', 'JOURNAL', 'CHAPTERS', 'THE LETTER', 'FOR ADA'];
+const STEPS = [
+  { kicker: 'FOR ADA \u00b7 15\u201320 SEPTEMBER', title: 'A companion for the six days', story: [
+    'Dear Teodora, this is a working prototype of an app made for ADA: the programme, the island map, and a journal with a gentle written voice that helps visitors integrate the experience once they are home.',
+    'The next ten steps follow one visitor through her six days. Four minutes, and what it means for your team comes at the end.'
+  ], try: 'Press Next below to begin.', notices: [
+    'To run this September it needs only the programme, the site map, and ADA\u2019s voice.',
+    'Journals never leave the visitor\u2019s phone, and the companion can be switched off.'
+  ], rose: false, boot: Object.assign({ splash: true }, CLEAN) },
+  { kicker: 'FIRST, THE VISITOR', title: 'Meet Mara', story: [
+    'Mara is 34, from Ljubljana, at ADA for the first time, arriving with three friends, and a quiet hope that this week will be different.',
+    'This presentation follows her six days at the festival, from arrival on Tuesday to the drive home on Sunday.'
+  ], try: 'Tap Step in on the phone, or use the Next button below. The presentation follows wherever you go.', notices: [
+    'One visitor, followed honestly, shows more than any feature list.',
+    'Everything Mara does here, your visitors would do with their own week.'
+  ], rose: false, boot: Object.assign({ splash: true }, CLEAN) },
+  { kicker: 'ARRIVAL · TUESDAY 08:30', title: 'Her ticket comes with a companion', story: [
+    'The ADA Companion is an app for the six days of the festival. It does two things. The practical one: her daily schedule, the island map, the full programme. The deeper one: a journal, guided by a gentle written voice we call the companion, that helps her process the week and take it home.',
+    'When she first opens it, it asks for two minutes: nine short questions about how she is arriving and what is going on in her life right now, plus one intention for the week in her own words. Everything the companion says over the six days is based on these answers.'
+  ], try: 'Tap Begin on the phone and answer as yourself. The presentation follows wherever you go.', notices: [
+    'No 1-to-10 scales, no scores. Just small, concrete questions.',
+    'The app invites her to set an intention, and explains why it matters.',
+    'The important things work offline and save on the phone.'
+  ], rose: false, boot: CLEAN },
+  { kicker: 'SATURDAY · 09:40', title: 'The day opens', story: [
+    'We jump to Saturday, four days in. The Today page shows her day as a timeline: the workshops she saved, and the free time between them.',
+    'The pink line under the title is the companion: one sentence, written overnight, based on what she wrote in her journal the day before.'
+  ], try: 'Tap a workshop in the timeline.', notices: [
+    'That sentence is taken from a longer note the companion writes in her journal every night.',
+    'The app never fills her day for her. Free hours stay visibly free.'
+  ], rose: false, boot: { mi: 0 } },
+  { kicker: 'SATURDAY · 15:45', title: 'Two hours, wide open', story: [
+    'Mara has two free hours. The companion notices the gap, sees that her friend Nika is free too, and suggests exactly one workshop, with the reason why.',
+    'It offers. It never pushes. No thanks is always one tap away.',
+    'Workshops that already ended turn into short journal prompts, so she can write a few lines about them right here, while they are fresh.'
+  ], try: 'Open the suggestion in the gap. Take it, or say no thanks.', notices: [
+    'The reason is based on what she wrote in her journal, paraphrased, never quoted back at her.',
+    'If nothing in her week supports a suggestion, none appears.'
+  ], rose: true, boot: { mi: 1 } },
+  { kicker: 'SATURDAY · 20:50', title: 'The island by night', story: [
+    'It is evening. The map shows what is happening right now at every stage, and which of her friends are already there.',
+    'Everything a festival-goer actually needs sits one tap away.'
+  ], try: 'Tap a stage pin, or drag the drawer up from the bottom.', notices: [
+    'The live labels follow the clock and the programme automatically.',
+    'Friends show on a stage only while a workshop is running there.'
+  ], rose: false, boot: { tab: 'map', mi: 2 } },
+  { kicker: 'THE PLAN', title: 'Hearts build the week', story: [
+    'The full programme, one day at a time. She taps the heart on what she wants to attend, and her Today timeline is built from those choices.',
+    'Her friends appear on the workshops they saved too, so they can plan together without a group chat.'
+  ], try: 'Heart a workshop, switch days, try the ♥ filter, and see the changes live on the Today page.', notices: [
+    'Friends see each other’s saved workshops and free time. Never location, never journals.',
+    'The ♥ filter shows only her saved workshops.'
+  ], rose: false, boot: { tab: 'map', drawerFull: true, mi: 1 } },
+  { kicker: 'THE JOURNAL', title: 'A book, being made', story: [
+    'Everything she writes lands in one place: a morning page, an evening page, and a page after each workshop. Six days become six chapters. On the last night the whole book can be downloaded as a PDF.',
+    'The book opens with a short note from the companion, rewritten every night. It reads what she wrote that day, together with her arrival answers, and offers a new perspective for the morning. Never a summary. The strongest sentence of that note is the one shown on top of the [[Today page]].',
+    'The voice is not random AI text. It follows written rules and speaks in ADA’s language, and you set those rules with us: what it may say, what it never says, how warm it is.'
+  ], try: 'Open a chapter, or add a page with the + under After the workshop.', notices: [
+    'The companion suggests, it never commands.',
+    'It never quotes or summarizes her words back at her, and it never diagnoses.',
+    'Nobody else ever reads her writing, and the companion can be switched off completely in Settings.'
+  ], rose: false, boot: { tab: 'journal', mi: 1 } },
+  { kicker: 'THE JOURNAL · YOUR PAGES', title: 'Six days, six chapters', story: [
+    'One chapter per day, newest on top. Each opens with the companion’s note for that day, and her own writing sits beneath it, exactly as she left it.'
+  ], try: 'Open a day’s chapter and read Mara’s reflections inside.', notices: [
+    'This archive is what becomes the PDF book on the last night.'
+  ], rose: false, boot: { tab: 'journal', jview: 'archive', mi: 1 } },
+  { kicker: 'SUNDAY · THE LAST NIGHT', title: 'The week, read back', story: [
+    'On the last night, the nine questions from arrival return. The companion compares her answers from Tuesday and tonight, and writes her a personal letter about what changed.',
+    'This is the integration step, where the week comes together. The letter names two or three concrete habits worth keeping in her daily life at home, and signs off the way the island speaks: with love and care.'
+  ], try: 'Open the one thing left on the phone. It is the letter.', notices: [
+    'The letter compares her only with herself. Nothing is ranked or shared.',
+    'Integration is built into the app, not left to the drive home.'
+  ], rose: false, boot: { bi: 1 } },
+  { kicker: 'AND HOME', title: 'What the six days did', story: [
+    'The Me page shows her energy across the week, her intention, and her friends. A mirror, not a score.',
+    'There is also an organizer side to build for your team. Last-minute changes and announcements reach every phone inside the app, instead of getting lost in WhatsApp groups. The hearts show you a day early which workshops will be full. All of it anonymous: journals never leave the phone.',
+    'And the letter home is marketing no one can write for you. It gives people words for a week that is hard to describe, and when they post it, the festival is told in their own words.'
+  ], try: 'Tap the + next to her friends to see how people connect.', notices: [
+    'The companion can be switched off entirely. The app stays whole without it.',
+    'Everything you saw is running live, in the browser, today.'
+  ], rose: false, ask: true, fwd: true, boot: { tab: 'me', mi: 2 } }
+];
+const TAPS = [null, null, null, null, null, 'MAP', 'The whole programme', 'JOURNAL', 'Your pages', null, 'ME'];
+const ACCEPT = [['today'], ['today'], ['today', 'arrival'], ['today'], ['today'], ['map'], ['programme'], ['journal'], ['journal'], ['today', 'closing'], ['me']];
+const SURF2STEP = { arrival: 2, today: 3, map: 5, programme: 6, journal: 7, closing: 9, me: 10 };
+class Component extends DCLogic {
+  state = { step: 0, epoch: 0, vh: 900, vw: 1440, hoverDot: -1, copied: false };
+  componentDidMount() {
+    this._onResize = () => this.setState({ vh: window.innerHeight, vw: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
+    this._onKey = e => {
+      const t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+      if (e.key === 'ArrowRight') this.go(1);
+      if (e.key === 'ArrowLeft') this.go(-1);
+    };
+    window.addEventListener('keydown', this._onKey);
+    this._onResize();
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); }
+  jump(t) { clearInterval(this._typeT); this.setState(s => ({ step: t, epoch: s.epoch + 1, warping: false })); }
+  typeCacao(ph) {
+    clearInterval(this._typeT);
+    let i = 0;
+    this._typeT = setInterval(() => {
+      i += 2;
+      const done = i >= CACAO_TEXT.length;
+      try { ph.setState(s => ({ pages: Object.assign({}, s.pages, { [CACAO]: CACAO_TEXT.slice(0, i) }) })); } catch (e) { clearInterval(this._typeT); }
+      if (done) clearInterval(this._typeT);
+    }, 34);
+  }
+  go(d) { this.goAnimated(Math.max(0, Math.min(STEPS.length - 1, this.state.step + d))); }
+  findTap(label) {
+    const root = this.phoneEl; if (!root || !label) return null;
+    const all = root.querySelectorAll('span,button,div');
+    let best = null;
+    for (let i = 0; i < all.length; i++) {
+      const el = all[i], t = (el.textContent || '').trim();
+      if (t === label || (label.length > 6 && t.indexOf(label) === 0)) {
+        if (!best || best.contains(el)) best = el;
+      }
+    }
+    return best && best.getBoundingClientRect().width ? best : null;
+  }
+  scrollToEl(el, dur) {
+    let sc = el.parentElement;
+    while (sc && sc !== this.phoneEl) {
+      const st = getComputedStyle(sc);
+      if (sc.scrollHeight - sc.clientHeight > 20 && /(auto|scroll|overlay)/.test(st.overflowY)) break;
+      sc = sc.parentElement;
+    }
+    if (!sc || sc === this.phoneEl) return 0;
+    const r = el.getBoundingClientRect(), cr = sc.getBoundingClientRect();
+    const rawDelta = (r.top + r.height / 2) - (cr.top + cr.height * 0.55);
+    const max = sc.scrollHeight - sc.clientHeight;
+    const f = cr.width / (sc.clientWidth || cr.width) || 1;
+    const delta = Math.max(0 - sc.scrollTop, Math.min(max - sc.scrollTop, rawDelta / f));
+    if (Math.abs(delta) < 12) return 0;
+    const from = sc.scrollTop, t0 = performance.now();
+    const D = dur || Math.max(450, Math.min(1100, Math.abs(delta) * 1.6));
+    const tick = t => {
+      const p = Math.min(1, (t - t0) / D);
+      const e = p < .5 ? 16 * p * p * p * p * p : 1 - Math.pow(-2 * p + 2, 5) / 2;
+      sc.scrollTop = from + delta * e;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    return D + 60;
+  }
+  ripple(el) {
+    const host = (this.phoneEl && this.phoneEl.firstElementChild) || this.phoneEl; if (!host) return;
+    const r = el.getBoundingClientRect(), hr = host.getBoundingClientRect();
+    const f = hr.width / host.offsetWidth || 1;
+    const d = document.createElement('div');
+    const x = (r.left + r.width / 2 - hr.left) / f, y = (r.top + r.height / 2 - hr.top) / f;
+    d.style.cssText = 'position:absolute;left:' + (x - 25) + 'px;top:' + (y - 25) + 'px;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.5);filter:blur(5px);box-shadow:0 0 26px rgba(255,255,255,.4);pointer-events:none;z-index:60;will-change:transform,opacity';
+    host.appendChild(d);
+    d.animate([
+      { opacity: 0, transform: 'scale(.5) translateZ(0)' },
+      { opacity: .95, transform: 'scale(1) translateZ(0)', offset: .45 },
+      { opacity: 0, transform: 'scale(1.28) translateZ(0)' }
+    ], { duration: 620, easing: 'cubic-bezier(.33,0,.2,1)', fill: 'forwards' }).onfinish = () => d.remove();
+  }
+  goAnimated(target) {
+    if (this._anim || target === this.state.step) return;
+    const cur = this.state.step;
+    if (JSON.stringify(STEPS[cur].boot) === JSON.stringify(STEPS[target].boot)) { this.setState({ step: target }); return; }
+    const WARP = { '3>4': { label: 'Ecstatic Dance · Connected', mi: 1 }, '4>3': { label: 'Breath & Cold', mi: 0 } };
+    this.setState({ warping: true });
+    const w = WARP[cur + '>' + target];
+    if (w && this._phone) {
+      const wel = this.findTap(w.label);
+      if (wel) {
+        this._anim = true;
+        const ph = this._phone, D = 1400;
+        const a = w.mi === 1 ? 580 : 945, b = w.mi === 1 ? 945 : 580;
+        clearInterval(this._typeT);
+        try {
+          if (w.mi === 1) ph.setState(s => { const p = Object.assign({}, s.pages); delete p[CACAO]; return { pages: p }; });
+          else ph.setState(s => ({ pages: Object.assign({}, s.pages, { [CACAO]: CACAO_TEXT }) }));
+        } catch (x) {}
+        this.scrollToEl(wel, D - 150);
+        const t0 = performance.now(); let last = 0;
+        const tick = t => {
+          const p = Math.min(1, (t - t0) / D);
+          const e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+          if (t - last > 45 || p === 1) { last = t; try { ph.setState({ timeTween: Math.round(a + (b - a) * e) }); } catch (x) {} }
+          if (p < 1) requestAnimationFrame(tick);
+          else {
+            try { ph.setState({ mi: w.mi, timeTween: null }); } catch (x) {}
+            this._anim = false;
+            this.setState({ step: target, warping: false });
+            if (w.mi === 1) setTimeout(() => this.typeCacao(ph), 400);
+          }
+        };
+        requestAnimationFrame(tick);
+        return;
+      }
+    }
+    const NIGHT = { '2>3': 'Four days later', '3>2': 'Back to Tuesday morning', '8>9': 'Sunday, the last night', '9>8': 'Back to Saturday' };
+    const nv = NIGHT[cur + '>' + target];
+    if (nv && this.phoneEl) {
+      this._anim = true;
+      const d = document.createElement('div');
+      d.style.cssText = 'position:absolute;inset:0;border-radius:34px;background:#1C0806;z-index:70;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none';
+      const sp = document.createElement('span');
+      sp.style.cssText = "font-family:'Young Serif',Georgia,serif;font-style:italic;font-size:17px;color:rgba(254,245,237,.75);opacity:0;transition:opacity .45s ease;padding:0 30px;text-align:center";
+      sp.textContent = nv;
+      d.appendChild(sp);
+      this.phoneEl.appendChild(d);
+      d.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 450, easing: 'cubic-bezier(.4,0,.3,1)', fill: 'forwards' });
+      setTimeout(() => { sp.style.opacity = '1'; }, 220);
+      setTimeout(() => this.jump(target), 520);
+      setTimeout(() => {
+        sp.style.opacity = '0';
+        d.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, easing: 'cubic-bezier(.4,0,.3,1)', fill: 'forwards' }).onfinish = () => d.remove();
+        this._anim = false;
+      }, 1500);
+      return;
+    }
+    const LIVE = { '1>2': 'Step in', '5>6': 'The whole programme', '6>5': 'Close', '7>8': 'Your pages', '8>7': '← The book' };
+    const liveEl = LIVE[cur + '>' + target] ? this.findTap(LIVE[cur + '>' + target]) : null;
+    if (liveEl) {
+      this._anim = true;
+      const wait = this.scrollToEl(liveEl);
+      setTimeout(() => {
+        this.ripple(liveEl);
+        setTimeout(() => { this._anim = false; this.setState({ step: target, warping: false }); liveEl.click(); }, 300);
+      }, wait);
+      return;
+    }
+    const el = this.findTap(TAPS[target]);
+    if (!el) { this.jump(target); return; }
+    this._anim = true;
+    const wait = this.scrollToEl(el);
+    setTimeout(() => {
+      const shell = (this.phoneEl && this.phoneEl.firstElementChild) || this.phoneEl;
+      const rr = el.getBoundingClientRect(), sr = shell ? shell.getBoundingClientRect() : null;
+      const cx = rr.left + rr.width / 2, cy = rr.top + rr.height / 2;
+      const inside = sr && cx > sr.left + 4 && cx < sr.right - 4 && cy > sr.top + 4 && cy < sr.bottom - 4;
+      if (!inside) { this._anim = false; this.jump(target); return; }
+      this.ripple(el);
+      setTimeout(() => { this._anim = false; this.jump(target); }, 300);
+    }, wait);
+  }
+  renderVals() {
+    const s = this.state;
+    const st = STEPS[s.step];
+    const scale = .82;
+    const mob = s.vw < 900;
+    const sM = Math.max(.42, Math.min(1, (s.vw * .5 - 28) / 390, (s.vh - 140) / 844));
+    return {
+      isDesktop: !mob, isMobile: mob,
+      introOn: s.step === 0,
+      stageOp: s.step === 0 ? 0 : 1,
+      stagePE: s.step === 0 ? 'none' : 'auto',
+      scaleM: sM, phoneWM: Math.round(390 * sM), phoneHM: Math.round(844 * sM),
+      stageScale: Math.min(s.vw / 1440, s.vh / 900),
+      panelOp: s.warping ? 0 : 1,
+      panelAnim: s.warping ? 'none' : 'wfade .4s ease both',
+      kicker: st.kicker, title: st.title,
+      storyLines: st.story.map(text => {
+        const m = text.match(/^([\s\S]*)\[\[(.+?)\]\]([\s\S]*)$/);
+        return m ? { pre: m[1], link: m[2], post: m[3], hasLink: true, linkTap: () => this.goAnimated(3) } : { pre: text, link: '', post: '', hasLink: false };
+      }),
+      tryLine: st.try,
+      notices: st.notices.map(text => ({ text })),
+      roseShow: !!st.rose,
+      leftKey: 'l' + s.step, rightKey: 'r' + s.step,
+      mountA: s.epoch % 2 === 0, mountB: s.epoch % 2 === 1,
+      bootJson: JSON.stringify(st.boot),
+      regPhone: inst => { this._phone = inst; },
+      onSurface: surf => {
+        if (ACCEPT[this.state.step].indexOf(surf) >= 0) return;
+        const t = SURF2STEP[surf];
+        if (t != null && t !== this.state.step) this.setState({ step: t });
+      },
+      off: false, scale,
+      phoneW: Math.round(390 * scale), phoneH: Math.round(844 * scale),
+      phoneRef: el => { this.phoneEl = el; },
+      prev: () => this.go(-1),
+      next: () => s.step === STEPS.length - 1 ? window.open(BOOK_URL, '_blank') : this.go(1),
+      prevVis: s.step === 0 ? 'hidden' : 'visible',
+      nextLabel: s.step === STEPS.length - 1 ? 'Book 30 minutes ›' : 'Next ›',
+      isLast: s.step === STEPS.length - 1,
+      replay: () => this.jump(0),
+      askShow: !!st.ask, askLine: ASK_LINE,
+      fwdShow: !!st.fwd,
+      fwdLines: FWD_LINES.map(text => ({ text })),
+      copyLabel: s.copied ? 'Copied' : 'Copy',
+      copyFwd: () => {
+        const text = FWD_LINES.join('\n\n');
+        const ok = () => {
+          clearTimeout(this._copyT);
+          this.setState({ copied: true });
+          this._copyT = setTimeout(() => this.setState({ copied: false }), 2000);
+        };
+        const legacy = () => {
+          try {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.cssText = 'position:fixed;left:-9999px;top:0';
+            document.body.appendChild(ta);
+            ta.focus(); ta.select();
+            const done = document.execCommand('copy');
+            ta.remove();
+            if (done) ok();
+          } catch (e) {}
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(ok, legacy);
+        } else legacy();
+      },
+      dots: STEPS.map((x, i) => {
+        const on = i === s.step, hov = i === s.hoverDot;
+        const tip = on || hov;
+        return {
+          bg: on ? '#F2C16B' : (hov ? 'rgba(254,245,237,.5)' : 'rgba(254,245,237,.18)'),
+          tipOp: tip ? 1 : 0,
+          tipY: tip ? '0' : '3px',
+          tipColor: on ? '#F2C16B' : 'rgba(254,245,237,.8)',
+          tipBorder: on ? 'rgba(242,193,107,.35)' : 'rgba(254,245,237,.16)',
+          label: LABELS[i],
+          over: () => this.setState({ hoverDot: i }),
+          out: () => this.setState(v => v.hoverDot === i ? { hoverDot: -1 } : null),
+          tap: () => this.goAnimated(i)
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
