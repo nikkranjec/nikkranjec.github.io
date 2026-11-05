@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#171614">
+<title>Pred potjo — prostor za premislek</title>
+<meta name="description" content="Zaseben prostor za premislek, namero, skrb in integracijo pred psihedelično izkušnjo.">
+<style>
+:root {
+  color-scheme: dark;
+  --night: #171614;
+  --night-deep: #11110f;
+  --night-soft: #201e1a;
+  --ink: #e6dece;
+  --ink-soft: #cbc1ae;
+  --muted: #a39a88;
+  --faint: #787264;
+  --rule: rgba(230, 222, 206, .17);
+  --rule-strong: rgba(230, 222, 206, .30);
+  --oxide: #b17d5e;
+  --lichen: #9b9a7c;
+  --focus: #d9b18b;
+  --serif: "Bodoni 72", Didot, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --sans: "Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, sans-serif;
+  --rail: 17rem;
+  --measure: 67rem;
+}
+* { box-sizing: border-box; }
+html { min-width: 320px; scroll-behavior: smooth; scroll-padding-top: 5rem; }
+body {
+  min-width: 320px; min-height: 100vh; margin: 0; overflow-x: hidden;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at 74% 5%, rgba(108, 83, 61, .16), transparent 38rem),
+    radial-gradient(ellipse at 8% 74%, rgba(105, 111, 80, .075), transparent 34rem),
+    linear-gradient(115deg, #181714 0%, #171614 48%, #131310 100%);
+  font: 400 1rem/1.72 var(--serif);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body::before {
+  content: ""; position: fixed; z-index: 60; inset: 0; pointer-events: none;
+  opacity: .16; mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)' opacity='.32'/%3E%3C/svg%3E");
+}
+body::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+  background: radial-gradient(ellipse at center, transparent 42%, rgba(0,0,0,.22) 100%);
+}
+button, textarea, input { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; }
+button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+::selection { color: var(--night); background: var(--ink-soft); }
+.skip-link { position: fixed; z-index: 100; top: 1rem; left: 1rem; padding: .7rem 1rem; color: var(--night); background: var(--ink); transform: translateY(-150%); font: 600 .8rem var(--sans); }
+.skip-link:focus { transform: translateY(0); }
+.shell { width: min(100%, 120rem); min-height: 100vh; margin: 0 auto; }
+.layout { display: grid; grid-template-columns: var(--rail) minmax(0,1fr); }
+/* Desktop index */
+.rail {
+  position: sticky; top: 0; align-self: start; height: 100vh; min-height: 36rem; overflow-y: auto;
+  padding: 2.1rem 1.45rem 1.8rem 2rem;
+  border-right: 1px solid var(--rule);
+  background: linear-gradient(180deg, rgba(9,9,8,.24), rgba(22,21,18,.12));
+}
+.brand { display: flex; align-items: center; gap: .8rem; margin: 0 0 3.1rem; text-decoration: none; }
+.brand-stamp { display: grid; place-items: center; width: 2.05rem; height: 2.05rem; border: 1px solid rgba(230,222,206,.36); border-radius: 50%; color: var(--ink-soft); font: italic 1.15rem var(--serif); transform: rotate(-9deg); }
+.brand-copy { display: grid; gap: .2rem; }
+.brand-title { font: 500 .98rem/1.2 var(--serif); letter-spacing: .015em; }
+.brand-caption { color: var(--faint); font: 600 .55rem/1.35 var(--sans); letter-spacing: .19em; text-transform: uppercase; }
+.rail-label { margin: 0 0 .95rem; color: var(--faint); font: 600 .57rem var(--sans); letter-spacing: .2em; text-transform: uppercase; }
+.stage-nav { position: relative; list-style: none; padding: 0; margin: 0; }
+.stage-nav::before { content: ""; position: absolute; top: .8rem; bottom: .8rem; left: .42rem; width: 1px; background: linear-gradient(var(--rule-strong), var(--rule), transparent); }
+.stage-nav li { position: relative; }
+.stage-nav a { display: grid; grid-template-columns: 1.15rem minmax(0,1fr) auto; gap: .7rem; align-items: start; min-height: 3.55rem; padding: .48rem 0; color: var(--muted); text-decoration: none; transition: color .2s ease; }
+.stage-nav a:hover, .stage-nav a[aria-current="page"] { color: var(--ink); }
+.stage-nav .node { position: relative; z-index: 1; display: grid; place-items: center; width: .86rem; height: .86rem; margin-top: .18rem; border: 1px solid var(--faint); border-radius: 50%; background: var(--night); color: transparent; font: 600 .42rem var(--sans); transition: all .25s ease; }
+.stage-nav a[aria-current="page"] .node { border-color: var(--oxide); background: var(--oxide); box-shadow: 0 0 0 4px rgba(177,125,94,.12); }
+.stage-nav a.is-touched .node { border-color: var(--lichen); background: var(--lichen); }
+.nav-copy { display: grid; gap: .12rem; min-width: 0; }
+.nav-title { font: 500 .81rem/1.35 var(--sans); }
+.nav-meta { color: var(--faint); font: 400 .63rem/1.4 var(--sans); }
+.nav-count { padding-top: .08rem; color: var(--faint); white-space: nowrap; font: 400 .58rem var(--sans); font-variant-numeric: tabular-nums; }
+.rail-bottom { margin-top: 2.4rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+.privacy-note { max-width: 15rem; margin: 0 0 1.15rem; color: var(--faint); font: 400 .67rem/1.6 var(--sans); }
+.rail-actions { display: grid; justify-items: start; gap: .12rem; }
+.quiet-button { padding: .38rem 0; border: 0; color: var(--muted); background: transparent; cursor: pointer; text-align: left; font: 500 .68rem var(--sans); letter-spacing: .045em; }
+.quiet-button:hover { color: var(--ink); }
+.save-state { min-height: 1.1rem; margin: .95rem 0 0; color: var(--faint); font: 400 .62rem/1.5 var(--sans); }
+.save-state[data-error="true"] { color: #d59c7e; }
+/* Mobile header and language switch */
+.topbar { display: none; position: sticky; top: 0; z-index: 45; align-items: center; gap: .65rem; min-height: 3.65rem; padding: .45rem max(1rem, env(safe-area-inset-right)) .45rem max(1rem, env(safe-area-inset-left)); border-bottom: 1px solid var(--rule); background: rgba(23,22,20,.94); backdrop-filter: blur(18px); }
+.topbar-name { min-width: 0; flex: 1; overflow: hidden; color: var(--ink-soft); white-space: nowrap; text-overflow: ellipsis; font: 500 .78rem var(--serif); }
+.nav-toggle { flex: none; padding: .55rem .2rem; border: 0; color: var(--ink-soft); background: none; cursor: pointer; font: 600 .62rem var(--sans); letter-spacing: .1em; text-transform: uppercase; }
+.lang-toggle { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 2.15rem; padding: .35rem .55rem; border: 1px solid var(--rule-strong); border-radius: 1px; color: var(--ink-soft); background: rgba(230,222,206,.035); cursor: pointer; white-space: nowrap; font: 600 .61rem var(--sans); letter-spacing: .12em; }
+.lang-toggle .current-lang { color: var(--ink); }
+.lang-toggle .lang-separator { color: var(--faint); }
+.lang-toggle .next-lang { color: var(--muted); }
+.lang-toggle:hover { border-color: var(--oxide); }
+.top-progress { position: absolute; right: 0; bottom: -1px; left: 0; height: 1px; background: transparent; }
+.top-progress span { display: block; width: 0; height: 100%; background: var(--oxide); transition: width .45s ease; }
+/* Main canvas */
+.main-wrap { min-width: 0; padding: 0 clamp(1.25rem, 5.3vw, 6.5rem) 6rem; }
+.desktop-tools { position: sticky; top: 0; z-index: 45; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; width: min(100%, var(--measure)); margin: 0 auto; padding: .9rem 0 .65rem; background: linear-gradient(180deg, rgba(23,22,20,.98), rgba(23,22,20,.88)); backdrop-filter: blur(14px); }
+.folio-label { color: var(--faint); font: 600 .56rem var(--sans); letter-spacing: .2em; text-transform: uppercase; }
+.content { width: min(100%, var(--measure)); margin: 0 auto; }
+.view { min-height: calc(100vh - 2rem); padding: clamp(3.25rem, 7.5vh, 6.5rem) 0 3rem; }
+.view[hidden] { display: none !important; }
+.view:focus { outline: none; }
+/* Opening composition */
+.hero { position: relative; display: grid; grid-template-columns: minmax(0,1.05fr) minmax(15rem,.85fr); align-items: center; gap: clamp(1rem, 4vw, 4rem); min-height: min(39rem, 72vh); padding: 1.25rem 0 2.5rem; }
+.hero-copy { position: relative; z-index: 2; min-width: 0; }
+.eyebrow { display: flex; align-items: center; gap: .75rem; margin: 0 0 1.5rem; color: var(--oxide); font: 600 .59rem/1.3 var(--sans); letter-spacing: .2em; text-transform: uppercase; }
+.eyebrow::before { content: ""; width: 2.1rem; height: 1px; background: var(--oxide); }
+h1, h2, h3, p { margin-top: 0; }
+h1, h2 { font-family: var(--serif); font-weight: 400; }
+h1 { max-width: 8ch; margin: 0 0 1.55rem; font-size: clamp(4.3rem, 8.7vw, 8.9rem); line-height: .83; letter-spacing: -.075em; text-wrap: balance; }
+h1 span { display: block; }
+h1 em { display: block; padding-left: .42em; color: var(--ink-soft); font-weight: 400; }
+.hero-subtitle { max-width: 27rem; margin: 0; color: var(--ink-soft); font: 400 clamp(.94rem, 1.35vw, 1.08rem)/1.75 var(--sans); }
+.hero-plate { position: relative; display: grid; place-items: center; min-width: 0; min-height: 27rem; margin: 0; }
+.hero-plate::before { content: ""; position: absolute; inset: 7% 6% 7% 8%; border: 1px solid rgba(230,222,206,.12); border-radius: 49% 51% 47% 53% / 52% 45% 55% 48%; transform: rotate(-11deg); }
+.hero-plate::after { content: ""; position: absolute; inset: 13% 13% 12% 14%; border: 1px solid rgba(230,222,206,.09); border-radius: 53% 47% 51% 49% / 44% 56% 44% 56%; transform: rotate(18deg); }
+.hero-engraving { position: relative; z-index: 1; width: min(100%, 33rem); height: auto; overflow: visible; opacity: .76; filter: drop-shadow(0 7px 14px rgba(0,0,0,.16)); }
+.plate-caption { position: absolute; right: 1.1rem; bottom: 1.2rem; z-index: 2; color: var(--faint); font: 600 .52rem/1.5 var(--sans); letter-spacing: .18em; text-align: right; text-transform: uppercase; }
+.hero-index { position: absolute; top: 4%; right: 2%; color: rgba(230,222,206,.34); font: 400 .58rem var(--sans); letter-spacing: .15em; writing-mode: vertical-rl; }
+.hero-divider { display: flex; align-items: center; gap: 1rem; margin: 1.4rem 0 1.65rem; color: var(--faint); }
+.hero-divider::before { content: ""; width: 3.4rem; height: 1px; background: var(--rule-strong); }
+.hero-divider span { font: 600 .56rem var(--sans); letter-spacing: .19em; text-transform: uppercase; }
+.intro-copy { max-width: 43rem; color: var(--ink-soft); font-size: 1.05rem; line-height: 1.86; }
+.intro-copy p { margin: 0 0 1rem; }
+.care-note { position: relative; max-width: 48rem; margin: 2.2rem 0 2.4rem; padding: 1rem 1.15rem 1.1rem 1.3rem; border-left: 1px solid var(--oxide); background: linear-gradient(100deg, rgba(177,125,94,.085), transparent 78%); color: var(--ink-soft); font: 400 .8rem/1.75 var(--sans); }
+.care-note strong { color: var(--ink); font-weight: 600; }
+.welcome-meta { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1.3rem; margin: 2.8rem 0 2.6rem; padding-top: 1.15rem; border-top: 1px solid var(--rule); }
+.meta-item { display: grid; align-content: start; gap: .35rem; }
+.meta-label { color: var(--faint); font: 600 .54rem var(--sans); letter-spacing: .19em; text-transform: uppercase; }
+.meta-value { color: var(--muted); font: 400 .72rem/1.55 var(--sans); }
+.primary-button, .secondary-button { display: inline-flex; align-items: center; justify-content: center; gap: .8rem; min-height: 3.2rem; padding: .8rem 1.15rem; border: 1px solid transparent; border-radius: 1px; cursor: pointer; text-decoration: none; font: 600 .66rem/1.2 var(--sans); letter-spacing: .13em; text-transform: uppercase; transition: color .2s ease, background .2s ease, border-color .2s ease, transform .2s ease; }
+.primary-button { color: #1b1915; background: var(--ink-soft); }
+.primary-button:hover { background: #f0e8d9; transform: translateY(-1px); }
+.primary-button .arrow { font-size: 1rem; line-height: .5; }
+.secondary-button { color: var(--ink-soft); border-color: var(--rule-strong); background: transparent; }
+.secondary-button:hover { border-color: var(--oxide); background: rgba(177,125,94,.06); }
+.resume { margin: 1rem 0 0; color: var(--muted); font: 400 .73rem/1.6 var(--sans); }
+.resume a { color: var(--ink); text-underline-offset: .2em; }
+/* Chapter composition */
+.chapter-view { max-width: 61rem; }
+.chapter-head { position: relative; margin-bottom: 2.8rem; padding: 1rem 0 2rem; border-bottom: 1px solid var(--rule); }
+.chapter-index { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-bottom: 1.25rem; color: var(--oxide); font: 600 .57rem/1.3 var(--sans); letter-spacing: .18em; text-transform: uppercase; }
+.chapter-index .index-line { width: 2.1rem; height: 1px; background: var(--rule-strong); }
+.chapter-index .index-label { color: var(--muted); }
+.chapter-title { max-width: 17ch; margin: 0 0 .85rem; font-size: clamp(2.8rem, 5.8vw, 5.25rem); line-height: .97; letter-spacing: -.055em; text-wrap: balance; }
+.chapter-lead { max-width: 43rem; margin: 0; color: var(--ink-soft); font: 400 clamp(.94rem, 1.2vw, 1.04rem)/1.8 var(--sans); }
+.chapter-body { max-width: 53rem; }
+.prompt-group { display: grid; grid-template-columns: minmax(0, 1fr); margin: 0 0 2.15rem; padding-top: 1.05rem; border-top: 1px solid var(--rule); }
+.prompt-head { display: grid; grid-template-columns: 3.2rem minmax(0,1fr); gap: .85rem; align-items: start; }
+.prompt-number { padding-top: .24rem; color: var(--oxide); font: 500 .65rem var(--sans); letter-spacing: .09em; font-variant-numeric: tabular-nums; }
+.prompt-copy { min-width: 0; }
+.prompt-title { max-width: 42rem; margin: 0; color: var(--ink); font: 400 clamp(1.1rem, 1.7vw, 1.35rem)/1.5 var(--serif); }
+.prompt-hint { margin: .42rem 0 0; color: var(--muted); font: 400 .72rem/1.6 var(--sans); }
+.answer-wrap { margin: .8rem 0 0 4.05rem; min-width: 0; }
+textarea, input[type="text"] { display: block; width: 100%; min-width: 0; min-height: 5.2rem; padding: .8rem .9rem; border: 1px solid rgba(230,222,206,.16); border-radius: 1px; color: var(--ink); background: rgba(233,225,207,.035); font: 400 .83rem/1.7 var(--sans); resize: vertical; transition: border-color .2s ease, background .2s ease; }
+textarea::placeholder, input[type="text"]::placeholder { color: #898274; opacity: .9; }
+textarea:hover, input[type="text"]:hover { border-color: rgba(230,222,206,.31); }
+textarea:focus, input[type="text"]:focus { border-color: var(--oxide); background: rgba(233,225,207,.06); outline: none; }
+textarea.short { min-height: 3.4rem; }
+.section-aside { max-width: 46rem; margin: 2.4rem 0 2.8rem 4.05rem; padding: 1rem 1.15rem 1.1rem; border-top: 1px solid var(--rule-strong); border-bottom: 1px solid var(--rule); background: linear-gradient(105deg, rgba(155,154,124,.065), transparent 80%); }
+.aside-label { margin: 0 0 .45rem; color: var(--lichen); font: 600 .56rem var(--sans); letter-spacing: .17em; text-transform: uppercase; }
+.section-aside p:last-child { margin: 0; color: var(--ink-soft); font: 400 .78rem/1.75 var(--sans); }
+.section-aside p strong { color: var(--ink); }
+.chapter-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 3.7rem 0 0; padding-top: 1.2rem; border-top: 1px solid var(--rule); }
+.back-link { color: var(--muted); text-decoration: none; font: 500 .68rem var(--sans); letter-spacing: .04em; }
+.back-link:hover { color: var(--ink); }
+.footer-actions { display: flex; align-items: center; gap: .8rem; }
+/* Carry-forward note */
+.carry-card { position: relative; overflow: hidden; margin: 3rem 0 2rem 4.05rem; padding: 1.2rem 1.3rem 1.4rem; border: 1px solid rgba(177,125,94,.34); background: linear-gradient(135deg, rgba(81,57,43,.24), rgba(34,31,26,.35)); }
+.carry-card::before { content: ""; position: absolute; top: -8rem; right: -5rem; width: 20rem; height: 20rem; border: 1px solid rgba(177,125,94,.12); border-radius: 51% 49% 46% 54%; transform: rotate(22deg); pointer-events: none; }
+.carry-kicker { margin: 0 0 .55rem; color: var(--oxide); font: 600 .55rem var(--sans); letter-spacing: .2em; text-transform: uppercase; }
+.carry-title { margin: 0 0 .5rem; font: 400 clamp(1.6rem, 3vw, 2.2rem)/1.15 var(--serif); }
+.carry-intro { max-width: 38rem; margin: 0 0 1.35rem; color: var(--ink-soft); font: 400 .76rem/1.7 var(--sans); }
+.carry-fields { position: relative; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem 1.1rem; }
+.carry-field { min-width: 0; }
+.carry-field.wide { grid-column: 1 / -1; }
+.carry-field label { display: block; margin: 0 0 .35rem; color: var(--muted); font: 600 .56rem/1.4 var(--sans); letter-spacing: .12em; text-transform: uppercase; }
+.carry-field input { min-height: 3rem; }
+.carry-field textarea { min-height: 4rem; }
+.final-note { max-width: 45rem; margin: 2rem 0 0 4.05rem; color: var(--ink-soft); font: 400 .84rem/1.8 var(--sans); }
+.final-note em { color: var(--ink); font: italic 1.2rem var(--serif); }
+.keep-section { margin: 3.3rem 0 0 4.05rem; padding-top: 1.35rem; border-top: 1px solid var(--rule-strong); }
+.keep-section h3 { margin: 0 0 .45rem; font: 400 1.7rem var(--serif); }
+.keep-section p { max-width: 42rem; margin: 0; color: var(--muted); font: 400 .73rem/1.7 var(--sans); }
+.keep-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.1rem; }
+/* Dialog */
+dialog { width: min(calc(100% - 2rem), 28rem); padding: 1.5rem; border: 1px solid var(--rule-strong); border-radius: 2px; color: var(--ink); background: #24211c; box-shadow: 0 25px 100px rgba(0,0,0,.45); }
+dialog::backdrop { background: rgba(5,5,4,.78); backdrop-filter: blur(5px); }
+dialog h3 { margin: 0 0 .6rem; font: 400 1.55rem var(--serif); }
+dialog p { margin: 0 0 1.35rem; color: var(--ink-soft); font: 400 .8rem/1.7 var(--sans); }
+.dialog-actions { display: flex; flex-wrap: wrap; gap: .65rem; }
+.vh { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+/* Responsive layouts */
+@media (max-width: 900px) {
+  .layout { display: block; }
+  .topbar { display: flex; }
+  .rail { display: none; position: fixed; inset: 3.65rem 0 auto; z-index: 40; width: 100%; height: auto; min-height: 0; max-height: calc(100dvh - 3.65rem); overflow: auto; padding: 1rem 1.2rem 1.3rem; border-right: 0; border-bottom: 1px solid var(--rule-strong); background: rgba(24,22,19,.98); backdrop-filter: blur(20px); }
+  .rail[data-open="true"] { display: block; }
+  .brand { display: none; }
+  .stage-nav { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 1rem; }
+  .stage-nav::before { display: none; }
+  .stage-nav a { min-height: 2.9rem; }
+  .rail-bottom { margin-top: 1.1rem; }
+  .main-wrap { padding: 0 clamp(1.3rem, 5vw, 3.5rem) 4.5rem; }
+  .desktop-tools { display: none; }
+  .view { min-height: calc(100dvh - 3.65rem); padding-top: clamp(2.8rem, 7vh, 4.8rem); }
+  .hero { min-height: 0; grid-template-columns: minmax(0,1fr) minmax(12rem,.7fr); gap: 1rem; padding-top: .4rem; }
+  .hero-plate { min-height: 22rem; }
+}
+@media (max-width: 620px) {
+  .main-wrap { padding-inline: clamp(1rem, 5vw, 1.45rem); }
+  .view { padding-top: 2.2rem; }
+  .hero { display: block; padding: .25rem 0 1.1rem; }
+  .hero-copy { max-width: 36rem; }
+  h1 { max-width: 8ch; margin-bottom: 1.1rem; font-size: clamp(4.05rem, 17vw, 6rem); }
+  .hero-subtitle { max-width: 29rem; font-size: .94rem; }
+  .hero-plate { position: absolute; top: 2.2rem; right: 0; width: min(50vw, 16rem); min-height: 0; opacity: .28; }
+  .hero-plate::before, .hero-plate::after { display: none; }
+  .hero-engraving { width: 100%; }
+  .plate-caption, .hero-index { display: none; }
+  .hero-divider { margin-top: 1.5rem; }
+  .intro-copy { font-size: .98rem; }
+  .welcome-meta { grid-template-columns: 1fr; gap: .8rem; margin: 2rem 0 1.9rem; }
+  .meta-item { grid-template-columns: 6.2rem minmax(0,1fr); align-items: baseline; gap: .7rem; }
+  .chapter-head { margin-bottom: 2rem; padding-top: .35rem; padding-bottom: 1.45rem; }
+  .chapter-title { max-width: 14ch; font-size: clamp(2.6rem, 12vw, 4.2rem); }
+  .chapter-lead { font-size: .9rem; }
+  .prompt-group { margin-bottom: 1.8rem; padding-top: .85rem; }
+  .prompt-head { grid-template-columns: 2.25rem minmax(0,1fr); gap: .55rem; }
+  .prompt-title { font-size: 1.12rem; line-height: 1.48; }
+  .answer-wrap { margin: .7rem 0 0 2.8rem; }
+  textarea, input[type="text"] { min-height: 5rem; padding: .75rem; font-size: .82rem; }
+  .section-aside, .carry-card, .final-note, .keep-section { margin-left: 2.8rem; }
+  .section-aside { padding: .85rem .9rem; }
+  .carry-card { padding: 1rem; }
+  .carry-fields { grid-template-columns: 1fr; }
+  .carry-field.wide { grid-column: auto; }
+  .chapter-footer { align-items: center; margin-top: 2.8rem; }
+  .chapter-footer .primary-button { min-width: 0; }
+  .footer-actions { gap: .45rem; }
+  .footer-actions .primary-button { padding-inline: .8rem; }
+  .back-link { font-size: .62rem; }
+  .keep-actions { align-items: stretch; }
+  .keep-actions button { flex: 1 1 auto; }
+}
+@media (max-width: 380px) {
+  .topbar { gap: .4rem; padding-inline: .7rem; }
+  .topbar-name { font-size: .72rem; }
+  .nav-toggle { font-size: .57rem; }
+  .lang-toggle { gap: .25rem; padding-inline: .4rem; font-size: .57rem; }
+  .stage-nav { grid-template-columns: 1fr; }
+  .meta-item { grid-template-columns: 5.7rem minmax(0,1fr); }
+  .prompt-head { grid-template-columns: 1.9rem minmax(0,1fr); gap: .45rem; }
+  .answer-wrap, .section-aside, .carry-card, .final-note, .keep-section { margin-left: 2.35rem; }
+  .chapter-footer { gap: .5rem; }
+  .chapter-footer .primary-button { padding-inline: .65rem; font-size: .58rem; }
+}
+@media (min-width: 1500px) {
+  :root { --rail: 18.5rem; --measure: 74rem; }
+  .rail { padding-left: 2.4rem; padding-right: 1.8rem; }
+  .main-wrap { padding-inline: clamp(4rem, 6vw, 8rem); }
+  .hero { min-height: min(45rem, 70vh); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+@media print {
+  :root { color-scheme: light; --ink:#171614; --ink-soft:#333; --muted:#555; --faint:#666; --rule:rgba(0,0,0,.2); --rule-strong:rgba(0,0,0,.35); --oxide:#77513a; }
+  body { min-width: 0; color: #171614; background: #fff !important; font-size: 10pt; }
+  body::before, body::after, .topbar, .rail, .desktop-tools, .chapter-footer, .keep-section, .primary-button, .secondary-button, .resume { display: none !important; }
+  .layout { display: block; }
+  .main-wrap { padding: 0; }
+  .content { width: 100%; }
+  .view { display: block !important; min-height: 0; padding: 0 0 1rem; break-after: page; }
+  #welcome { display: none !important; }
+  .chapter-head { padding-top: 0; }
+  .chapter-title { font-size: 27pt !important; }
+  .prompt-group, .section-aside, .carry-card { break-inside: avoid; }
+  textarea, input[type="text"] { color: #111 !important; background: #fff !important; border: 0 !important; border-bottom: 1px solid #aaa !important; padding: .2rem 0 !important; min-height: 2.2rem; resize: none; }
+  .carry-card { background: #f5f1e8 !important; border-color: #aaa; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" id="skip-link" href="#main">Preskoči na razmisleke</a>
+<header class="topbar" id="mobile-header">
+  <span class="topbar-name" id="mobile-title">Pred potjo</span>
+  <button class="nav-toggle" type="button" id="nav-toggle" aria-expanded="false" aria-controls="rail">Vsebina <span aria-hidden="true">＋</span></button>
+  <button class="lang-toggle" type="button" data-lang-toggle aria-label="Switch to English"><span class="current-lang">SL</span><span class="lang-separator">/</span><span class="next-lang">EN</span></button>
+  <div class="top-progress" aria-hidden="true"><span id="top-progress-fill"></span></div>
+</header>
+<div class="shell layout">
+  <aside class="rail" id="rail" data-open="false" aria-label="Vsebina vodnika"></aside>
+  <main class="main-wrap" id="main" tabindex="-1">
+    <div class="desktop-tools">
+      <span class="folio-label" id="folio-label">OSEBNI TERENSKI ZVEZEK &nbsp;·&nbsp; 01</span>
+      <button class="lang-toggle" type="button" data-lang-toggle aria-label="Switch to English"><span class="current-lang">SL</span><span class="lang-separator">/</span><span class="next-lang">EN</span></button>
+    </div>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+<dialog id="clear-dialog" aria-labelledby="dialog-title">
+  <h3 id="dialog-title">Izbrisati shranjene zapise?</h3>
+  <p id="dialog-copy">S tem bodo iz tega brskalnika odstranjeni vsi tvoji odgovori. Tega ni mogoče razveljaviti. Če jih želiš obdržati, jih najprej izvozi.</p>
+  <div class="dialog-actions"><button class="primary-button" type="button" id="confirm-clear">Izbriši zapise</button><button class="secondary-button" type="button" id="cancel-clear">Ohrani zapise</button></div>
+</dialog>
+<script>
+(() => {
+  'use strict';
+  const STORAGE_KEY = 'journey-field-notes-v2';
+  const LANGUAGE_KEY = 'journey-field-notes-language';
+  const state = { answers: {}, lastStage: 1, saveTimer: null, storageOK: true, language: 'sl' };
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+  const COPY = {
+    sl: {
+      langName: 'slovenščina', switchLabel: 'Preklopi v angleščino', skip: 'Preskoči na razmisleke',
+      brand: 'Pred potjo', brandCaption: 'Prostor za premislek', railLabel: 'Šest poglavij',
+      nav: [
+        ['Izhodišče', 'Zakaj prav zdaj'], ['Namera', 'Kaj želiš raziskati'], ['Notranja opora', 'Kaj te podpira'],
+        ['Ljudje in prostor', 'Pogoji in meje'], ['Zdravje in varnost', 'Vprašanja pred odločitvijo'], ['Po izkušnji', 'Dnevi, ki sledijo']
+      ],
+      privacy: 'Zapisi se shranjujejo samo v tem brskalniku. Ta stran jih ne pošilja na strežnik.',
+      download: 'Izvozi zapise ↗', print: 'Natisni / shrani kot PDF ↗', clear: 'Izbriši shranjene zapise',
+      saved: 'Shranjeno v tem brskalniku', saving: 'Shranjujem …', saveError: 'Shranjevanje ni na voljo — izvozi zapise, da jih ohraniš.',
+      mobileContents: 'Vsebina', mobileClose: 'Zapri', folio: 'OSEBNI TERENSKI ZVEZEK  ·  01',
+      heroEyebrow: 'OSEBNI TERENSKI ZVEZEK / 01', heroFirst: 'Pred', heroSecond: 'potjo.',
+      heroSubtitle: 'Prostor za premislek, namero in skrb — pred izkušnjo, med njo in po njej.',
+      heroPlateIndex: 'ŠTUDIJA 01 / NOTRANJA POKRAJINA', heroPlateCaption: 'Študija oblike, časa in tega, kar požene korenine', heroArtLabel: 'Abstraktna linijska risba, ki spominja na korenine in plasti zemlje',
+      before: 'Preden začneš',
+      intro1: 'Namera ni cilj, ki ga je treba doseči, temveč smer, h kateri se je mogoče vračati, ne da bi vnaprej določili cilj poti.',
+      intro2: 'Skozi zapise pojdi v svojem ritmu. Lahko zapišeš nekaj stavkov, kakšno vprašanje preskočiš, se vrneš čez nekaj dni ali se odločiš, da zdaj ni pravi čas. Tukaj ni ciljne črte.',
+      careTitle: 'Najprej skrb.',
+      careText: 'Razmislek lahko pomaga pri pripravi, vendar izpolnjen vodnik ne more potrditi, da je psihedelična izkušnja varna ali primerna zate. To ni zdravstveni nasvet, klinična ocena ali nadomestilo za pogovor z usposobljenim zdravstvenim strokovnjakom. Ni ti treba nadaljevati; tudi odlog ali odločitev, da ne greš naprej, sta povsem veljavni možnosti.',
+      meta: [['RITEM', 'Šest postaj. Vzemi si več dni, če ti tako ustreza.'], ['ZASEBNOST', 'Zapisi ostanejo v tem brskalniku, razen če jih izvoziš.'], ['PRISTOP', 'Iskrenost pred popolnostjo. Radovednost brez pritiska.']],
+      begin: 'Začni počasi', resumeLead: 'Na tej napravi so že shranjeni zapisi.', resumeLink: 'Nadaljuj pri postaji', resumeTail: 'ali se vrni na začetek.',
+      stageLabel: 'POGLAVJE', of: 'OD', previous: '← PREJŠNJE POGLAVJE', introduction: '← UVOD', continue: 'NADALJUJ', takeTime: 'VZEMI SI ČAS',
+      noteLabels: {
+        distinction: 'Majhna, a pomembna razlika', grounding: 'Ni ti treba iti skozi vse', practical: 'Nekaj praktičnih stvari', professional: 'Pogovor s strokovnjakom', remember: 'Imej v mislih'
+      },
+      stages: [
+        {
+          title: 'Kaj me je pripeljalo sem?',
+          lead: 'Preden razmišljaš o tem, kam želiš priti, se ustavi pri tem, kaj te je pripeljalo sem. Začni pri okoliščinah te odločitve, ne pri zgodbi, za katero se zdi, da jo od tebe pričakujejo.',
+          prompts: [
+            { key:'1.1', text:'Kaj me je v tem življenjskem obdobju pripeljalo do razmišljanja o tej izkušnji?', hint:'Začni tam, kjer se odgovor zdi najbolj iskren.', placeholder:'Tukaj sem, ker …' },
+            { key:'1.2', text:'Kaj v zadnjem času najbolj zahteva mojo pozornost — sprememba, izguba, vprašanje ali vzorec, ki se ponavlja?', placeholder:'Nekaj, k čemur se vedno znova vračam …' },
+            { key:'1.3', text:'Kaj želim bolje razumeti, raziskati ali čemu nameniti več prostora?', placeholder:'Radovednost me vodi k …' },
+            { key:'1.4', text:'Je ta odločitev res moja? Zaznavam kakšen pritisk, občutek nujnosti ali željo po begu pred nečim?', placeholder:'Kaj je moja svobodna izbira in kaj je bolj zapleteno …' }
+          ]
+        },
+        {
+          title: 'Namera, ki pušča prostor',
+          lead: 'Namera ni cilj, ki ga moraš doseči, temveč vprašanje ali smer, ki jo lahko vzameš s seboj. Ni treba vnaprej določiti, kakšen naj bo izid; nekaj prostora lahko ostane tudi za negotovost.',
+          aside: { label:'Majhna, a pomembna razlika', text:'»Želim se znebiti tesnobe« zahteva določen izid. »Kaj mi lahko pomaga bolje razumeti svojo tesnobo in se do nje vesti prijazneje?« pušča prostor za radovednost. Nobena formulacija ne zagotavlja rezultata; druga zgolj postavlja manj zahtev.' },
+          prompts: [
+            { key:'2.1', text:'Če odmislim izid, ki si ga želim, katero vprašanje se mi zdi vredno vzeti s seboj?', placeholder:'Vprašanje, ki mu želim slediti z radovednostjo …' },
+            { key:'2.2', text:'Zapiši prvi osnutek svoje namere, natanko tako, kot pride. Ni treba, da zveni modro ali izpiljeno.', placeholder:'Moje prve besede …' },
+            { key:'2.3', text:'Katerega področja mojega življenja, odnosa ali notranjega sveta se ta namera dotika?', placeholder:'To se povezuje z …' },
+            { key:'2.4', text:'Kako lahko ohranim to namero kot odprto vprašanje in sprejmem možnost, da odgovora morda ne bo?', placeholder:'Kako pustiti prostor tudi za nepričakovano …' }
+          ]
+        },
+        {
+          title: 'Opaziti, kar je že tukaj',
+          lead: 'Pripravljenosti ni treba ustvariti na silo. Vredno je pogledati, kakšne so tvoje trenutne okoliščine, kaj ti daje oporo, kaj je občutljivo in kje bi prišla prav dodatna podpora.',
+          aside: { label:'Ni ti treba iti skozi vse', text:'Ni ti treba dokazovati, da lahko preneseš stisko. Lahko prosiš za podporo, postaviš meje, narediš premor ali si premisliš. Intenzivna ali zastrašujoča izkušnja sama po sebi še ni nujno smiselna, potrebna ali koristna.' },
+          prompts: [
+            { key:'3.1', text:'Kako se počutim v zadnjih tednih — čustveno, v telesu in v vsakdanjem življenju?', placeholder:'V zadnjem času je moje čustveno vreme …' },
+            { key:'3.2', text:'So v mojem življenju nedavne spremembe, izgube, dolgotrajen stres ali nerešene težave, ki potrebujejo pozornost, preden se odločim?', placeholder:'Stvari, ki jih moram upoštevati …' },
+            { key:'3.3', text:'Česa me je strah, da bi se lahko odprlo? Kako se običajno odzovem, ko me preplavi ali izgubim občutek nadzora?', placeholder:'Kar mi je težko srečati …' },
+            { key:'3.4', text:'Kaj mi v težkih trenutkih pomaga, da se znova umirim in začutim oporo? Na koga se lahko obrnem?', placeholder:'Ljudje, prakse ali kraji, ki mi pomagajo …' }
+          ]
+        },
+        {
+          title: 'Prostor, ljudje in meje',
+          lead: 'Ljudje in okolje, v katerih se izkušnja odvija, so pomembni. Ne gre le za vzdušje: zaupanje, soglasje, odgovornost in jasen načrt podpore so del skrbi.',
+          aside: { label:'Nekaj praktičnih stvari', text:'Zanesljiv prevoz, jasen načrt za nujne primere, dostop do vode in udoben prostor za počitek, urejene vsakodnevne obveznosti ter zaupanja vredna oseba, ki ve, kako te doseči. Ne zanašaj se na neusposobljeno osebo ali nejasno obljubo podpore.' },
+          prompts: [
+            { key:'4.1', text:'Kje bi se izkušnja odvijala? Kaj bi prostor naredilo fizično udoben, zaseben in čim manj izpostavljen motnjam?', placeholder:'Prostor in stvari, ki bi mi koristile …' },
+            { key:'4.2', text:'Kdo bi bil prisoten in kakšno vlogo bi imele posamezne osebe? Kakšne izkušnje, usposobljenost ali odgovornost imajo?', placeholder:'Vključene osebe in to, kar vem o njihovi vlogi …' },
+            { key:'4.3', text:'Ali lahko odkrito izrazim svoje želje, rečem ne, prosim za pomoč ali si premislim? Kako bodo spoštovane moje meje in soglasje?', placeholder:'Meje, ki jih želim jasno izraziti …' },
+            { key:'4.4', text:'Kaj je treba praktično urediti, da bo dovolj časa za počitek in čim manj pritiska pred izkušnjo in po njej?', placeholder:'Prevoz, obveznosti, počitek, zasebnost …' }
+          ]
+        },
+        {
+          title: 'Najprej varnost',
+          lead: 'Na nekatera vprašanja lahko odgovorijo le usposobljeni strokovnjaki in zanesljivi lokalni viri. Negotovost lahko ostane zapisana. Neodgovorjenega vprašanja ni treba označiti kot rešenega in potisniti na stran.',
+          note: { label:'Pogovor s strokovnjakom', title:'Zdravstveni vidik je pomemben.', text:'Psihedelične snovi lahko predstavljajo psihološka in telesna tveganja ter lahko vplivajo na zdravila ali določena zdravstvena stanja. Pred odločitvijo se z usposobljenim zdravstvenim strokovnjakom pogovori o svoji in družinski psihiatrični anamnezi, trenutnem zdravstvenem stanju ter vseh zdravilih, ki jih jemlješ. Zdravil ne prenehaj jemati, jih ne uvajaj in ne spreminjaj njihove uporabe na lastno pest.' },
+          prompts: [
+            { key:'5.1', text:'Ali je že potekal pogovor z usposobljenim zdravstvenim strokovnjakom o mojem zdravstvenem stanju, psihiatrični anamnezi in zdravilih, ki jih jemljem?', placeholder:'O čem je že tekel pogovor in kaj še potrebuje strokoven odgovor …' },
+            { key:'5.2', text:'Katera vprašanja ali pomisleki so še odprti? Kdo mi lahko pomaga najti zanesljive odgovore?', placeholder:'Vprašanja, ki jih moram razjasniti pred odločitvijo …' },
+            { key:'5.3', text:'Ali poznam pravni status snovi in morebitnega vodenja izkušnje na kraju, kjer bi se to odvijalo?', placeholder:'Uradni vir in morebitna odprta vprašanja …' },
+            { key:'5.4', text:'Ali obstaja jasen načrt za nujne primere? Kdo lahko pokliče pomoč, kdo pozna lokacijo in kdo lahko zagotovi trezno podporo?', placeholder:'Osebe, kontakti in praktični dogovori …' },
+            { key:'5.5', text:'V katerih okoliščinah bi bila najbolj skrbna odločitev, da izkušnjo odložim ali se zanjo ne odločim?', placeholder:'Razlogi, ki jih želim vzeti resno …' }
+          ],
+          after: { label:'Imej v mislih', text:'Ta vodnik ne pomeni zdravstvene odobritve, ne podaja ocene tveganja, navodil za uporabo snovi ali pravnega nasveta. Če zdravstveni strokovnjak odsvetuje nadaljevanje, to vzemi resno. Če se okoliščine, podpora ali dogovori o soglasju ne zdijo varni, se lahko umakneš.' }
+        },
+        {
+          title: 'Kar ostane po izkušnji',
+          lead: 'Izkušnja se ne konča nujno, ko se konča tisti dan. Če iz nje vznikne kakšen uvid, se njegov pomen oblikuje v vsakdanjem življenju — počasi, ob podpori, presoji in prostoru za povsem običajne stvari.',
+          prompts: [
+            { key:'6.1', text:'Kdo bi me lahko poslušal, ne da bi hitel razlagati, soditi ali popravljati to, kar delim?', placeholder:'Osebe, na katere se lahko obrnem …' },
+            { key:'6.2', text:'Koliko časa in prostora si lahko po izkušnji vzamem za počitek, premislek in običajne rutine?', placeholder:'Prostor, ki ga lahko ustvarim …' },
+            { key:'6.3', text:'Bi mi koristil pogovor s terapevtom, strokovnjakom za integracijo ali drugo zaupanja vredno osebo? Kako in kdaj lahko stopim v stik?', placeholder:'Oseba ali naslednji korak …' },
+            { key:'6.4', text:'Katero majhno, stvarno dejanje bi mi lahko pomagalo prenesti nekaj pomembnega v vsakdanje življenje — brez prenagljenih velikih odločitev?', placeholder:'Majhen korak, ko bo pravi čas …' },
+            { key:'6.5', text:'Kaj lahko storim in na koga se lahko obrnem, če se po izkušnji pojavijo vznemirjenost, zmeda ali stiska?', placeholder:'Moj načrt, kako poiskati podporo …' }
+          ]
+        }
+      ],
+      carry: {
+        kicker:'Zapis, ki gre s teboj', title:'Česa se želim spomniti', intro:'Ne obljuba in ne napoved. Le nekaj besed, h katerim se lahko vrneš — ali jih spremeniš, ko se bo tvoje razumevanje spreminjalo.',
+        fields:[
+          {key:'carry.intention',label:'Vprašanje ali namera, ki jo želim držati rahlo',placeholder:'Želim raziskati …',wide:true,rows:2},
+          {key:'carry.anchor',label:'Beseda, predmet ali opomnik',placeholder:'Nekaj, kar mi daje oporo …'},
+          {key:'carry.person',label:'Oseba, na katero se lahko obrnem',placeholder:'Zaupanja vredna oseba …'},
+          {key:'carry.next',label:'Naslednji skrben korak — tudi možnost, da počakam',placeholder:'Preden se odločim, bom …',wide:true,rows:2}
+        ]
+      },
+      finalEmphasis:'Ni ti treba reči da.', finalText:'Lahko si vzameš več časa, zastaviš dodatno vprašanje, poiščeš strokovni nasvet ali se odločiš, da ne nadaljuješ. Skrb se ne meri s tem, kako daleč greš.',
+      keepTitle:'Ohrani svoje zapise', keepText:'Zapisi so shranjeni lokalno v tem brskalniku in se prek te strani ne pošiljajo na strežnik. Lahko jih izvoziš ali natisneš. Kdor ima dostop do tega uporabniškega profila ali naprave, lahko dostopa tudi do lokalno shranjenih zapisov.',
+      export:'Izvozi zapise', print:'Natisni / shrani kot PDF', clearDialogTitle:'Izbrisati shranjene zapise?', clearDialogText:'S tem bodo iz tega brskalnika odstranjeni vsi tvoji odgovori. Tega ni mogoče razveljaviti. Če jih želiš obdržati, jih najprej izvozi.', clearConfirm:'Izbriši zapise', clearCancel:'Ohrani zapise',
+      exportTitle:'PRED POTJO', exportSubtitle:'Prostor za premislek, namero in skrb', exportDate:'Datum', empty:'(brez zapisa)',
+      noteLabel:'Opomba', skip:'Preskoči na razmisleke', stageProgress:'POSTAJA'
+    },
+    en: {
+      langName: 'English', switchLabel: 'Switch to Slovenian', skip: 'Skip to the reflections',
+      brand: 'Before the journey', brandCaption: 'A space for reflection', railLabel: 'Six passages',
+      nav: [
+        ['Ground', 'Starting point'], ['Seed', 'Intention'], ['Roots', 'Inner landscape'],
+        ['Conditions', 'People and place'], ['Considerations', 'Health and safety'], ['Integration', 'Life afterwards']
+      ],
+      privacy: 'Your notes are saved only in this browser. This page does not send them to a server.',
+      download: 'Export reflections ↗', print: 'Print / save as PDF ↗', clear: 'Clear saved reflections',
+      saved: 'Saved in this browser', saving: 'Saving …', saveError: 'Saving is unavailable — export your notes to keep them.',
+      mobileContents: 'Contents', mobileClose: 'Close', folio: 'PERSONAL FIELD NOTES  ·  01',
+      heroEyebrow: 'PERSONAL FIELD NOTES / 01', heroFirst: 'Before', heroSecond: 'the journey.',
+      heroSubtitle: 'A space for reflection, intention and care — before, during and after an experience.',
+      heroPlateIndex: 'STUDY 01 / INNER LANDSCAPE', heroPlateCaption: 'A study of form, time and what takes root', heroArtLabel: 'An abstract etched line drawing suggesting roots and layers of earth',
+      before: 'Before you begin',
+      intro1: 'An intention is not a destination to reach. It is a direction you can return to, without deciding in advance where the path must lead.',
+      intro2: 'Move through these reflections at your own pace. Write a few sentences, leave a question unanswered, return in a few days or decide that now is not the right time. There is no finish line here.',
+      careTitle: 'A note on care.',
+      careText: 'Reflection can help you prepare, but completing this guide cannot establish that a psychedelic experience is safe or appropriate for you. This is not medical advice, a clinical assessment or a substitute for speaking with a qualified healthcare professional. You do not need to continue; postponing or deciding not to proceed are both valid choices.',
+      meta: [['PACE', 'Six passages. Take several days if that feels right.'], ['PRIVACY', 'Notes stay in this browser unless you choose to export them.'], ['APPROACH', 'Honesty over completeness. Curiosity without pressure.']],
+      begin: 'Begin gently', resumeLead: 'There are notes saved on this device.', resumeLink: 'Return to passage', resumeTail: 'or begin again.',
+      stageLabel: 'CHAPTER', of: 'OF', previous: '← PREVIOUS CHAPTER', introduction: '← INTRODUCTION', continue: 'CONTINUE', takeTime: 'TAKE YOUR TIME',
+      noteLabels: {
+        distinction: 'A small but important distinction', grounding: 'You do not have to push through', practical: 'A few practical details', professional: 'Speak with a professional', remember: 'Keep in mind'
+      },
+      stages: [
+        {
+          title: 'What brought me here?',
+          lead: 'Before thinking about where you want to go, pause with what brought you here. Begin with the circumstances around this choice, not the story you think you should tell.',
+          prompts: [
+            { key:'1.1', text:'What has brought me to consider this experience at this point in my life?', hint:'Start wherever the answer feels most honest.', placeholder:'I find myself here because …' },
+            { key:'1.2', text:'What has been asking for my attention lately — a change, a loss, a question or a recurring pattern?', placeholder:'Something I keep returning to …' },
+            { key:'1.3', text:'What do I want to understand, explore or make more room for?', placeholder:'I am curious about …' },
+            { key:'1.4', text:'Does this feel like my own choice? Is there pressure, urgency or a wish to escape something that I should acknowledge?', placeholder:'What feels freely chosen — and what feels complicated …' }
+          ]
+        },
+        {
+          title: 'An intention to hold lightly',
+          lead: 'An intention is not a goal you have to achieve. It is a question or direction you can carry with you without deciding in advance what the outcome must be. Leave some room for uncertainty.',
+          aside: { label:'A small but important distinction', text:'“I want to get rid of my anxiety” demands a particular outcome. “What might help me understand my anxiety and meet it with more kindness?” leaves room for curiosity. Neither wording guarantees a result; the second simply makes fewer demands.' },
+          prompts: [
+            { key:'2.1', text:'If I set aside the outcome I hope for, what question feels worth bringing with me?', placeholder:'A question I want to stay curious about …' },
+            { key:'2.2', text:'Write a first draft of my intention exactly as it comes. It does not need to sound wise or polished.', placeholder:'My first words …' },
+            { key:'2.3', text:'Which part of my life, a relationship or my inner world does this intention touch?', placeholder:'This connects to …' },
+            { key:'2.4', text:'How can I hold this intention lightly and leave room for the experience not to bring the answer I expect?', placeholder:'A way to stay open …' }
+          ]
+        },
+        {
+          title: 'Notice what is already here',
+          lead: 'Readiness is not a feeling you have to manufacture. It is worth noticing your present circumstances, what feels steady, what feels tender and where you may need support.',
+          aside: { label:'You do not have to push through', text:'You do not have to prove that you can tolerate distress. You can ask for support, set boundaries, pause or change your mind. An intense or frightening experience is not automatically meaningful, necessary or beneficial.' },
+          prompts: [
+            { key:'3.1', text:'How have I been feeling over the last few weeks — emotionally, physically and in everyday life?', placeholder:'Lately, the emotional weather has been …' },
+            { key:'3.2', text:'Are there recent changes, losses, prolonged stress or unresolved difficulties that deserve attention before I decide?', placeholder:'Things I should take into account …' },
+            { key:'3.3', text:'What am I afraid might come up? How do I usually respond when I feel overwhelmed or out of control?', placeholder:'What feels difficult to meet …' },
+            { key:'3.4', text:'What genuinely helps me settle and feel supported in difficult moments? Who could I turn to?', placeholder:'People, practices or places that help …' }
+          ]
+        },
+        {
+          title: 'People, place and boundaries',
+          lead: 'The people and environment around an experience matter. Think beyond atmosphere: trust, consent, accountability and a clear plan for support are part of care.',
+          aside: { label:'A few practical details', text:'Reliable transport, a clear emergency plan, access to water and a comfortable place to rest, everyday responsibilities covered, and someone trusted who knows how to reach you. Do not rely on an unqualified person or an unclear promise of support.' },
+          prompts: [
+            { key:'4.1', text:'Where would this take place? What would make the environment physically comfortable, private and free from avoidable disruption?', placeholder:'The space and what I would need from it …' },
+            { key:'4.2', text:'Who would be present, what exactly would their role be, and what experience, training or accountability do they have?', placeholder:'The people involved and what I know about their role …' },
+            { key:'4.3', text:'Can I speak freely, say no, ask for help or change my mind? How will my boundaries and consent be respected?', placeholder:'Boundaries I want to make explicit …' },
+            { key:'4.4', text:'What practical arrangements would protect time for rest and reduce pressure before and afterwards?', placeholder:'Transport, responsibilities, rest, privacy …' }
+          ]
+        },
+        {
+          title: 'Care before certainty',
+          lead: 'Some questions need answers from qualified people and reliable local sources, not reflection alone. Leave room for uncertainty; an unanswered question is not a box to tick and move past.',
+          note: { label:'Speak with a professional', title:'Qualified health guidance matters.', text:'Psychedelics can carry psychological and physical risks and may interact with medications or health conditions. Before making a decision, discuss your personal and family psychiatric history, current health and all medications with a qualified healthcare professional. Do not stop, start or change medication on your own.' },
+          prompts: [
+            { key:'5.1', text:'Have I discussed relevant health questions, psychiatric history and current medications with a qualified healthcare professional?', placeholder:'What has been discussed, and what still needs a professional answer …' },
+            { key:'5.2', text:'What questions or concerns remain unanswered? Who is qualified to help me understand them?', placeholder:'Questions I need to raise before deciding …' },
+            { key:'5.3', text:'Have I checked the legal status of the substance and any facilitation where this would take place?', placeholder:'The reliable source I checked / what remains unclear …' },
+            { key:'5.4', text:'Is there a clear emergency plan? Who can contact emergency services, who knows the location, and who can provide sober support?', placeholder:'People, contact details and practical arrangements …' },
+            { key:'5.5', text:'What would make postponing or deciding not to proceed the most caring choice?', placeholder:'Reasons I would take seriously …' }
+          ],
+          after: { label:'Keep in mind', text:'This guide does not provide medical clearance, a risk score, substance-use instructions or legal advice. If a healthcare professional advises against proceeding, take that advice seriously. If the setting, support or consent arrangements do not feel safe, you can step away.' }
+        },
+        {
+          title: 'What finds its way into everyday life',
+          lead: 'An experience does not necessarily end when the day ends. Any meaning it may hold is made in the life around it — slowly, with support, discernment and room for ordinary things.',
+          prompts: [
+            { key:'6.1', text:'Who could listen without rushing to interpret, judge or fix what I share?', placeholder:'People I could turn to …' },
+            { key:'6.2', text:'What time and space can I protect for rest, reflection and ordinary routines afterwards?', placeholder:'The practical space I can make …' },
+            { key:'6.3', text:'Would a therapist, integration professional or another trusted support person be useful? How and when could I reach them?', placeholder:'A person or next step …' },
+            { key:'6.4', text:'What is one small, grounded action that could help bring something meaningful into everyday life — without making major decisions too quickly?', placeholder:'A small step, when the time is right …' },
+            { key:'6.5', text:'If I feel unsettled or distressed afterwards, what will I do and whom will I contact?', placeholder:'My plan for reaching support …' }
+          ]
+        }
+      ],
+      carry: {
+        kicker:'A note to carry forward', title:'What I want to remember', intro:'Not a promise, not a prediction. Just a few words to return to — or to revise as your understanding changes.',
+        fields:[
+          {key:'carry.intention',label:'The question or intention I want to hold lightly',placeholder:'I want to stay curious about …',wide:true,rows:2},
+          {key:'carry.anchor',label:'A phrase, object or reminder',placeholder:'Something grounding …'},
+          {key:'carry.person',label:'Someone I can turn to',placeholder:'A trusted person …'},
+          {key:'carry.next',label:'One caring next step — including the option to pause',placeholder:'Before making any decision, I will …',wide:true,rows:2}
+        ]
+      },
+      finalEmphasis:'You do not owe the journey a yes.', finalText:'You can take more time, ask another question, seek professional advice or decide against it. Care is not measured by how far you go.',
+      keepTitle:'Keep your reflections', keepText:'Your notes are stored locally in this browser and are not sent to a server by this page. Download a copy for your own records, or print the reflections. Anyone with access to this browser profile or device may be able to access locally saved notes.',
+      export:'Export reflections', print:'Print / save as PDF', clearDialogTitle:'Clear saved reflections?', clearDialogText:'This removes your answers from this browser. It cannot be undone. Download a copy first if you would like to keep them.', clearConfirm:'Clear reflections', clearCancel:'Keep my notes',
+      exportTitle:'BEFORE THE JOURNEY', exportSubtitle:'A space for reflection, intention and care', exportDate:'Date', empty:'(no entry)', noteLabel:'Note', skip:'Skip to the reflections', stageProgress:'PASSAGE'
+    }
+  };
+
+  function currentCopy() { return COPY[state.language]; }
+  function esc(value) { return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+  function answerValue(key) { return typeof state.answers[key] === 'string' ? state.answers[key] : ''; }
+  function countStage(stage) {
+    const keys = COPY.sl.stages[stage - 1].prompts.map(prompt => prompt.key);
+    if (stage === 6) keys.push('carry.intention','carry.anchor','carry.person','carry.next');
+    return keys.filter(key => String(state.answers[key] ?? '').trim().length > 0).length;
+  }
+
+  // Restore previous notes from this version, if present.
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && parsed.answers && typeof parsed.answers === 'object') {
+        state.answers = parsed.answers;
+        state.lastStage = Number.isInteger(parsed.lastStage) ? Math.min(6, Math.max(1, parsed.lastStage)) : 1;
+      }
+    }
+    const savedLanguage = localStorage.getItem(LANGUAGE_KEY);
+    if (savedLanguage === 'en' || savedLanguage === 'sl') state.language = savedLanguage;
+  } catch (_) { state.storageOK = false; }
+
+  function setSaveStatus(message, isError = false) {
+    const el = $('#save-state');
+    if (!el) return;
+    el.textContent = message;
+    el.dataset.error = isError ? 'true' : 'false';
+  }
+  function saveNow() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers: state.answers, lastStage: state.lastStage }));
+      state.storageOK = true;
+      setSaveStatus(currentCopy().saved);
+    } catch (_) {
+      state.storageOK = false;
+      setSaveStatus(currentCopy().saveError, true);
+    }
+  }
+  function queueSave() {
+    setSaveStatus(currentCopy().saving);
+    clearTimeout(state.saveTimer);
+    state.saveTimer = setTimeout(saveNow, 350);
+  }
+  function collectAnswers() {
+    $$('[data-key]').forEach(el => {
+      const key = el.dataset.key;
+      if (el.type === 'checkbox') {
+        if (el.checked) state.answers[key] = true;
+        else delete state.answers[key];
+      } else if (String(el.value ?? '').trim()) state.answers[key] = el.value;
+      else delete state.answers[key];
+    });
+  }
+  function navMarkup() {
+    const c = currentCopy();
+    const links = c.nav.map((item, index) => {
+      const n = index + 1;
+      return `<li><a href="#stage-${n}" data-stage="${n}"><span class="node" aria-hidden="true"></span><span class="nav-copy"><span class="nav-title">${esc(item[0])}</span><span class="nav-meta">${esc(item[1])}</span></span><span class="nav-count" data-count="${n}"></span></a></li>`;
+    }).join('');
+    return `<a class="brand" href="#welcome" aria-label="${esc(c.brand)} — ${esc(c.brandCaption)}"><span class="brand-stamp" aria-hidden="true">p.</span><span class="brand-copy"><span class="brand-title">${esc(c.brand)}</span><span class="brand-caption">${esc(c.brandCaption)}</span></span></a>
+      <p class="rail-label">${esc(c.railLabel)}</p><ol class="stage-nav" id="stage-nav">${links}</ol>
+      <div class="rail-bottom"><p class="privacy-note">${esc(c.privacy)}</p><div class="rail-actions">
+      <button class="quiet-button" type="button" data-action="download">${esc(c.download)}</button>
+      <button class="quiet-button" type="button" data-action="print">${esc(c.print)}</button>
+      <button class="quiet-button" type="button" data-action="clear">${esc(c.clear)}</button></div>
+      <p class="save-state" id="save-state" role="status" aria-live="polite">${esc(state.storageOK ? c.saved : c.saveError)}</p></div>`;
+  }
+  function languageButtonMarkup() {
+    const current = state.language.toUpperCase();
+    const next = state.language === 'sl' ? 'EN' : 'SL';
+    const label = currentCopy().switchLabel;
+    return `<button class="lang-toggle" type="button" data-lang-toggle aria-label="${esc(label)}"><span class="current-lang">${current}</span><span class="lang-separator">/</span><span class="next-lang">${next}</span></button>`;
+  }
+  function promptMarkup(prompt, stage) {
+    const num = prompt.key.split('.')[1];
+    const id = `field-${prompt.key.replace('.', '-')}`;
+    return `<article class="prompt-group"><div class="prompt-head"><span class="prompt-number">${String(stage).padStart(2,'0')}.${String(num).padStart(2,'0')}</span><div class="prompt-copy"><p class="prompt-title" id="label-${id}">${esc(prompt.text)}</p>${prompt.hint ? `<p class="prompt-hint">${esc(prompt.hint)}</p>` : ''}</div></div><div class="answer-wrap"><label class="vh" for="${id}">${esc(prompt.text)}</label><textarea id="${id}" data-key="${esc(prompt.key)}" rows="3" placeholder="${esc(prompt.placeholder || '')}">${esc(answerValue(prompt.key))}</textarea></div></article>`;
+  }
+  function asideMarkup(aside) {
+    return `<aside class="section-aside"><p class="aside-label">${esc(aside.label)}</p><p>${esc(aside.text)}</p></aside>`;
+  }
+  function noteMarkup(note) {
+    const title = note.title ? `<strong>${esc(note.title)}</strong> ` : '';
+    return `<aside class="care-note chapter-note"><p class="aside-label">${esc(note.label)}</p><p>${title}${esc(note.text)}</p></aside>`;
+  }
+  function carryMarkup(c) {
+    const fields = c.carry.fields.map(field => {
+      const id = `field-${field.key.replace('.', '-')}`;
+      const cls = field.wide ? 'carry-field wide' : 'carry-field';
+      const rows = field.rows || 1;
+      const control = rows > 1
+        ? `<textarea id="${id}" data-key="${esc(field.key)}" rows="${rows}" placeholder="${esc(field.placeholder)}">${esc(answerValue(field.key))}</textarea>`
+        : `<input id="${id}" type="text" data-key="${esc(field.key)}" placeholder="${esc(field.placeholder)}" value="${esc(answerValue(field.key))}">`;
+      return `<div class="${cls}"><label for="${id}">${esc(field.label)}</label>${control}</div>`;
+    }).join('');
+    return `<section class="carry-card"><p class="carry-kicker">${esc(c.carry.kicker)}</p><h3 class="carry-title">${esc(c.carry.title)}</h3><p class="carry-intro">${esc(c.carry.intro)}</p><div class="carry-fields">${fields}</div></section>`;
+  }
+  function welcomeMarkup(c) {
+    const resume = Object.keys(state.answers).some(key => String(state.answers[key] ?? '').trim().length > 0)
+      ? `<p class="resume">${esc(c.resumeLead)} <a href="#stage-${state.lastStage}">${esc(c.resumeLink)} ${state.lastStage}</a> ${esc(c.resumeTail)}</p>` : '';
+    return `<section class="view welcome-view" id="welcome" aria-labelledby="welcome-title">
+      <div class="hero">
+        <div class="hero-copy"><p class="eyebrow">${esc(c.heroEyebrow)}</p><h1 id="welcome-title"><span>${esc(c.heroFirst)}</span><em>${esc(c.heroSecond)}</em></h1><p class="hero-subtitle">${esc(c.heroSubtitle)}</p></div>
+        <figure class="hero-plate" aria-label="${esc(c.heroArtLabel)}" role="img">
+          <span class="hero-index">${esc(c.heroPlateIndex)}</span>
+          <svg class="hero-engraving" viewBox="0 0 560 620" fill="none" aria-hidden="true">
+            <g stroke="#c9bda6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M287 575C271 526 270 485 249 444C230 407 194 385 173 348C151 309 158 261 188 223C211 194 246 178 262 142" stroke-width="1.4"/>
+              <path d="M286 572C307 520 337 482 375 455C416 426 452 420 488 392" stroke-width="1.15"/>
+              <path d="M248 443C212 440 178 451 148 475C122 496 106 525 92 555" stroke-width="1"/>
+              <path d="M195 386C156 376 119 381 87 400C62 415 43 441 30 468" stroke-width=".9"/>
+              <path d="M172 349C190 322 195 294 186 264C177 233 154 211 127 200" stroke-width="1"/>
+              <path d="M188 223C224 227 257 215 280 190C304 165 315 132 309 96" stroke-width="1"/>
+              <path d="M264 143C294 147 324 136 346 114C365 95 375 69 373 43" stroke-width=".85"/>
+              <path d="M375 455C364 417 369 384 390 354C410 327 439 312 468 305" stroke-width=".9"/>
+              <path d="M148 475C151 447 143 426 123 411C104 396 81 392 58 398" stroke-width=".8"/>
+              <path d="M92 555C117 539 143 534 171 542C195 548 214 563 228 584" stroke-width=".8"/>
+              <path d="M286 572C312 554 341 547 372 554C401 560 426 577 440 601" stroke-width=".8"/>
+              <path d="M309 96C330 102 348 115 358 134M127 200C149 205 166 219 177 239M468 305C443 318 426 337 418 360M488 392C463 398 445 411 432 429" stroke-width=".65" opacity=".7"/>
+              <path d="M229 407C245 392 257 373 262 351M262 351C265 330 258 310 244 295M262 351C281 338 303 332 326 337M326 337C350 343 366 359 374 381" stroke-width=".75" opacity=".7"/>
+              <path d="M204 467C226 458 243 459 260 470M340 499C354 479 374 465 397 457M166 294C143 280 126 259 121 234M346 114C333 91 328 67 334 43" stroke-width=".7" opacity=".65"/>
+            </g>
+            <g stroke="#c9bda6" stroke-width=".55" opacity=".58" stroke-linecap="round">
+              <path d="M282 536l-17-19m21 29l-23-16m29 32l-22-13M208 397l-18-20m25 29l-19-14m-5-10l-19-15M372 463l12-21m-20 29l16-16m-24 23l13-17M161 474l-21-3m19 11l-23 1m29-20l-19-7M97 548l-8-20m17 16l-4-20m-1 32l-11-17M354 550l17-13m-12 19l19-10m-27 5l13-16"/>
+              <path d="M185 259l-19-5m24 13l-18-2m28-20l-18-10M279 197l13-19m-21 24l18-17m-28 21l17-15M419 357l19-14m-22 21l20-11"/>
+            </g>
+            <g fill="#c9bda6" opacity=".65"><circle cx="287" cy="575" r="2"/><circle cx="188" cy="223" r="1.7"/><circle cx="373" cy="43" r="1.5"/><circle cx="92" cy="555" r="1.4"/></g>
+          </svg>
+          <figcaption class="plate-caption">${esc(c.heroPlateCaption)}</figcaption>
+        </figure>
+      </div>
+      <div class="hero-divider"><span>${esc(c.before)}</span></div>
+      <div class="intro-copy"><p>${esc(c.intro1)}</p><p>${esc(c.intro2)}</p></div>
+      <div class="care-note"><strong>${esc(c.careTitle)}</strong> ${esc(c.careText)}</div>
+      <div class="welcome-meta">${c.meta.map(item => `<div class="meta-item"><span class="meta-label">${esc(item[0])}</span><span class="meta-value">${esc(item[1])}</span></div>`).join('')}</div>
+      <a class="primary-button" id="begin" href="#stage-1">${esc(c.begin)} <span class="arrow" aria-hidden="true">→</span></a>${resume}
+    </section>`;
+  }
+  function stageMarkup(stage, c, index) {
+    const n = index + 1;
+    const note = stage.note ? noteMarkup(stage.note) : '';
+    const after = stage.after ? noteMarkup(stage.after) : '';
+    const aside = stage.aside ? asideMarkup(stage.aside) : '';
+    const prompts = stage.prompts.map(prompt => promptMarkup(prompt, n)).join('');
+    const next = n < 6 ? `<a class="primary-button" href="#stage-${n+1}">${esc(c.continue)} <span class="arrow" aria-hidden="true">→</span></a>` : `<span class="chapter-end-label">${esc(c.takeTime)}</span>`;
+    const previous = n === 1 ? `<a class="back-link" href="#welcome">${esc(c.introduction)}</a>` : `<a class="back-link" href="#stage-${n-1}">${esc(c.previous)}</a>`;
+    const carry = n === 6 ? carryMarkup(c) : '';
+    const finalNote = n === 6 ? `<p class="final-note"><em>${esc(c.finalEmphasis)}</em> ${esc(c.finalText)}</p><section class="keep-section"><h3>${esc(c.keepTitle)}</h3><p>${esc(c.keepText)}</p><div class="keep-actions"><button class="primary-button" type="button" data-action="download">${esc(c.export)} <span aria-hidden="true">↗</span></button><button class="secondary-button" type="button" data-action="print">${esc(c.print)}</button></div></section>` : '';
+    return `<section class="view chapter-view" id="stage-${n}" data-stage-view="${n}" hidden aria-labelledby="title-${n}">
+      <header class="chapter-head"><div class="chapter-index"><span>${c.stageLabel} ${String(n).padStart(2,'0')} ${c.of} 06</span><span class="index-line"></span><span class="index-label">${esc(c.nav[n-1][0])}</span></div><h2 class="chapter-title" id="title-${n}">${esc(stage.title)}</h2><p class="chapter-lead">${esc(stage.lead)}</p></header>
+      <div class="chapter-body">${note}${aside}${prompts}${after}${carry}${finalNote}</div>
+      <footer class="chapter-footer">${previous}<div class="footer-actions">${next}</div></footer>
+    </section>`;
+  }
+  function render() {
+    const c = currentCopy();
+    document.documentElement.lang = state.language;
+    document.title = state.language === 'sl' ? 'Pred potjo — prostor za premislek' : 'Before the journey — a space for reflection';
+    $('#skip-link').textContent = c.skip;
+    $('#mobile-title').textContent = c.brand;
+    $('#nav-toggle').innerHTML = `${esc(c.mobileContents)} <span aria-hidden="true">＋</span>`;
+    $('#folio-label').textContent = c.folio;
+    $('#rail').setAttribute('aria-label', c.railLabel);
+    $('#rail').innerHTML = navMarkup();
+    $('#content').innerHTML = welcomeMarkup(c) + c.stages.map((stage,index) => stageMarkup(stage,c,index)).join('');
+    $('#dialog-title').textContent = c.clearDialogTitle;
+    $('#dialog-copy').textContent = c.clearDialogText;
+    $('#confirm-clear').textContent = c.clearConfirm;
+    $('#cancel-clear').textContent = c.clearCancel;
+    $$('[data-lang-toggle]').forEach(button => {
+      button.innerHTML = languageButtonMarkup().replace(/^<button[^>]*>|<\/button>$/g, '');
+      button.setAttribute('aria-label', c.switchLabel);
+      button.title = c.switchLabel;
+    });
+    restoreAnswers();
+    updateProgress(stageForHash());
+    if (!state.storageOK) setSaveStatus(c.saveError, true);
+  }
+  function restoreAnswers() {
+    $$('[data-key]').forEach(el => {
+      const value = state.answers[el.dataset.key];
+      if (typeof value === 'string') el.value = value;
+      else if (el.type === 'checkbox') el.checked = Boolean(value);
+    });
+  }
+  function stageForHash() {
+    const match = location.hash.match(/^#stage-([1-6])$/);
+    return match ? Number(match[1]) : 0;
+  }
+  function updateProgress(stage) {
+    const c = currentCopy();
+    $$('[data-stage]').forEach(link => {
+      const n = Number(link.dataset.stage);
+      const count = countStage(n);
+      const total = COPY.sl.stages[n-1].prompts.length + (n === 6 ? 4 : 0);
+      link.classList.toggle('is-touched', count > 0);
+      if (n === stage) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+      const countEl = $('[data-count="' + n + '"]');
+      if (countEl) countEl.textContent = count ? `${count}/${total}` : '';
+    });
+    const fill = $('#top-progress-fill');
+    if (fill) fill.style.width = `${stage === 0 ? 0 : (stage / 6) * 100}%`;
+  }
+  let firstRoute = true;
+  function route({scroll = true, focus = true} = {}) {
+    const stage = stageForHash();
+    $$('.view').forEach(view => { view.hidden = view.id !== (stage ? `stage-${stage}` : 'welcome'); });
+    const c = currentCopy();
+    $('#mobile-title').textContent = stage ? `${String(stage).padStart(2,'0')} / 06 · ${c.nav[stage-1][0]}` : c.brand;
+    if (stage) {
+      state.lastStage = stage;
+      queueSave();
+    }
+    updateProgress(stage);
+    setNav(false);
+    if (scroll) window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    if (!firstRoute && focus) {
+      const activeView = $('#' + (stage ? `stage-${stage}` : 'welcome'));
+      activeView.setAttribute('tabindex', '-1');
+      activeView.focus({ preventScroll: true });
+    }
+    firstRoute = false;
+  }
+  function setNav(open) {
+    const rail = $('#rail');
+    const button = $('#nav-toggle');
+    rail.dataset.open = open ? 'true' : 'false';
+    button.setAttribute('aria-expanded', open ? 'true' : 'false');
+    const c = currentCopy();
+    button.innerHTML = `${esc(open ? c.mobileClose : c.mobileContents)} <span aria-hidden="true">${open ? '−' : '＋'}</span>`;
+  }
+  function setLanguage(language) {
+    if (language === state.language) return;
+    collectAnswers();
+    clearTimeout(state.saveTimer);
+    state.language = language;
+    try { localStorage.setItem(LANGUAGE_KEY, language); } catch (_) { state.storageOK = false; }
+    saveNow();
+    const scrollY = window.scrollY;
+    render();
+    route({ scroll:false, focus:false });
+    window.scrollTo(0, scrollY);
+  }
+  function onEdit(event) {
+    const el = event.target.closest('[data-key]');
+    if (!el) return;
+    const key = el.dataset.key;
+    if (el.type === 'checkbox') {
+      if (el.checked) state.answers[key] = true;
+      else delete state.answers[key];
+    } else if (String(el.value ?? '').trim()) state.answers[key] = el.value;
+    else delete state.answers[key];
+    queueSave();
+    updateProgress(stageForHash());
+  }
+  function makeExport() {
+    const c = currentCopy();
+    const today = new Date().toLocaleDateString(state.language === 'sl' ? 'sl-SI' : 'en-GB', { year:'numeric', month:'long', day:'numeric' });
+    let out = `${c.exportTitle}\n${c.exportSubtitle}\n${c.exportDate}: ${today}\n\n`;
+    c.stages.forEach((stage,index) => {
+      out += `${String(index+1).padStart(2,'0')}  ${stage.title.toLocaleUpperCase(state.language === 'sl' ? 'sl-SI' : 'en-GB')}\n${'—'.repeat(Math.max(8, stage.title.length))}\n\n`;
+      stage.prompts.forEach(prompt => {
+        out += `${prompt.text}\n${answerValue(prompt.key).trim() || c.empty}\n\n`;
+      });
+      if (stage.aside) out += `${stage.aside.label}\n${stage.aside.text}\n\n`;
+      if (stage.note) out += `${stage.note.label}\n${stage.note.title ? stage.note.title + ' ' : ''}${stage.note.text}\n\n`;
+      if (stage.after) out += `${stage.after.label}\n${stage.after.text}\n\n`;
+      if (index === 5) {
+        out += `${c.carry.title.toLocaleUpperCase(state.language === 'sl' ? 'sl-SI' : 'en-GB')}\n`;
+        c.carry.fields.forEach(field => { out += `${field.label}\n${answerValue(field.key).trim() || c.empty}\n\n`; });
+      }
+    });
+    out += `\n${c.finalEmphasis} ${c.finalText}\n\n${c.careText}\n`;
+    return out;
+  }
+  function download() {
+    collectAnswers();
+    const blob = new Blob([makeExport()], { type:'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = state.language === 'sl' ? 'pred-potjo-zapisi.txt' : 'before-the-journey-reflections.txt';
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    saveNow();
+  }
+  function clearAll() {
+    state.answers = {}; state.lastStage = 1;
+    try { localStorage.removeItem(STORAGE_KEY); state.storageOK = true; } catch (_) { state.storageOK = false; }
+    const activeHash = location.hash;
+    render();
+    if (activeHash && activeHash !== '#welcome') location.hash = '#welcome';
+    else route();
+    setSaveStatus(state.storageOK ? currentCopy().saved : currentCopy().saveError, !state.storageOK);
+  }
+
+  render();
+  if (!state.storageOK) setSaveStatus(currentCopy().saveError, true);
+  $('#nav-toggle').addEventListener('click', () => setNav($('#rail').dataset.open !== 'true'));
+  $('#stage-nav').addEventListener('click', event => { if (event.target.closest('a')) setNav(false); });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') setNav(false); });
+  document.addEventListener('input', onEdit);
+  document.addEventListener('change', onEdit);
+  document.addEventListener('click', event => {
+    const langButton = event.target.closest('[data-lang-toggle]');
+    if (langButton) { setLanguage(state.language === 'sl' ? 'en' : 'sl'); return; }
+    const action = event.target.closest('[data-action]')?.dataset.action;
+    if (action === 'download') download();
+    if (action === 'print') { collectAnswers(); saveNow(); window.print(); }
+    if (action === 'clear') $('#clear-dialog').showModal();
+  });
+  $('#confirm-clear').addEventListener('click', () => { $('#clear-dialog').close(); clearAll(); });
+  $('#cancel-clear').addEventListener('click', () => $('#clear-dialog').close());
+  $('#clear-dialog').addEventListener('click', event => { if (event.target === $('#clear-dialog')) $('#clear-dialog').close(); });
+  window.addEventListener('hashchange', () => route());
+  window.addEventListener('pagehide', () => { collectAnswers(); saveNow(); });
+  window.addEventListener('beforeprint', () => { collectAnswers(); document.body.classList.add('print-all'); $$('.chapter-view').forEach(view => { view.hidden = false; }); });
+  window.addEventListener('afterprint', () => { document.body.classList.remove('print-all'); route({scroll:false,focus:false}); });
+  route({scroll:false,focus:false});
+})();
+</script>
+</body>
+</html>
