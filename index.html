@@ -169,8 +169,10 @@ button.fr:hover img,button.fr:hover video{filter:saturate(1) contrast(1) brightn
 .pvb-m .yt{width:min(100%,calc((100svh - 3rem) * 16 / 9));aspect-ratio:16/9}
 .pvb-m .tt{width:min(100%,340px);height:min(calc(100svh - 3rem),740px)}
 /* Instagram: the window shows only the clip, the embed's own header and footer stay just outside it */
-.pvb-m .igc{--h:clamp(400px,calc(100svh - 3rem),672px);--a:9/16;position:relative;flex:none;height:calc(var(--h) - 3px);width:calc(var(--h) * var(--a) - 2px);max-width:100%;overflow:hidden}
-.pvb-m .igc iframe{position:absolute;top:-54px;left:50%;transform:translateX(-50%);width:calc(var(--h) * 4 / 5 + 2px);height:calc(var(--h) + 700px)}
+.pvb-m{container-type:inline-size}
+/* --a is the clip's own shape, --c the shape of Instagram's picture box (never narrower than 4:5, so tall reels sit in it with black sides) */
+.pvb-m .igc{--a:.5625;--c:.8;--vh:calc(100svh - 3rem);--h:max(calc(324px / var(--c)),min(var(--vh),calc(538px / var(--c)),calc(100cqw / var(--a))));position:relative;flex:none;height:calc(var(--h) - 3px);width:calc(var(--h) * var(--a) - 2px);max-width:100%;overflow:hidden}
+.pvb-m .igc iframe{position:absolute;top:-54px;left:50%;transform:translateX(-50%);width:calc(var(--h) * var(--c) + 2px);height:calc(var(--h) + 700px)}
 .pvb-side{display:flex;flex-direction:column;min-height:0;overflow-y:auto;padding-right:.2rem}
 .pvb-top{display:flex;justify-content:space-between;align-items:baseline;font-size:.8rem;color:var(--quiet)}
 .pvb-c{font-variant-numeric:tabular-nums}
@@ -201,7 +203,7 @@ button.fr:hover img,button.fr:hover video{filter:saturate(1) contrast(1) brightn
   .pvb-m img,.pvb-m video{max-height:62svh}
   .pvb-m video.mp4{height:62svh}
   .pvb-m .tt{height:62svh}
-  .pvb-m .igc{--h:clamp(400px,62svh,672px)}
+  .pvb-m .igc{--vh:62svh}
   .pvb-info{margin-top:0}
   .pvb-list{margin-top:.6rem}
   .pvb-nav{padding-bottom:1rem}
@@ -318,7 +320,7 @@ body::after{content:"";position:fixed;inset:0;z-index:190;pointer-events:none;ba
   var GAL={
     podcast:{t:'Supermesto 2045 in Moja Ljubljana',d:'Kratki videi o tem, kam se razvija Ljubljana, za kampanjo Supermesto 2045 Mestne občine Ljubljana, in podcast Moja Ljubljana.',r:'Snemanje in montaža kratkih videov in podcasta',i:[{k:'yt',s:'OFz2pXEuhkw',c:'Podcast Moja Ljubljana'},{k:'ig',s:'DdGt3H7iQvb',c:'Plezalni center'}]},
     muvit:{t:'MUVIT/6x60',d:'Filmi, posneti v 60 urah na festivalu MUVIT. S filmom »Missica!« smo leta 2025 zmagali.',r:'Snemanje in montaža, režija filma »Miha«',i:[{k:'yt',s:'fghPqevZd2Q',c:'Miha'},{k:'yt',s:'qmE13jpdKbg',c:'Missica!'}]},
-    kokosy:{t:'Kokosy',d:'Napovednik koncerta ob sedmi obletnici skupine, v pravljičnem svetu, ki si ga je skupina izmislila za ta večer.',r:'Snemanje, montaža, VFX',i:[{k:'ig',s:'DR41T5VjClD',c:'Napovednik'}]},
+    kokosy:{t:'Kokosy',d:'Napovednik koncerta ob sedmi obletnici skupine, v pravljičnem svetu, ki si ga je skupina izmislila za ta večer.',r:'Snemanje, montaža, VFX',i:[{k:'ig',s:'DR41T5VjClD',c:'Napovednik',ar:'4/3'}]},
     mose:{t:'Mose',d:'Nastopi, izseki za družbena omrežja in objave za glasbenika, ki ustvarja povsem po intuiciji.',r:'Snemanje in montaža',i:[{k:'ig',s:'DBZVd5OSs7W',c:'Festival, 2024'},{k:'ig',s:'DPysXBcCKCe',c:'Evropska turneja, 2025'},{k:'yt',s:'0jNk0fs-0PU',c:'Freestyle improvizacija'}]},
     spoti:{t:'Videospoti',d:'Videospoti za Masayah, Ari in Lizo.',r:'VFX in praktični efekti, direktor fotografije, grafično oblikovanje',i:[{k:'yt',s:'OeFtOAW0uQc',c:'Ne vračaj se'},{k:'yt',s:'YCu5dyP4giw',c:'Zavedno'},{k:'yt',s:'V5q15z02KoE',c:'Cigaret'},{k:'yt',s:'7HcLtOZbXtg',c:'Ne fina tišina'}]},
     paintcam:{t:'PaintCam',d:'Kampanja za varnostno kamero, ki vsiljivca označi s paintball kroglicami. Na Kickstarterju je zbrala skoraj 80.000 dolarjev.',r:'Znamčenje in strategija, praktični efekti, asistenca kamere, 3D animacija, VFX, vsebine za družbena omrežja, vodenje projekta',i:[{k:'yt',s:'W9VqJB7S_F4',c:'PaintCam, 3D animacija, 2024'},{k:'yt',s:'0thc4ADhZgQ',c:'Glavni oglas'}]},
@@ -359,7 +361,7 @@ body::after{content:"";position:fixed;inset:0;z-index:190;pointer-events:none;ba
     if(it.k==='img'){var im=el('img');im.onload=align;im.src=it.s;im.alt=it.a||it.c;m.appendChild(im)}
     else if(it.k==='mp4'){var vd=el('video','mp4'+(it.w?' w':''));vd.src=it.s;vd.poster=it.p||'';vd.controls=true;vd.autoplay=true;vd.playsInline=true;vd.setAttribute('aria-label',it.c);vd.onloadedmetadata=align;m.appendChild(vd)}
     else{var f=el('iframe',it.k);f.onload=align;f.src=src(it);f.title=it.c;f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.loading='lazy';
-      if(it.k==='ig'){f.setAttribute('scrolling','no');var w=el('div','igc');if(it.ar)w.style.setProperty('--a',it.ar);w.appendChild(f);m.appendChild(w)}else m.appendChild(f)}
+      if(it.k==='ig'){f.setAttribute('scrolling','no');var w=el('div','igc');if(it.ar){var q=String(it.ar).split('/'),r=q.length>1?q[0]/q[1]:+q[0];w.style.setProperty('--a',r);w.style.setProperty('--c',Math.min(1.91,Math.max(.8,r)))}w.appendChild(f);m.appendChild(w)}else m.appendChild(f)}
     box.querySelector('.pvb-c').textContent=pad(n+1)+' / '+pad(cur.i.length);
     var l=box.querySelector('.pvb-l');l.innerHTML='';var kk=(it.k==='img'||it.k==='mp4')?(/instagram/.test(it.u||'')?'ig':/youtu/.test(it.u||'')?'yt':/tiktok/.test(it.u||'')?'tt':''):it.k;if(kk){var a=el('a','ext','Odpri na '+NAME[kk]);a.href=url(it);a.target='_blank';a.rel='noopener';l.appendChild(a)}
     align();box.querySelector('.pvb-prev').disabled=n===0;box.querySelector('.pvb-next').disabled=n===cur.i.length-1;
