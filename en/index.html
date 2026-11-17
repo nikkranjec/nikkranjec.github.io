@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nik Kranjec</title>
+<meta name="description" content="Nik Kranjec, Ljubljana. Creative direction, filming, editing, VFX, 3D, branding, building apps and communities.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Nik Kranjec">
+<meta property="og:title" content="Nik Kranjec">
+<meta property="og:description" content="Creative direction, filming, editing, VFX, 3D, branding, building apps and communities.">
+<meta property="og:url" content="https://nikkranjec.com/en/">
+<meta property="og:image" content="https://nikkranjec.com/assets/meta/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta property="og:locale" content="en_GB">
+<meta property="og:locale:alternate" content="sl_SI">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://nikkranjec.com/en/">
+<link rel="alternate" hreflang="sl" href="https://nikkranjec.com/">
+<link rel="alternate" hreflang="en" href="https://nikkranjec.com/en/">
+<link rel="alternate" hreflang="x-default" href="https://nikkranjec.com/">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/meta/favicon-32.png">
+<link rel="apple-touch-icon" href="../assets/meta/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Portfolio: a dark screening room in the CV's colours and type. The opening is a sideways reel of upright clips,
+   like monitors in an edit suite, with the name over its lower edge; then a short note on how I work and the hands as the last screen. */
+:root{--bg:#1a1512;--surf:#241d19;--ink:#f3ede6;--quiet:#a39790;--rule:#3a312b;--warm:#e9a07f;--paper:#dbd3cb;
+  --grot:"Inter Tight","Helvetica Neue",Arial,sans-serif;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--grot);font-size:16px;line-height:1.5;overflow-x:clip}
+p,h1,h2,figure{margin:0}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--rule);text-underline-offset:.2em}
+a:hover{color:var(--warm);text-decoration-color:var(--warm)}
+:focus-visible{outline:2px solid var(--warm);outline-offset:3px}
+.page{max-width:96rem;margin-inline:auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));padding-block:1.2rem 0}
+.g{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:1.4rem}
+.g>*{grid-column:var(--c,1/-1);min-width:0}
+.lab{font-size:.8rem;color:var(--quiet)}
+.top{align-items:baseline;padding-bottom:1.4rem}
+.top .r{text-align:right}
+.lang a{color:#4a403a;text-decoration:none;letter-spacing:.02em;transition:color .2s ease} .lang a:hover{color:var(--ink)}
+
+/* the opening fills exactly one screen: the reel takes whatever height the name and the sentence leave */
+.hero{height:calc(100svh - 6rem);min-height:30rem;display:flex;flex-direction:column}
+.reel{--gut:max(20px,calc((100vw - 96rem) / 2 + 20px));position:relative;flex:1;min-height:0;container-type:size;display:flex;flex-direction:column;margin-inline:calc(50% - 50vw)}
+.screens{flex:1;min-height:0;display:flex;gap:.5rem;overflow-x:auto;padding-inline:var(--gut);scroll-padding-inline:var(--gut);overscroll-behavior-x:contain;scrollbar-width:none;padding-bottom:.2rem}
+.screens::-webkit-scrollbar{display:none}
+/* the clips always fill the height the hero leaves them; a narrower window just shows fewer of them */
+.sc{flex:0 0 auto;width:calc((100cqh - 4.4rem) * 9 / 16);scroll-snap-align:start}
+.screens.drag{cursor:grabbing}.screens.drag .fr{pointer-events:none}
+/* fingers get gentle snapping; mouse and trackpad scroll freely */
+@media (hover:none){.screens{scroll-snap-type:x proximity}}
+/* scrolling stays light: each frame paints on its own, the page-wide grain already covers the clips */
+.sc{contain:layout paint}
+.sc .fr::after{mix-blend-mode:normal;background-image:none}
+.reel-nav{padding-inline:var(--gut);display:flex;justify-content:space-between;align-items:baseline;margin-top:.5rem;font-size:.8rem;color:var(--quiet)}
+html.intro .screens{transform:translateX(110vw)}
+html.intro.ready .screens{transform:none;transition:transform 1.5s cubic-bezier(.12,.85,.15,1),filter 1.2s ease}
+@media (hover:hover) and (min-width:821px){html.intro .screens{filter:blur(12px)}html.intro.ready .screens{filter:none}}
+
+html.intro .name{clip-path:inset(0 0 100% 0);transform:translateY(40%)}
+html.intro.ready .name{clip-path:inset(0 0 -20% 0);transform:none;transition:clip-path .9s cubic-bezier(.2,.7,.2,1) .9s,transform .9s cubic-bezier(.2,.7,.2,1) .9s}
+html.intro .lede{opacity:0}html.intro.ready .lede{opacity:1;transition:opacity .8s ease 1.3s}
+html.intro .reel-nav{opacity:0}html.intro.ready .reel-nav{opacity:1;transition:opacity .5s 1.4s}
+.reel-nav button{font:inherit;color:var(--ink);background:none;border:0;padding:.2rem 0;cursor:pointer}
+.reel-nav button:hover{color:var(--warm)} .reel-nav button[disabled]{opacity:.3;cursor:default}
+.sc{display:flex;flex-direction:column}.sc .fr{flex:none;width:100%}
+.sc figcaption{order:-1;display:flex;gap:.6rem;font-size:.75rem;color:var(--quiet);padding-bottom:.45rem;line-height:1.3}
+.sc figcaption span{font-variant-numeric:tabular-nums;color:var(--ink)}
+/* the caption above each clip shows only while the pointer is on it */
+.sc figcaption{opacity:0;transition:opacity .25s ease}
+@media (hover:hover){.sc:hover figcaption,.sc:focus-within figcaption{opacity:1}}
+.sc .fr{aspect-ratio:9/16;border-radius:14px}
+.name{font-weight:600;font-size:clamp(3.2rem,min(12.6vw,15svh),13.5rem);line-height:.8;letter-spacing:-.045em;margin-top:clamp(.8rem,2.4svh,2rem);white-space:nowrap}
+.lede{margin-top:clamp(.7rem,1.8svh,1.2rem);align-items:start}
+.lede p{font-size:clamp(1.05rem,1.5vw,1.35rem);line-height:1.3;letter-spacing:-.01em;color:var(--quiet)}
+.lede p b{font-weight:500;color:var(--ink)}
+
+/* frames: every picture and video sits in one, with faded blacks and grain */
+.fr{position:relative;display:block;width:100%;box-sizing:border-box;overflow:hidden;background:var(--surf);border:0;padding:0;cursor:pointer;color:inherit;font:inherit;text-align:left}
+.fr img,.fr video{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.85) contrast(.9) brightness(.98) sepia(.08);transition:filter .6s cubic-bezier(.25,.1,.25,1),scale .9s cubic-bezier(.22,.61,.36,1);backface-visibility:hidden}
+/* own GPU layer for each clip, so the hover zoom glides on subpixels instead of stepping by whole pixels */
+@media (hover:hover){.fr img,.fr video{will-change:transform}}
+.fr::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;box-shadow:inset 0 0 80px rgba(0,0,0,.55);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");background-size:120px}
+button.fr:hover img,button.fr:hover video{filter:saturate(1) contrast(1) brightness(1) sepia(0);scale:1.02}
+.fr.still img{animation:drift 14s ease-in-out infinite alternate}
+@keyframes drift{from{transform:scale(1.04) translate(-1%,0)}to{transform:scale(1.1) translate(1%,-1%)}}
+@media (prefers-reduced-motion:reduce){.fr.still img{animation:none}}
+
+.fr .lp.w{aspect-ratio:16/9}
+/* the reel reaches down to the name, which lies over its lower part on a dark fade; the sentence sits below on the plain ground */
+.hero{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:1fr auto auto}
+.hero>.reel{grid-column:1;grid-row:1/3;min-height:0}
+.hero>.name{grid-column:1;grid-row:2;position:relative;z-index:3;pointer-events:none}
+.hero>.lede{grid-column:1;grid-row:3;position:relative;z-index:3;pointer-events:none;padding-bottom:.4rem}
+.hero>.lede a{pointer-events:auto}
+.reel-nav{position:absolute;right:0;bottom:.3rem;z-index:4}
+@media (max-width:820px){
+  .sc{width:80vw}.sc .fr{aspect-ratio:auto;height:calc(100cqh - 2.6rem)}}
+/* phones: the photo fills the last screen; three lines on each side at the bottom, contact and place on the left, links on the right */
+@media (max-width:820px){
+  .contact .hands{aspect-ratio:auto}
+  .contact .hands img{height:100%;object-fit:cover;object-position:50% 40%;transform:none}
+  .contact .hands::after{display:none}
+  .ct-in{padding-bottom:1.4rem}
+  .g.foot{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;row-gap:.35rem;column-gap:1rem;padding-top:1.6rem;align-items:end;line-height:1.45}
+  .g.foot>dl{grid-column:1;grid-row:1}
+  .g.foot>.fc{grid-column:1;grid-row:2;justify-self:start!important;text-align:left!important;font-size:.9rem}
+  .g.foot>.fr-end{grid-column:2;grid-row:1/3;align-self:end;flex-direction:column;align-items:flex-end;gap:.35rem;font-size:.9rem}
+  /* the photo runs on under the phone's home bar and the browser bars, so no strip of page shows below it */
+  .contact .hands{height:min(calc(100lvh + env(safe-area-inset-bottom,0px)),200vw);margin-bottom:calc(-1 * env(safe-area-inset-bottom,0px))}
+  .contact .ct-in{padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}
+}
+/* language switch in the very corner */
+.top{display:flex;justify-content:flex-end}
+/* each clip sits on its own first frame and fades in over it once it actually plays */
+.fr .ph{position:absolute;inset:0}
+.fr video.lp{position:relative;opacity:0;transition:opacity .35s ease,filter .6s cubic-bezier(.25,.1,.25,1),scale .9s cubic-bezier(.22,.61,.36,1)}
+.fr video.lp.on{opacity:1}
+/* about + contact */
+.sec{padding-top:clamp(6rem,12vw,10rem)}
+.about{align-items:start;row-gap:1.6rem}
+.about .big{font-weight:600;font-size:clamp(2rem,4.4vw,4rem);line-height:1;letter-spacing:-.035em;text-wrap:balance}
+.about .small{font-size:.95rem;line-height:1.55;color:var(--quiet)}
+.about .small a{color:var(--ink)}
+/* footer: the hands photo at its own proportions, full width, only cut at the top and bottom; the text sits on its lower edge */
+.contact{position:relative;display:grid;padding-top:0;margin-top:clamp(5rem,9.5vw,8.5rem);isolation:isolate}
+.contact>*{grid-area:1/1}
+.ct-in{align-self:end;padding-bottom:1rem;min-width:0}
+.hands{--ct:13;--cb:3;--w:2560;--h:1707;position:relative;z-index:-1;margin-left:calc(50% - 50vw);width:100vw;overflow:hidden;
+  aspect-ratio:var(--w) / calc(var(--h) * (100 - var(--ct) - var(--cb)) / 100)}
+@media (orientation:portrait){.hands{--w:1707;--h:2560}}
+.hands img{position:absolute;left:0;top:0;width:100%;height:auto;transform:translateY(calc(var(--ct) * -1%));display:block}
+.hands::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,21,18,0) 60%,rgba(26,21,18,.5) 100%)}
+.contact .lab,.contact dt{color:#e6ddd5}
+.contact h2{text-shadow:0 2px 30px rgba(26,21,18,.25);font-weight:600;font-size:clamp(2.6rem,7.5vw,7rem);line-height:.92;letter-spacing:-.05em}
+.foot{padding-top:clamp(1.2rem,2.5vw,2rem);align-items:end;row-gap:1rem;font-size:.9rem}
+.foot dl{margin:0;display:grid;grid-template-columns:max-content minmax(0,1fr);gap:.35rem 1.2rem}
+.foot dt{color:var(--quiet)} .foot dd{margin:0}
+.links{display:flex;flex-wrap:wrap;gap:.3rem 1.2rem} .links a::after{content:" ↗"}
+
+/* viewer: the picture on a dark stage, everything about the project in a column beside it */
+#pvbox{position:fixed;inset:0;z-index:200;background:#120e0c;color:var(--ink);font-family:var(--grot);display:grid;grid-template-columns:minmax(0,1fr) minmax(18rem,24rem);
+  padding:max(18px,env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) max(18px,env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));gap:clamp(1.2rem,3vw,3rem);
+  animation:pvin .25s ease}
+@keyframes pvin{from{opacity:0}to{opacity:1}}
+#pvbox[hidden]{display:none}
+#pvbox button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+#pvbox :focus-visible{outline:2px solid var(--warm);outline-offset:3px}
+.pvb-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:0;min-width:0}
+.pvb-m{display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:0}
+.pvb-m img,.pvb-m video{display:block;max-width:100%;max-height:calc(100svh - 3rem);object-fit:contain;background:#000}
+.pvb-m video.mp4{height:calc(100svh - 3rem);aspect-ratio:9/16;width:auto}
+.pvb-m video.mp4.w{height:auto;width:100%;aspect-ratio:16/9}
+.pvb-m{position:relative}
+.pvb-m::before{content:attr(data-wait);position:absolute;inset:0;display:grid;place-items:center;font-size:.8rem;color:var(--quiet);animation:wait 1.4s ease-in-out infinite alternate;z-index:0}
+@keyframes wait{from{opacity:.35}to{opacity:1}}
+.pvb-m>*{position:relative;z-index:1}
+.pvb-m iframe{border:0;display:block;background:transparent}
+.pvb-m .yt{width:min(100%,calc((100svh - 3rem) * 16 / 9));aspect-ratio:16/9}
+.pvb-m .tt{width:min(100%,340px);height:min(calc(100svh - 3rem),740px)}
+.pvb-m .ig{width:min(100%,420px);height:min(calc(100svh - 3rem),720px)}
+.pvb-side{display:flex;flex-direction:column;min-height:0;overflow-y:auto;padding-right:.2rem}
+.pvb-top{display:flex;justify-content:space-between;align-items:baseline;font-size:.8rem;color:var(--quiet)}
+.pvb-c{font-variant-numeric:tabular-nums}
+.pvb-close:hover{color:var(--warm)}
+.pvb-info{margin-top:clamp(2rem,8svh,5rem)}
+.pvb-info h2{font-weight:600;font-size:clamp(2rem,3vw,3rem);line-height:.95;letter-spacing:-.04em;text-wrap:balance}
+.pvb-d{margin-top:1.1rem;font-size:1rem;line-height:1.45;color:#d9cfc6}
+.pvb-r{margin-top:1.4rem;font-size:.85rem;line-height:1.45;color:var(--ink)}
+.pvb-r::before{content:attr(data-l);display:block;font-size:.72rem;color:var(--quiet);margin-bottom:.2rem}
+.pvb-list{list-style:none;margin:auto 0 0;padding:1.6rem 0 0;border-top:1px solid var(--rule)}
+.pvb-list li+li{border-top:1px solid var(--rule)}
+.pvb-list button{display:grid!important;grid-template-columns:2rem minmax(0,1fr) auto;gap:.4rem;width:100%;text-align:left;padding:.65rem 0!important;font-size:.88rem!important;color:var(--quiet)!important;line-height:1.3}
+.pvb-list button span:first-child{font-variant-numeric:tabular-nums}
+.pvb-list button:hover{color:var(--ink)!important}
+.pvb-list button[aria-current]{color:var(--ink)!important}
+.pvb-list button[aria-current] span:nth-child(2){font-weight:600}
+.pvb-list button[aria-current] span:first-child::before{content:"▸ ";color:var(--warm)}
+.pvb-l{margin-top:1rem;font-size:.85rem;min-height:1.2em}
+.pvb-l a{color:var(--ink)}
+.pvb-nav{display:flex;justify-content:space-between;margin-top:.8rem;font-size:.85rem}
+.pvb-nav button[disabled]{opacity:.3;cursor:default}
+.pvb-nav button:not([disabled]):hover{color:var(--warm)}
+@media (max-width:820px){
+  #pvbox{display:flex;flex-direction:column;overflow-y:auto;gap:1rem}
+  .pvb-side{display:contents}
+  .pvb-top{order:-2;flex:none} .pvb-stage{order:-1;flex:none}
+  .pvb-info,.pvb-list,.pvb-l,.pvb-nav{flex:none}
+  .pvb-m img,.pvb-m video{max-height:62svh}
+  .pvb-m video.mp4{height:62svh}
+  .pvb-m .tt,.pvb-m .ig{height:62svh}
+  .pvb-info{margin-top:0}
+  .pvb-list{margin-top:.6rem}
+  .pvb-nav{padding-bottom:1rem}
+}
+
+@media (max-width:820px){
+  .g{grid-template-columns:minmax(0,1fr);row-gap:1.1rem} .g>*{grid-column:1/-1}
+}
+@media (prefers-reduced-motion:reduce){.fr img,.fr video{transition:none}.fr video.lp{transition:opacity .35s ease}}
+/* a light film grain over the whole screen, background, text and clips alike; it stays put while the page scrolls */
+body::after{content:"";position:fixed;inset:0;z-index:190;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.2 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.05}
+</style>
+</head>
+<body>
+<script>(function(){try{
+  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.lang a'))try{localStorage.setItem('lang',e.target.closest('.lang a').getAttribute('hreflang'))}catch(x){}});
+  var here=document.documentElement.lang||'sl';
+  if(here!=='en'&&!/bot|crawl|spider|slurp|preview/i.test(navigator.userAgent)){var chosen=null;try{chosen=localStorage.getItem('lang')}catch(x){}
+    var langs=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'']).map(function(l){return String(l).toLowerCase()});
+    if(chosen==='en'||(!chosen&&!langs.some(function(l){return l.indexOf('sl')===0}))){var t=document.querySelector('link[hreflang="en"]');location.replace(t?t.href:'en.html')}}}catch(e){}})();</script>
+<script>try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('intro');setTimeout(function(){document.documentElement.classList.add('ready')},5000)}}catch(e){}</script>
+<script>window.INTRO_MIN=500</script>
+<main class="page">
+  <header class="g top">
+    <p class="lab r lang" style="--c:9/13"><a href="../" hreflang="sl" lang="sl">SLO</a></p>
+  </header>
+
+  <section class="hero" aria-label="Introduction">
+    <div class="reel"><div class="screens" tabindex="0" aria-label="Showreel, scroll sideways"><figure class="sc"><button type="button" class="fr pv" data-pv="tivoli" data-pv-i="0" aria-label="Gathering in Tivoli Park, 2026, open"><img class="ph" src="../assets/vid/pre/pot.webp" alt="" loading="lazy"><video class="lp" src="../assets/vid/pre/pot.mp4" muted loop playsinline preload="none" aria-hidden="true"></video></button><figcaption><span>01</span>Gathering in Tivoli Park, 2026</figcaption></figure><figure class="sc"><button type="button" class="fr pv" data-pv="kokosy" aria-label="Kokosy, trailer, 2025, open"><img class="ph" src="../assets/vid/pre/kokosy.webp" alt="" loading="lazy"><video class="lp" src="../assets/vid/pre/kokosy.mp4" muted loop playsinline preload="none" aria-hidden="true"></video></button><figcaption><span>02</span>Kokosy, trailer, 2025</figcaption></figure><figure class="sc"><button type="button" class="fr pv still" data-pv="spoti" aria-label="Ari, “Ne vračaj se”, 2025, open"><img src="../assets/img/reel/ari.webp" alt="" loading="lazy"></button><figcaption><span>03</span>Ari, “Ne vračaj se”, 2025</figcaption></figure><figure class="sc"><button type="button" class="fr pv" data-pv="mose" data-pv-i="1" aria-label="Mose, European tour, 2025, open"><img class="ph" src="../assets/vid/pre/mose-2.webp" alt="" loading="lazy"><video class="lp" src="../assets/vid/pre/mose-2.mp4" muted loop playsinline preload="none" aria-hidden="true"></video></button><figcaption><span>04</span>Mose, European tour, 2025</figcaption></figure><figure class="sc"><button type="button" class="fr pv" data-pv="mose" data-pv-i="0" aria-label="Mose, festival, 2024, open"><img class="ph" src="../assets/vid/pre/mose-1.webp" alt="" loading="lazy"><video class="lp" src="../assets/vid/pre/mose-1.mp4" muted loop playsinline preload="none" aria-hidden="true"></video></button><figcaption><span>05</span>Mose, festival, 2024</figcaption></figure><figure class="sc"><button type="button" class="fr pv" data-pv="podcast" data-pv-i="1" aria-label="Supermesto 2045, climbing centre, 2026, open"><img class="ph" src="../assets/vid/pre/plezalni.webp" alt="" loading="lazy"><video class="lp" src="../assets/vid/pre/plezalni.mp4" muted loop playsinline preload="none" aria-hidden="true"></video></button><figcaption><span>06</span>Supermesto 2045, climbing centre, 2026</figcaption></figure><figure class="sc"><button type="button" class="fr pv still" data-pv="lips" aria-label="Love In Plane Sight, 2022, open"><img src="../assets/img/reel/lips.webp" alt="" loading="lazy"></button><figcaption><span>07</span>Love In Plane Sight, 2022</figcaption></figure><figure class="sc"><button type="button" class="fr pv" data-pv="paintcam" data-pv-i="0" aria-label="PaintCam, 3D animation, 2024, open"><img class="ph" src="../assets/vid/pre/paintcam.webp" alt="" loading="lazy"><video class="lp" src="../assets/vid/pre/paintcam.mp4" muted loop playsinline preload="none" aria-hidden="true"></video></button><figcaption><span>08</span>PaintCam, 3D animation, 2024</figcaption></figure><figure class="sc"><button type="button" class="fr pv" data-pv="harmonija" aria-label="Harmonija in zdravje, ad, 2024, open"><img class="ph" src="../assets/vid/pre/harmonija.webp" alt="" loading="lazy"><video class="lp" src="../assets/vid/pre/harmonija.mp4" muted loop playsinline preload="none" aria-hidden="true"></video></button><figcaption><span>09</span>Harmonija in zdravje, ad, 2024</figcaption></figure><figure class="sc"><button type="button" class="fr pv still" data-pv="muvit" aria-label="Miha, MUVIT, 2026, open"><img src="../assets/img/reel/miha.webp" alt="" loading="lazy"></button><figcaption><span>10</span>Miha, MUVIT, 2026</figcaption></figure><figure class="sc"><button type="button" class="fr pv" data-pv="sinergija" aria-label="Sinergija HUB, 2026, open"><img class="ph" src="../assets/vid/pre/sinergija.webp" alt="" loading="lazy"><video class="lp" src="../assets/vid/pre/sinergija.mp4" muted loop playsinline preload="none" aria-hidden="true"></video></button><figcaption><span>11</span>Sinergija HUB, 2026</figcaption></figure></div>
+      <div class="reel-nav"><span><button type="button" class="rp" aria-label="Back">←</button>&nbsp;&nbsp;<button type="button" class="rn" aria-label="Forward">→</button></span></div></div>
+    <h1 class="name">nik kranjec</h1>
+    <div class="g lede"><p style="--c:1/8"><b>Creative direction, filming, editing, VFX, 3D, branding, building apps and communities,</b><br>but that’s the least interesting thing about me.</p></div>
+  </section>
+
+
+  <section class="sec" id="o-meni" aria-label="About">
+    <div class="g about">
+      <p class="big" style="--c:1/9">I’m interested in people. How we think, what shapes us, what we care about and what brings us together.</p>
+      <p class="small" style="--c:1/5">When I join a project, I first look at what already exists. Often, the answer is already there, in the name, in the character of the product or in the people behind it. It just needs to be brought together into a story that makes sense to the people it’s meant for.</p>
+      <p class="small" style="--c:5/9">People don’t respond to what you show them, but to the part of themselves they recognise in it. So I look for the story there, in how they live, what drives them and what matters to them. Once I understand that, I can take the work from the initial idea and strategy all the way through filming, editing and final delivery.</p>
+    </div>
+  </section>
+
+  <section class="sec contact" aria-labelledby="kt">
+    <picture class="hands" aria-hidden="true"><source media="(orientation: portrait)" srcset="../assets/img/hero/roke-v-1280.webp 853w, ../assets/img/hero/roke-v.webp 1707w" sizes="100vw"><img src="../assets/img/hero/roke.webp" srcset="../assets/img/hero/roke-1280.webp 1280w, ../assets/img/hero/roke.webp 2560w" sizes="100vw" alt="" loading="lazy"></picture>
+    <div class="ct-in">
+    <h2 id="kt">Let’s see what we can make together.</h2>
+    <div class="g foot">
+      <dl style="--c:1/6">
+        <dt>Email</dt><dd><a class="ob" data-k="m" data-x="bW9jLmxpYW1nQGNlam5hcmsua2lu" href="#kt">nik.kranjec [at] gmail.com</a></dd>
+        <dt>Phone</dt><dd><a class="ob" data-k="t" data-x="MDY4IDkwOCAwNCA2ODMr" href="#kt">+386 40 … 860</a></dd>
+      </dl>
+      <p class="lab fc" style="--c:6/8;text-align:center;justify-self:center;white-space:nowrap">Ljubljana, 2026</p>
+      <div class="links fr-end" style="--c:9/13;justify-content:flex-end"><a href="https://www.instagram.com/nikkranjec/">Instagram</a><a href="https://www.tiktok.com/@nikkranjec">TikTok</a><a href="https://www.youtube.com/@nikkranjec">YouTube</a></div>
+    </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  [].forEach.call(document.querySelectorAll('a.ob'),function(a){try{var t=atob(a.getAttribute('data-x')).split('').reverse().join('');
+    a.textContent=t;a.href=(a.getAttribute('data-k')==='m'?'mailto:':'tel:')+t.replace(/\s/g,'');a.removeAttribute('data-x')}catch(e){}});
+  var sc=document.querySelector('.screens'),rp=document.querySelector('.rp'),rn=document.querySelector('.rn');
+  function st(){rp.disabled=sc.scrollLeft<4;rn.disabled=sc.scrollLeft+sc.clientWidth>=sc.scrollWidth-4}
+  sc.addEventListener('scroll',st,{passive:true});
+  /* a vertical wheel or trackpad swipe moves the reel sideways, one to one, until its end; then the page scrolls on.
+     sideways swipes are left to the browser. Only the arrows and a released drag glide, and any new input stops the glide */
+  var target=sc.scrollLeft,anim=0;
+  function max(){return sc.scrollWidth-sc.clientWidth}
+  function stop(){if(anim){cancelAnimationFrame(anim);anim=0}}
+  function step(){var d=target-sc.scrollLeft;if(Math.abs(d)<.5){sc.scrollLeft=target;anim=0;return}sc.scrollLeft+=d*.16;anim=requestAnimationFrame(step)}
+  function glide(to){stop();target=Math.max(0,Math.min(max(),to));anim=requestAnimationFrame(step)}
+  sc.addEventListener('wheel',function(e){stop();if(Math.abs(e.deltaX)>=Math.abs(e.deltaY))return;
+    /* in the lower third of the screen a vertical wheel scrolls the page, so nobody has to run the reel to its end first */
+    if(e.clientY>innerHeight*2/3)return;
+    var dy=e.deltaY*(e.deltaMode===1?40:e.deltaMode===2?sc.clientWidth:1),m=max();
+    if((dy>0&&sc.scrollLeft>=m-1)||(dy<0&&sc.scrollLeft<=1))return;
+    e.preventDefault();sc.scrollLeft=Math.max(0,Math.min(m,sc.scrollLeft+dy))},{passive:false});
+  sc.addEventListener('touchstart',stop,{passive:true});
+  rp.onclick=function(){glide(sc.scrollLeft-sc.clientWidth*.75)};rn.onclick=function(){glide(sc.scrollLeft+sc.clientWidth*.75)};
+  /* drag with the mouse, with a little glide when let go */
+  var dx=null,sl=0,moved=false,lx=0,lt=0,vel=0;
+  sc.addEventListener('pointerdown',function(e){stop();if(e.pointerType!=='mouse')return;dx=e.clientX;sl=sc.scrollLeft;moved=false;lx=e.clientX;lt=performance.now();vel=0});
+  addEventListener('pointermove',function(e){if(dx==null)return;var d=e.clientX-dx;if(Math.abs(d)>5){moved=true;sc.classList.add('drag')}
+    if(moved){sc.scrollLeft=sl-d;var t=performance.now();vel=(e.clientX-lx)/Math.max(1,t-lt);lx=e.clientX;lt=t}});
+  addEventListener('pointerup',function(){if(dx==null)return;dx=null;if(moved){sc.classList.remove('drag');glide(sc.scrollLeft-vel*260);setTimeout(function(){moved=false},0)}});
+  sc.addEventListener('click',function(e){if(moved){e.stopPropagation();e.preventDefault();moved=false}},true);addEventListener('resize',st);st();
+  /* opening: first only the stills of the clips on screen load (a few kB each, the same picture as each clip's first frame),
+     so the reel can come in almost at once; the clips themselves then load one after another, left to right,
+     and each starts playing in place of its still without a visible jump */
+  (function(){var H=document.documentElement,t0=performance.now(),done=false;
+    var calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var scs=[].slice.call(document.querySelectorAll('.sc'));scs.forEach(function(f,i){f.style.setProperty('--i',i)});
+    var vis=scs.filter(function(f){return f.getBoundingClientRect().left<innerWidth});
+    var pics=vis.map(function(f){return f.querySelector('img')}).filter(Boolean);
+    [].forEach.call(document.querySelectorAll('video.lp'),function(v){v.addEventListener('playing',function(){v.classList.add('on')})});
+    function play(v){var p=v.play();if(p&&p.catch)p.catch(function(){})}
+    window.reelHold=function(on){H.classList.toggle('hold',on);[].forEach.call(document.querySelectorAll('video.lp'),function(v){if(on)v.pause();else if(v._in)play(v)})};
+    document.addEventListener('visibilitychange',function(){reelHold(document.hidden||!!(document.getElementById('pvbox')&&!document.getElementById('pvbox').hidden))});
+    function clips(){if(calm)return;
+      var q=vis.map(function(f){return f.querySelector('video')}).filter(Boolean);
+      (function next(k){if(k>=q.length)return watch();var v=q[k],went=false,go=function(){if(!went){went=true;next(k+1)}};
+        v.preload='auto';v.addEventListener('canplay',go);v.addEventListener('error',go);setTimeout(go,2500);play(v)})(0)}
+    function watch(){if(!('IntersectionObserver' in window))return;
+      var io=new IntersectionObserver(function(es){es.forEach(function(e){var v=e.target;v._in=e.isIntersecting;if(e.isIntersecting&&!H.classList.contains('hold')){v.preload='auto';play(v)}else v.pause()})},{threshold:.2});
+      [].forEach.call(document.querySelectorAll('video.lp'),function(v){io.observe(v)})}
+    if(!H.classList.contains('intro')||H.classList.contains('ready')){H.classList.add('ready');clips();return}
+    var n=0;function tick(){n++;if(n>=pics.length)finish()}
+    function finish(){if(done)return;done=true;
+      setTimeout(function(){H.classList.add('ready');document.dispatchEvent(new Event('introready'));clips()},Math.max(0,(window.INTRO_MIN||900)-(performance.now()-t0)))}
+    pics.forEach(function(im){im.loading='eager';im.fetchPriority='high';if(im.complete&&im.naturalWidth)tick();else{var once=false,f=function(){if(!once){once=true;tick()}};im.addEventListener('load',f);im.addEventListener('error',f)}});
+    if(!pics.length)finish();setTimeout(finish,3000)})();
+  var GAL={
+    podcast:{t:'Supermesto 2045 and Moja Ljubljana',d:'Short videos about where Ljubljana is heading, for the City of Ljubljana’s Supermesto 2045 campaign, and the Moja Ljubljana podcast.',r:'Filming and editing of short videos and a podcast',i:[{k:'yt',s:'OFz2pXEuhkw',c:'Moja Ljubljana podcast'},{k:'ig',s:'DdGt3H7iQvb',c:'Climbing centre'}]},
+    muvit:{t:'MUVIT/6x60',d:'Films made in 60 hours at the MUVIT festival. In 2025 we won with “Missica!”.',r:'Filming and editing, directing the film “Miha”',i:[{k:'yt',s:'fghPqevZd2Q',c:'Miha'},{k:'yt',s:'qmE13jpdKbg',c:'Missica!'}]},
+    kokosy:{t:'Kokosy',d:'Concert trailer for the band’s seventh anniversary, set in the fairy-tale world they invented for that night.',r:'Filming, editing, VFX',i:[{k:'ig',s:'DR41T5VjClD',c:'Trailer'}]},
+    mose:{t:'Mose',d:'Performances, social media clips and posts for a musician who creates entirely by intuition.',r:'Filming and editing',i:[{k:'ig',s:'DBZVd5OSs7W',c:'Festival, 2024'},{k:'ig',s:'DPysXBcCKCe',c:'European tour, 2025'},{k:'yt',s:'0jNk0fs-0PU',c:'Freestyle improvisation'}]},
+    spoti:{t:'Music videos',d:'Music videos for Masayah, Ari and Liza.',r:'VFX and practical effects, director of photography, graphic design',i:[{k:'yt',s:'OeFtOAW0uQc',c:'Ne vračaj se'},{k:'yt',s:'YCu5dyP4giw',c:'Zavedno'},{k:'yt',s:'V5q15z02KoE',c:'Cigaret'},{k:'yt',s:'7HcLtOZbXtg',c:'Ne fina tišina'}]},
+    paintcam:{t:'PaintCam',d:'Campaign for a security camera that marks an intruder with paintballs. It raised almost $80,000 on Kickstarter.',r:'Branding and strategy, practical effects, camera assistant, 3D animation, VFX, social media content, project management',i:[{k:'yt',s:'W9VqJB7S_F4',c:'PaintCam, 3D animation, 2024'},{k:'yt',s:'0thc4ADhZgQ',c:'Main ad'}]},
+    lips:{t:'Love In Plane Sight',d:'A short film that won the first TikTok Short Film competition, in partnership with the Cannes Film Festival, out of 70,000 films.',r:'Filming and editing, screenplay',i:[{k:'tt',s:'7083941855309745414',u:'https://www.tiktok.com/@rimanic/video/7083941855309745414',c:'Film'},{k:'yt',s:'4BETHBF-IWw',c:'Cannes vlog'}]},
+    sinergija:{t:'Sinergija HUB',d:'Promo video for Sinergija HUB, a workshop space in Ljubljana.',r:'Editing',i:[{k:'ig',s:'DdbXCbwoHIB',c:'Sinergija HUB, 2026'}]},
+    harmonija:{t:'Harmonija in zdravje',d:'Ad for Harmonija in zdravje.',r:'',i:[{k:'mp4',w:1,s:'../assets/vid/harmonija.mp4',p:'../assets/vid/harmonija.webp',c:'Ad, 2024'}]},
+    tivoli:{t:'Gathering in Tivoli Park',d:'Videos I make just for myself.',r:'',i:[{k:'ig',s:'DYrnGC4IQ2B',c:'Invitation to the Gathering in Tivoli Park, 2026'},{k:'ig',s:'DY2MpmmIoIx',c:'Moments from the Gathering'},{k:'ig',s:'DY9ezRJI78s',c:'Photos from disposable cameras'}]}
+  };
+  var box=null,cur=null,ix=0,back=null;
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+  function url(it){return it.k==='yt'?'https://www.youtube.com/watch?v='+it.s:it.k==='ig'?'https://www.instagram.com/p/'+it.s+'/':it.u||''}
+  function src(it){return it.k==='yt'?'https://www.youtube-nocookie.com/embed/'+it.s+'?rel=0':it.k==='tt'?'https://www.tiktok.com/embed/v2/'+it.s:'https://www.instagram.com/p/'+it.s+'/embed/'}
+  var NAME={yt:'YouTube',tt:'TikTok',ig:'Instagram'};
+  function pad(n){return (n<10?'0':'')+n}
+  function make(){
+    box=el('div');box.id='pvbox';box.hidden=true;box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby','pvb-t');
+    box.innerHTML='<div class="pvb-stage"><div class="pvb-m" data-wait="Loading …"></div></div>'+
+      '<div class="pvb-side"><div class="pvb-top"><span class="pvb-c"></span><button type="button" class="pvb-close">Close ✕</button></div>'+
+      '<div class="pvb-info"><h2 id="pvb-t"></h2><p class="pvb-d"></p><p class="pvb-r" data-l="My role"></p></div>'+
+      '<ol class="pvb-list"></ol><p class="pvb-l"></p>'+
+      '<div class="pvb-nav"><button type="button" class="pvb-prev">← Previous</button><button type="button" class="pvb-next">Next →</button></div></div>';
+    document.body.appendChild(box);
+    box.querySelector('.pvb-close').onclick=close;
+    box.querySelector('.pvb-prev').onclick=function(){go(ix-1)};
+    box.querySelector('.pvb-next').onclick=function(){go(ix+1)};
+    box.addEventListener('click',function(e){if(e.target.classList.contains('pvb-stage')||e.target.classList.contains('pvb-m'))close()});
+    box.addEventListener('keydown',function(e){
+      if(e.key==='Escape'){e.preventDefault();close()}
+      else if(e.key==='ArrowLeft'){go(ix-1)}else if(e.key==='ArrowRight'){go(ix+1)}
+      else if(e.key==='Tab'){var f=[].slice.call(box.querySelectorAll('button:not([disabled]),a[href],iframe,video')),a=f[0],z=f[f.length-1];
+        if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
+    var sx=null;box.addEventListener('touchstart',function(e){sx=e.touches[0].clientX},{passive:true});
+    box.addEventListener('touchend',function(e){if(sx==null)return;var d=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(d)>60)go(ix+(d<0?1:-1))},{passive:true});
+  }
+  function go(n){if(!cur||n<0||n>=cur.i.length)return;ix=n;var it=cur.i[n],m=box.querySelector('.pvb-m');m.innerHTML='';
+    if(it.k==='img'){var im=el('img');im.onload=align;im.src=it.s;im.alt=it.a||it.c;m.appendChild(im)}
+    else if(it.k==='mp4'){var vd=el('video','mp4'+(it.w?' w':''));vd.src=it.s;vd.poster=it.p||'';vd.controls=true;vd.autoplay=true;vd.playsInline=true;vd.setAttribute('aria-label',it.c);vd.onloadedmetadata=align;m.appendChild(vd)}
+    else{var f=el('iframe',it.k);f.onload=align;f.src=src(it);f.title=it.c;f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.loading='lazy';m.appendChild(f)}
+    box.querySelector('.pvb-c').textContent=pad(n+1)+' / '+pad(cur.i.length);
+    var l=box.querySelector('.pvb-l');l.innerHTML='';var kk=(it.k==='img'||it.k==='mp4')?(/instagram/.test(it.u||'')?'ig':/youtu/.test(it.u||'')?'yt':/tiktok/.test(it.u||'')?'tt':''):it.k;if(kk){var a=el('a',null,'Open on '+NAME[kk]+' ↗');a.href=url(it);a.target='_blank';a.rel='noopener';l.appendChild(a)}
+    align();box.querySelector('.pvb-prev').disabled=n===0;box.querySelector('.pvb-next').disabled=n===cur.i.length-1;
+    [].forEach.call(box.querySelectorAll('.pvb-list button'),function(b,i){if(i===n)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current')});
+  }
+  /* the list, the link and the buttons end on the same line as the picture beside them */
+  function align(){if(!box||box.hidden)return;var side=box.querySelector('.pvb-side'),m=box.querySelector('.pvb-m>*');
+    if(!m||innerWidth<=820){side.style.paddingBottom='';return}
+    var gap=box.getBoundingClientRect().bottom-parseFloat(getComputedStyle(box).paddingBottom)-m.getBoundingClientRect().bottom;
+    side.style.paddingBottom=Math.max(0,Math.round(gap))+'px'}
+  addEventListener('resize',align);
+  function open(key,from,start){var g=GAL[key];if(!g)return;if(!box)make();cur=g;back=from;
+    box.querySelector('#pvb-t').textContent=g.t;box.querySelector('.pvb-d').textContent=g.d||'';
+    var rr=box.querySelector('.pvb-r');rr.textContent=g.r||'';rr.hidden=!g.r;
+    var ls=box.querySelector('.pvb-list');ls.innerHTML='';ls.hidden=g.i.length<2;
+    box.querySelector('.pvb-nav').hidden=g.i.length<2;
+    g.i.forEach(function(it,i){var li=el('li'),b=el('button');b.type='button';
+      b.appendChild(el('span',null,pad(i+1)));b.appendChild(el('span',null,it.c));b.appendChild(el('span',null,it.k==='mp4'||it.k==='img'?'':{yt:'YouTube',tt:'TikTok',ig:'Instagram'}[it.k]));
+      b.onclick=function(){go(i)};li.appendChild(b);ls.appendChild(li)});
+    box.hidden=false;document.documentElement.style.overflow='hidden';if(window.reelHold)reelHold(true);go(start||0);box.querySelector('.pvb-close').focus()}
+  function close(){if(!box||box.hidden)return;box.hidden=true;box.querySelector('.pvb-m').innerHTML='';document.documentElement.style.overflow='';if(window.reelHold)reelHold(false);if(back)back.focus()}
+  document.addEventListener('click',function(e){var b=e.target.closest('.pv[data-pv]');if(!b)return;
+    open(b.getAttribute('data-pv'),b,+b.getAttribute('data-pv-i')||0)});
+})();
+</script>
+</body>
+</html>
