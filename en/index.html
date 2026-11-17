@@ -118,6 +118,8 @@ button.fr:hover img,button.fr:hover video{filter:saturate(1) contrast(1) brightn
 }
 /* language switch in the very corner */
 .top{display:flex;justify-content:flex-end}
+/* phones: less air above and below the language switch */
+@media (max-width:820px){.page{padding-top:.6rem}.top{padding-bottom:.6rem}}
 /* each clip sits on its own first frame and fades in over it once it actually plays */
 .fr .ph{position:absolute;inset:0}
 .fr video.lp{position:relative;opacity:0;transition:opacity .35s ease,filter .6s cubic-bezier(.25,.1,.25,1),scale .9s cubic-bezier(.22,.61,.36,1)}
