@@ -130,6 +130,17 @@ button.fr:hover img,button.fr:hover video{filter:saturate(1) contrast(1) brightn
 .about .big{font-weight:600;font-size:clamp(2rem,4.4vw,4rem);line-height:1;letter-spacing:-.035em;text-wrap:balance}
 .about .small{font-size:.95rem;line-height:1.55;color:var(--quiet)}
 .about .small a{color:var(--ink)}
+/* the shift: the title holds its place on the left while the essay and the film run on the right; opening and closing lines set like the hero's bold line, body in one quiet colour */
+.shift .ttl{font-weight:600;font-size:clamp(2rem,4.4vw,4rem);line-height:1;letter-spacing:-.035em;text-wrap:balance;margin:0;position:sticky;top:2rem}
+.shift .ld,.shift .end{font-size:clamp(1.05rem,1.5vw,1.35rem);line-height:1.3;letter-spacing:-.01em;font-weight:500;color:var(--ink);text-wrap:balance}
+.shift .tx p{font-size:.95rem;line-height:1.55;color:var(--quiet)}.shift .tx p+p{margin-top:.9em}
+.shift .main{max-width:44rem}.shift .main>*+*{margin-top:1.8rem}.shift .main>.vid{margin-block:2.4rem}
+/* Instagram's frame shows only the 16:9 picture; the embed is laid out at a fixed 538px and scaled to the column, so it keeps the same arrangement at any width */
+.shift .vid{margin:0}
+.shift .igc{position:relative;overflow:hidden;aspect-ratio:16/9;border-radius:14px;background:#0e0b09}
+.shift .igc iframe{position:absolute;top:0;left:0;width:538px;height:1100px;border:0;transform-origin:0 0}
+.shift .vid figcaption{margin-top:.6rem}
+@media (max-width:820px){.shift .ttl{position:static}}
 /* footer: the hands photo at its own proportions, full width, only cut at the top and bottom; the text sits on its lower edge */
 .contact{position:relative;display:grid;padding-top:0;margin-top:clamp(5rem,9.5vw,8.5rem);isolation:isolate}
 .contact>*{grid-area:1/1}
@@ -244,6 +255,19 @@ body::after{content:"";position:fixed;inset:0;z-index:190;pointer-events:none;ba
       <p class="big" style="--c:1/9">I’m interested in people. How we think, what shapes us, what we care about and what brings us together.</p>
       <p class="small" style="--c:1/5">When I join a project, I first look at what already exists. Often, the answer is already there, in the name, in the character of the product or in the people behind it. It just needs to be brought together into a story that makes sense to the people it’s meant for.</p>
       <p class="small" style="--c:5/9">People don’t respond to what you show them, but to the part of themselves they recognise in it. So I look for the story there, in how they live, what drives them and what matters to them. Once I understand that, I can take the work from the initial idea and strategy all the way through filming, editing and final delivery.</p>
+    </div>
+  </section>
+
+  <section class="sec shift" aria-labelledby="pm">
+    <div class="g">
+      <div class="side" style="--c:1/5"><h2 class="ttl" id="pm">The shift ahead of us</h2></div>
+      <div class="main" style="--c:6/13">
+        <p class="ld">When anyone can create almost anything, what becomes most valuable is what only we can create.</p>
+        <div class="tx"><p>Today, high-end production is within everyone’s reach. Production becomes a tool, no longer the difference. The difference lies in the person behind the work, in the path they are on and in what they believe. That is why a video shot on a phone can touch people more deeply than a polished ad, because something human remains in it.</p></div>
+        <figure class="vid"><div class="igc"><iframe src="https://www.instagram.com/p/DdeA9rCIMYU/embed/" title="Video on Instagram" scrolling="no" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><figcaption class="lab"><a class="ext" href="https://www.instagram.com/p/DdeA9rCIMYU/" target="_blank" rel="noopener">Open on Instagram</a></figcaption></figure>
+        <div class="tx"><p>The path we walk comes with doubts, stumbles and obstacles. That is exactly what sets it apart from a billboard. We sense the intention behind something before we can put it into words, and we follow those who don’t just point the way but walk it themselves.</p><p>This shift invites us to get clear on why we do what we do. Our hunger for a future we can believe in keeps growing. And when we honestly show what we believe in, there is no need to convince anyone. It is enough to invite people to come along.</p><p>Most companies, projects and communities are born because someone walked a path and could show the way to those who came after. The person who creates and the person who watches are closer than they seem. Both are people on a similar path. The numbers follow on their own when we keep compassion at the heart of our work. That is what moves people.</p><p>A shift awakened by a belief we share is closer to a person’s truth than one triggered by fear. So shifts like these grow more than just attention. They grow a way of life, one in which a company’s product or service can find its natural place.</p></div>
+        <p class="end">And that is what stands the test of time.</p>
+      </div>
     </div>
   </section>
 
@@ -392,5 +416,6 @@ body::after{content:"";position:fixed;inset:0;z-index:190;pointer-events:none;ba
     open(b.getAttribute('data-pv'),b,+b.getAttribute('data-pv-i')||0)});
 })();
 </script>
+<script>/* scale the Instagram embed in the shift section to its column */(function(){var R=window.ResizeObserver;document.querySelectorAll('.shift .igc').forEach(function(b){var f=b.querySelector('iframe');function fit(){var s=(b.clientWidth+2)/536;f.style.transform='scale('+s+') translate(-1px,-55px)'}fit();if(R)new R(fit).observe(b)})})();</script>
 </body>
 </html>
